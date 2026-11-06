@@ -1,0 +1,492 @@
+{
+  "status": "Existing supplied UI artwork optimized for browser preview; no generated or repainted imagery.",
+  "alternatives": {
+    "A": "KV/ARB-KV-portrait-photography-alt.png",
+    "B": "KV/ARB-KV-photography-abstract-v02.png",
+    "C": "KV/ARB-KV-photography-abstract-v02-alt.png",
+    "D": "KV/ARB-KV-drawing-abstract-v02-alt.png",
+    "E": "KV/ARB-KV-photography-abstract-v02-alt.png"
+  },
+  "assets": [
+    {
+      "file": "assets/hero-a.webp",
+      "source": "KV/ARB-KV-portrait-photography-alt.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 1672,
+      "height": 941,
+      "bytes": 224062,
+      "sourceSha256": "b216f065030d36ae78512e57d5fdd89a03454263c7d8888cb8026c56275f44b1",
+      "operation": "WebP compression"
+    },
+    {
+      "file": "assets/hero-a-mobile.webp",
+      "source": "KV/ARB-KV-portrait-photography-alt.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 840,
+      "height": 473,
+      "bytes": 57296,
+      "sourceSha256": "b216f065030d36ae78512e57d5fdd89a03454263c7d8888cb8026c56275f44b1",
+      "operation": "WebP compression and proportional resize"
+    },
+    {
+      "file": "assets/preview-a.webp",
+      "source": "Web/UI Home Drafts/previews/A-Hero-Desktop.png",
+      "sourceSize": [
+        1440,
+        1104
+      ],
+      "width": 960,
+      "height": 736,
+      "bytes": 61054,
+      "sourceSha256": "c52479c8b999022bfde46f5820a5624ae68e50561c3356ab74edd16a14f4cdd8",
+      "operation": "WebP compression and proportional resize"
+    },
+    {
+      "file": "assets/hero-b.webp",
+      "source": "KV/ARB-KV-photography-abstract-v02.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 1672,
+      "height": 941,
+      "bytes": 331808,
+      "sourceSha256": "26030ff997392be3e8d6fbf6d2f3aa3e0c17bd0d735db1da001043dcbdd881b1",
+      "operation": "WebP compression"
+    },
+    {
+      "file": "assets/hero-b-mobile.webp",
+      "source": "KV/ARB-KV-photography-abstract-v02.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 840,
+      "height": 473,
+      "bytes": 109206,
+      "sourceSha256": "26030ff997392be3e8d6fbf6d2f3aa3e0c17bd0d735db1da001043dcbdd881b1",
+      "operation": "WebP compression and proportional resize"
+    },
+    {
+      "file": "assets/preview-b.webp",
+      "source": "Web/UI Home Drafts/previews/B-Hero-Desktop.png",
+      "sourceSize": [
+        1440,
+        880
+      ],
+      "width": 960,
+      "height": 587,
+      "bytes": 64688,
+      "sourceSha256": "304927fcef5a92f62d79de06b31002fb80f555fef2695f8018579be1ef0f54cb",
+      "operation": "WebP compression and proportional resize"
+    },
+    {
+      "file": "assets/hero-c.webp",
+      "source": "KV/ARB-KV-photography-abstract-v02-alt.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 1672,
+      "height": 941,
+      "bytes": 317310,
+      "sourceSha256": "5439547e2e852935034b765b48db0ef7723f1c9d9dbb68fff1e3d498ca1eafa6",
+      "operation": "WebP compression"
+    },
+    {
+      "file": "assets/hero-c-mobile.webp",
+      "source": "KV/ARB-KV-photography-abstract-v02-alt.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 840,
+      "height": 473,
+      "bytes": 107466,
+      "sourceSha256": "5439547e2e852935034b765b48db0ef7723f1c9d9dbb68fff1e3d498ca1eafa6",
+      "operation": "WebP compression and proportional resize"
+    },
+    {
+      "file": "assets/preview-c.webp",
+      "source": "Web/UI Home Drafts/previews/C-Hero-Desktop.png",
+      "sourceSize": [
+        1440,
+        944
+      ],
+      "width": 960,
+      "height": 629,
+      "bytes": 121148,
+      "sourceSha256": "02771fc3615ed783865cac023f843784b33b6438877a59dee2b4e65466aaeb34",
+      "operation": "WebP compression and proportional resize"
+    },
+    {
+      "file": "assets/hero-d.webp",
+      "source": "KV/ARB-KV-drawing-abstract-v02-alt.png",
+      "sourceSize": [
+        1671,
+        941
+      ],
+      "width": 1671,
+      "height": 941,
+      "bytes": 597654,
+      "sourceSha256": "dd234351e3b3a2d38a854c446038927a15dec8e6f6444801e14a88c8b0057c7e",
+      "operation": "WebP compression"
+    },
+    {
+      "file": "assets/hero-d-mobile.webp",
+      "source": "KV/ARB-KV-drawing-abstract-v02-alt.png",
+      "sourceSize": [
+        1671,
+        941
+      ],
+      "width": 840,
+      "height": 473,
+      "bytes": 162740,
+      "sourceSha256": "dd234351e3b3a2d38a854c446038927a15dec8e6f6444801e14a88c8b0057c7e",
+      "operation": "WebP compression and proportional resize"
+    },
+    {
+      "file": "assets/preview-d.webp",
+      "source": "Web/UI Home Drafts/previews/D-Hero-Desktop.png",
+      "sourceSize": [
+        1440,
+        1280
+      ],
+      "width": 960,
+      "height": 853,
+      "bytes": 150916,
+      "sourceSha256": "7ab7621f6909307e0aac76ad1b387439aa05110eb34aa111c21e568359c30ae3",
+      "operation": "WebP compression and proportional resize"
+    },
+    {
+      "file": "assets/hero-e-static.webp",
+      "source": "KV/ARB-KV-photography-abstract-v02-alt.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 1672,
+      "height": 941,
+      "bytes": 317310,
+      "sourceSha256": "5439547e2e852935034b765b48db0ef7723f1c9d9dbb68fff1e3d498ca1eafa6",
+      "operation": "WebP compression"
+    },
+    {
+      "file": "assets/hero-e-mobile.webp",
+      "source": "KV/ARB-KV-photography-abstract-v02-alt.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 840,
+      "height": 473,
+      "bytes": 107466,
+      "sourceSha256": "5439547e2e852935034b765b48db0ef7723f1c9d9dbb68fff1e3d498ca1eafa6",
+      "operation": "WebP compression and proportional resize"
+    },
+    {
+      "file": "assets/preview-e.webp",
+      "source": "Web/UI Home Source Revision/previews/E-Hero-Desktop.png",
+      "sourceSize": [
+        1440,
+        960
+      ],
+      "width": 960,
+      "height": 640,
+      "bytes": 126938,
+      "sourceSha256": "032234763e890ee0943dc6038fa3a72c395aa4c44855079bef3b8395a5fb3e91",
+      "operation": "WebP compression and proportional resize"
+    },
+    {
+      "file": "assets/card-aksa.webp",
+      "source": "output/character_bible_assets/Aksa_Hero_Portrait_v02.png",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "width": 1200,
+      "height": 800,
+      "bytes": 84688,
+      "sourceSha256": "ae58eb706d71327790b4a23aecb9f1c4944004f35a9055998d8b34385979fb4c",
+      "operation": "WebP compression and proportional resize"
+    },
+    {
+      "file": "assets/card-rasa.webp",
+      "source": "output/character_bible_assets/Rasa_Hero_Portrait_v01.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 1200,
+      "height": 675,
+      "bytes": 142842,
+      "sourceSha256": "bc913fa74dd5dbd70023324b2e8d11f79e6f879b08d8f8b4ca86819238f5db5d",
+      "operation": "WebP compression and proportional resize"
+    },
+    {
+      "file": "assets/card-bumi.webp",
+      "source": "output/character_bible_assets/Bumi_Hero_Portrait_v01.png",
+      "sourceSize": [
+        1578,
+        997
+      ],
+      "width": 1200,
+      "height": 758,
+      "bytes": 265068,
+      "sourceSha256": "07ab08f8e7099f1264d88871ad0930c748449c98359fd3793fc4f393c0af8835",
+      "operation": "WebP compression and proportional resize"
+    },
+    {
+      "file": "assets/hero-e-l06.webp",
+      "source": "KV/Layered_Hero_v01/assets/layers-v01/ARB_Hero_0000_L06_Foreground_Bokeh_Source.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 1672,
+      "height": 941,
+      "bytes": 33258,
+      "sourceSha256": "e4e67d655799da8a1be8dc23e8e16c89c78edd5c03843d4e9709fdb579d8cd11",
+      "operation": "WebP compression"
+    },
+    {
+      "file": "assets/hero-e-l05.webp",
+      "source": "KV/Layered_Hero_v01/assets/layers-v01/ARB_Hero_0001_L05_Foreground_Grass_Source.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 1672,
+      "height": 941,
+      "bytes": 45766,
+      "sourceSha256": "c3852f3e0fef9c3b3946f2901bcffb12ad4eaf47855966f9650083ed8c876605",
+      "operation": "WebP compression"
+    },
+    {
+      "file": "assets/hero-e-l04.webp",
+      "source": "KV/Layered_Hero_v01/assets/layers-v01/ARB_Hero_0002_L04_Characters_Source.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 1672,
+      "height": 941,
+      "bytes": 217858,
+      "sourceSha256": "73ac727372c1b9d0802fa42ffbaa5cf895ea67cc384c9113704ade69d0357c0a",
+      "operation": "WebP compression"
+    },
+    {
+      "file": "assets/hero-e-l03.webp",
+      "source": "KV/Layered_Hero_v01/assets/layers-v01/ARB_Hero_0003_L03_Canopy_Source.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 1672,
+      "height": 941,
+      "bytes": 71300,
+      "sourceSha256": "e5fcb4cd07da989c1de86e5b17388d3ce77f9f4f8fae87e7d0d210899bf7da47",
+      "operation": "WebP compression"
+    },
+    {
+      "file": "assets/hero-e-l02.webp",
+      "source": "KV/Layered_Hero_v01/assets/layers-v01/ARB_Hero_0004_L02_Abstract_Shapes_Source.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 1672,
+      "height": 941,
+      "bytes": 37862,
+      "sourceSha256": "3633a35fd65c3d64d8d9be715d8672ded2a56ade7b0e39309b0023d80fbc2738",
+      "operation": "WebP compression"
+    },
+    {
+      "file": "assets/hero-e-l01.webp",
+      "source": "KV/Layered_Hero_v01/assets/layers-v01/ARB_Hero_0005_L01_Visible_Nature_Source.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 1672,
+      "height": 941,
+      "bytes": 201978,
+      "sourceSha256": "7c179fba0cf1ae6eb1baffe2df678c23dd63ef333f1accb63f605d244640a2bc",
+      "operation": "WebP compression"
+    },
+    {
+      "file": "assets/hero-e-l00.webp",
+      "source": "KV/Layered_Hero_v01/assets/layers-v01/ARB_Hero_0006_L00_Inferred_Cleanplate.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "width": 1672,
+      "height": 941,
+      "bytes": 469744,
+      "sourceSha256": "7ce45b4910c7674c5b3955eb259a5b34684f60cea7aec00e779f954eb4397f03",
+      "operation": "WebP compression"
+    },
+    {
+      "file": "assets/portrait-aksa.webp",
+      "source": "KV/Character_Backdrop_v01/aksa-photo-cutout-v01.png",
+      "sourceSize": [
+        600,
+        841
+      ],
+      "width": 600,
+      "height": 841,
+      "bytes": 84524,
+      "sourceSha256": "91224dbfb4fb2c8a912ec74596afb7278ada2c586c2111f3396844039f4ae540",
+      "operation": "WebP compression"
+    },
+    {
+      "file": "assets/portrait-aksa-background.svg",
+      "source": "KV/Character_Backdrop_v01/backgrounds/aksa-background-v01.svg",
+      "width": 816,
+      "height": 624,
+      "bytes": 1160,
+      "operation": "Unmodified native SVG copy"
+    },
+    {
+      "file": "assets/portrait-rasa.webp",
+      "source": "KV/Character_Backdrop_v01/rasa-photo-cutout-v01.png",
+      "sourceSize": [
+        800,
+        841
+      ],
+      "width": 800,
+      "height": 841,
+      "bytes": 95394,
+      "sourceSha256": "1298ce4f6a746387bbb27939816c83c15d33554a355593b81b4de670c707967c",
+      "operation": "WebP compression"
+    },
+    {
+      "file": "assets/portrait-rasa-background.svg",
+      "source": "KV/Character_Backdrop_v01/backgrounds/rasa-background-v01.svg",
+      "width": 816,
+      "height": 624,
+      "bytes": 1355,
+      "operation": "Unmodified native SVG copy"
+    },
+    {
+      "file": "assets/portrait-bumi.webp",
+      "source": "KV/Character_Backdrop_v01/bumi-photo-cutout-v01.png",
+      "sourceSize": [
+        692,
+        841
+      ],
+      "width": 692,
+      "height": 841,
+      "bytes": 118802,
+      "sourceSha256": "6589253be48e06d7a17a9cac7189c8c9de1ab788d42e0dd6f72688424510d0c9",
+      "operation": "WebP compression"
+    },
+    {
+      "file": "assets/portrait-bumi-background.svg",
+      "source": "KV/Character_Backdrop_v01/backgrounds/bumi-background-v01.svg",
+      "width": 816,
+      "height": 624,
+      "bytes": 1548,
+      "operation": "Unmodified native SVG copy"
+    }
+  ],
+  "portraits": {
+    "canvas": [
+      816,
+      624
+    ],
+    "background": "portrait-{character}-background.svg",
+    "desktopWindow": {
+      "x": 96,
+      "y": 40,
+      "width": 624,
+      "height": 472
+    },
+    "photoHeight": 720,
+    "photoLeftWithinWindow": {
+      "aksa": 5.51,
+      "rasa": -59.56,
+      "bumi": -56.13
+    },
+    "photoTopWithinWindow": 0,
+    "mobileCanvas": [
+      390,
+      392
+    ],
+    "mobileWindow": {
+      "x": 16,
+      "y": 48,
+      "width": 358,
+      "height": 292
+    },
+    "mobilePhotoHeight": 444,
+    "mobilePhotoLeftWithinWindow": {
+      "aksa": -10,
+      "rasa": -50.13,
+      "bumi": -48.02
+    },
+    "mobileBackgroundTransform": {
+      "scale": 0.53,
+      "left": -21.24,
+      "top": 30
+    },
+    "guidance": "Keep upper chest clipping window. Shapes behind photo. Keep people static and do not reconstruct hidden shoulders."
+  },
+  "cardsAD": {
+    "sources": "output/character_bible_assets/{Aksa_Hero_Portrait_v02,Rasa_Hero_Portrait_v01,Bumi_Hero_Portrait_v01}.png",
+    "desktopFrame": [
+      400,
+      288
+    ],
+    "mobileFrame": [
+      342,
+      240
+    ],
+    "objectFit": "cover",
+    "aksa": {
+      "imageWidthPercent": 100,
+      "imageHeightPercent": 100,
+      "leftPercent": 0,
+      "topPx": 0
+    },
+    "rasaAndBumi": {
+      "imageWidthPercent": 160,
+      "imageHeightPercent": 160,
+      "leftPercent": -30,
+      "topPx": -8
+    },
+    "guidance": "Images are unchanged complete sources. Apply clipping via CSS to reproduce supplied matched-scale cards; no invented body pixels."
+  },
+  "heroE": {
+    "canvas": [
+      1672,
+      941
+    ],
+    "orderBackToFront": [
+      "hero-e-l00.webp",
+      "hero-e-l01.webp",
+      "hero-e-l02.webp",
+      "hero-e-l03.webp",
+      "hero-e-l04.webp",
+      "hero-e-l05.webp",
+      "hero-e-l06.webp"
+    ],
+    "sourceTravelY": [
+      0,
+      0,
+      -1,
+      -2,
+      0,
+      1,
+      2
+    ],
+    "guidance": "All seven full-canvas images use identical contain scale and origin. Independent travel max 2 source pixels. People static; mobile/reduced motion use hero-e-mobile.webp with zero travel. Inferred cleanplate is reconstructed scenery, not a recovered original."
+  }
+}

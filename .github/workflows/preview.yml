@@ -1,0 +1,61 @@
+name: Pull request preview QA
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  CI: 'true'
+
+jobs:
+  preview:
+    name: Build review artifact and test journeys
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout proposed source
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Use Node.js 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Build static preview
+        run: npm run build
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Test desktop and mobile journeys
+        run: npm run test:e2e
+      - name: Retain browser QA evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: pr-${{ github.event.pull_request.number }}-browser-qa
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Upload reviewable static preview
+        uses: actions/upload-artifact@v7
+        with:
+          name: pr-${{ github.event.pull_request.number }}-preview
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Explain preview location
+        run: |
+          echo '### Pull request preview' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Build and journey QA passed. Download the preview artifact from this run and serve its extracted folder with a local static server.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'The client-facing GitHub Pages site updates only after a successful push to main. This workflow does not publish a separate PR URL.' >> "$GITHUB_STEP_SUMMARY"

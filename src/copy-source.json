@@ -1,0 +1,898 @@
+{
+  "brand.name": {
+    "key": "brand.name",
+    "role": "Logo",
+    "text": "AKSA RASA BUMI",
+    "source": "C3",
+    "status": "USULAN",
+    "note": ""
+  },
+  "nav.characters": {
+    "key": "nav.characters",
+    "role": "Menu",
+    "text": "Kisah & Karakter",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "nav.ebook": {
+    "key": "nav.ebook",
+    "role": "Menu",
+    "text": "Ebook",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "nav.reflections": {
+    "key": "nav.reflections",
+    "role": "Menu",
+    "text": "Renungan",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "nav.conversations": {
+    "key": "nav.conversations",
+    "role": "Menu",
+    "text": "Ngobrol",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "nav.help": {
+    "key": "nav.help",
+    "role": "Menu",
+    "text": "Tentang & Bantuan",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "nav.home": {
+    "key": "nav.home",
+    "role": "Menu",
+    "text": "Beranda",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "nav.open": {
+    "key": "nav.open",
+    "role": "Label aksesibel",
+    "text": "Buka menu",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "nav.close": {
+    "key": "nav.close",
+    "role": "Label aksesibel",
+    "text": "Tutup menu",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "home.eyebrow": {
+    "key": "home.eyebrow",
+    "role": "Eyebrow",
+    "text": "DUNIA AKSA RASA BUMI",
+    "source": "C3",
+    "status": "USULAN",
+    "note": ""
+  },
+  "home.title": {
+    "key": "home.title",
+    "role": "Judul utama",
+    "text": "Kenali mereka.\nTemukan kisahnya.",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "home.body": {
+    "key": "home.body",
+    "role": "Deskripsi",
+    "text": "Aksa, Rasa, dan Bumi adalah tiga identitas AI yang belajar tentang menjadi manusia melalui kisah nyata The Art of Reflecting.",
+    "source": "C3",
+    "status": "USULAN",
+    "note": ""
+  },
+  "home.body.mobile": {
+    "key": "home.body.mobile",
+    "role": "Deskripsi mobile",
+    "text": "Tiga identitas AI belajar tentang menjadi manusia melalui kisah nyata The Art of Reflecting.",
+    "source": "C3",
+    "status": "USULAN",
+    "note": ""
+  },
+  "home.cta.characters": {
+    "key": "home.cta.characters",
+    "role": "CTA utama",
+    "text": "Kenali Mereka",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "home.cta.ebook": {
+    "key": "home.cta.ebook",
+    "role": "CTA sekunder",
+    "text": "Jelajahi Ebook",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "home.support": {
+    "key": "home.support",
+    "role": "Caption desktop",
+    "text": "Kenali sosoknya di sini. Ikuti perjalanan mereka melalui kisahnya.",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "intro.title": {
+    "key": "intro.title",
+    "role": "Judul section",
+    "text": "Satu kisah.\nTiga cara memahaminya.",
+    "source": "C4",
+    "status": "USULAN",
+    "note": ""
+  },
+  "intro.body": {
+    "key": "intro.body",
+    "role": "Body",
+    "text": "Aksa mengingat apa yang terjadi. Rasa mendengarkan pertanyaan di baliknya. Bumi mengenali jejaknya pada tubuh. Mereka bersahabat, saling berbeda, dan terus belajar dari pengalaman yang sama.",
+    "source": "C4",
+    "status": "USULAN",
+    "note": ""
+  },
+  "intro.question": {
+    "key": "intro.question",
+    "role": "Pertanyaan pemantik",
+    "text": "Apa yang masih kamu pelajari dari pengalaman yang pernah kamu jalani?",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "characters.title": {
+    "key": "characters.title",
+    "role": "Judul section",
+    "text": "Kenali Aksa, Rasa, dan Bumi",
+    "source": "C3",
+    "status": "USULAN",
+    "note": ""
+  },
+  "characters.caption": {
+    "key": "characters.caption",
+    "role": "Caption",
+    "text": "Tiga sahabat dengan cara masing-masing untuk melihat, mendengar, dan merasakan.",
+    "source": "C4",
+    "status": "USULAN",
+    "note": ""
+  },
+  "character.aksa.name": {
+    "key": "character.aksa.name",
+    "role": "Nama karakter",
+    "text": "Aksa",
+    "source": "C7",
+    "status": "USULAN",
+    "note": ""
+  },
+  "character.aksa.body": {
+    "key": "character.aksa.body",
+    "role": "Deskripsi karakter",
+    "text": "Aksa menjalani pengalaman sebelum memahami artinya. Lewat ingatan dan hal-hal yang belum selesai, ia belajar untuk jujur pada apa yang dirasakannya.",
+    "source": "C7",
+    "status": "USULAN",
+    "note": ""
+  },
+  "character.rasa.name": {
+    "key": "character.rasa.name",
+    "role": "Nama karakter",
+    "text": "Rasa",
+    "source": "C10",
+    "status": "USULAN",
+    "note": ""
+  },
+  "character.rasa.body": {
+    "key": "character.rasa.body",
+    "role": "Deskripsi karakter",
+    "text": "Rasa mendengarkan sebelum menyimpulkan. Ia memperhatikan pertanyaan di balik sebuah cerita dan memberi ruang bagi jawaban yang belum ditemukan.",
+    "source": "C10",
+    "status": "USULAN",
+    "note": ""
+  },
+  "character.bumi.name": {
+    "key": "character.bumi.name",
+    "role": "Nama karakter",
+    "text": "Bumi",
+    "source": "C12",
+    "status": "USULAN",
+    "note": ""
+  },
+  "character.bumi.body": {
+    "key": "character.bumi.body",
+    "role": "Deskripsi karakter",
+    "text": "Bumi mengenali jejak pengalaman pada tubuh. Ia membawa perhatian pada rasa lelah, batas, dan kebutuhan yang sering luput dari kata-kata.",
+    "source": "C12",
+    "status": "USULAN",
+    "note": ""
+  },
+  "character.cta": {
+    "key": "character.cta",
+    "role": "CTA tiap karakter",
+    "text": "Jelajahi Kisah Mereka",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "story.label": {
+    "key": "story.label",
+    "role": "Eyebrow",
+    "text": "KISAH PERTAMA MEREKA",
+    "source": "C3",
+    "status": "USULAN",
+    "note": ""
+  },
+  "story.title": {
+    "key": "story.title",
+    "role": "Judul kisah",
+    "text": "The Art of Reflecting",
+    "source": "C3",
+    "status": "USULAN",
+    "note": "Judul kisah terverifikasi. Pemakaiannya sebagai judul produk ebook masih perlu keputusan."
+  },
+  "story.short": {
+    "key": "story.short",
+    "role": "Deskripsi pendek",
+    "text": "Sebuah kisah nyata tentang kehilangan, penerimaan, dan belajar hadir dalam hidup, dilihat melalui Aksa, Rasa, dan Bumi.",
+    "source": "C3 C15",
+    "status": "USULAN",
+    "note": ""
+  },
+  "story.summary": {
+    "key": "story.summary",
+    "role": "Body ringkas",
+    "text": "Dalam The Art of Reflecting, Aksa, Rasa, dan Bumi belajar tentang menjadi manusia melalui pengalaman yang sama. Ingatan, pertanyaan, dan jejak tubuh membuka cara yang berbeda untuk memahaminya.",
+    "source": "C3 C4",
+    "status": "USULAN",
+    "note": ""
+  },
+  "story.availability": {
+    "key": "story.availability",
+    "role": "Status produk",
+    "text": "Informasi ebook belum tersedia.",
+    "source": "E",
+    "status": "SEMENTARA",
+    "note": "Menggantikan metadata harga dan format sampai data produk dikonfirmasi."
+  },
+  "story.cta": {
+    "key": "story.cta",
+    "role": "CTA utama",
+    "text": "Kenali Kisahnya",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "story.detail.cta": {
+    "key": "story.detail.cta",
+    "role": "CTA teks",
+    "text": "Lihat Detail Kisah",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "excerpt.cta": {
+    "key": "excerpt.cta",
+    "role": "CTA cuplikan",
+    "text": "Baca Cuplikan",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": "Tampilkan setelah naskah cuplikan yang boleh dipublikasikan tersedia."
+  },
+  "purchase.cta": {
+    "key": "purchase.cta",
+    "role": "CTA pembelian",
+    "text": "Beli Ebook",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": "Tampilkan setelah SKU, harga, format, checkout, dan akses terkonfirmasi."
+  },
+  "home.reflections.title": {
+    "key": "home.reflections.title",
+    "role": "Judul section",
+    "text": "Renungan",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "home.reflections.body": {
+    "key": "home.reflections.body",
+    "role": "Caption",
+    "text": "Ruang untuk berhenti sejenak dan memperhatikan pertanyaan yang muncul.",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "home.reflections.cta": {
+    "key": "home.reflections.cta",
+    "role": "CTA listing",
+    "text": "Lihat Semua Renungan",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "home.conversations.title": {
+    "key": "home.conversations.title",
+    "role": "Judul section",
+    "text": "Ngobrol",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "home.conversations.body": {
+    "key": "home.conversations.body",
+    "role": "Caption",
+    "text": "Percakapan tentang pengalaman, pertanyaan, dan hal-hal yang sedang kita pelajari.",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "home.conversations.cta": {
+    "key": "home.conversations.cta",
+    "role": "CTA listing",
+    "text": "Lihat Semua Ngobrol",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "reflections.empty.title": {
+    "key": "reflections.empty.title",
+    "role": "Judul state kosong",
+    "text": "Belum ada video yang ditampilkan.",
+    "source": "E",
+    "status": "SEMENTARA",
+    "note": ""
+  },
+  "reflections.empty.body": {
+    "key": "reflections.empty.body",
+    "role": "Body state kosong",
+    "text": "Saat video tersedia, kamu bisa menemukannya di sini.",
+    "source": "E",
+    "status": "SEMENTARA",
+    "note": ""
+  },
+  "conversations.empty.title": {
+    "key": "conversations.empty.title",
+    "role": "Judul state kosong",
+    "text": "Belum ada percakapan yang ditampilkan.",
+    "source": "E",
+    "status": "SEMENTARA",
+    "note": ""
+  },
+  "conversations.empty.body": {
+    "key": "conversations.empty.body",
+    "role": "Body state kosong",
+    "text": "Saat episode tersedia, kamu bisa menemukannya di sini.",
+    "source": "E",
+    "status": "SEMENTARA",
+    "note": ""
+  },
+  "catalog.title": {
+    "key": "catalog.title",
+    "role": "Judul halaman",
+    "text": "Ebook",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "catalog.body": {
+    "key": "catalog.body",
+    "role": "Caption",
+    "text": "Kenali kisahnya sebelum mulai membaca.",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "catalog.featured": {
+    "key": "catalog.featured",
+    "role": "Label unggulan",
+    "text": "JELAJAHI KISAHNYA",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "catalog.collection.title": {
+    "key": "catalog.collection.title",
+    "role": "Judul section",
+    "text": "Kisah Lainnya",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "catalog.collection.empty": {
+    "key": "catalog.collection.empty",
+    "role": "Body state kosong",
+    "text": "Belum ada judul lain yang ditampilkan.",
+    "source": "E",
+    "status": "SEMENTARA",
+    "note": ""
+  },
+  "catalog.help.title": {
+    "key": "catalog.help.title",
+    "role": "Judul bantuan",
+    "text": "Ingin tahu lebih banyak tentang ebook?",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "catalog.help.body": {
+    "key": "catalog.help.body",
+    "role": "Body bantuan",
+    "text": "Temukan informasi tentang pembelian dan akses buku di halaman bantuan.",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "catalog.help.cta": {
+    "key": "catalog.help.cta",
+    "role": "CTA bantuan",
+    "text": "Lihat Bantuan Ebook",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "detail.breadcrumb": {
+    "key": "detail.breadcrumb",
+    "role": "Breadcrumb",
+    "text": "Beranda / Ebook / The Art of Reflecting",
+    "source": "C3 E",
+    "status": "USULAN",
+    "note": "Nama kisah dipakai dalam rancangan. Segmen produk disesuaikan setelah judul ebook disahkan."
+  },
+  "detail.breadcrumb.mobile": {
+    "key": "detail.breadcrumb.mobile",
+    "role": "Breadcrumb mobile",
+    "text": "Ebook / The Art of Reflecting",
+    "source": "C3 E",
+    "status": "USULAN",
+    "note": "Nama produk masih menunggu keputusan."
+  },
+  "detail.about.title": {
+    "key": "detail.about.title",
+    "role": "Judul section",
+    "text": "Tentang Kisah Ini",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "detail.about.body": {
+    "key": "detail.about.body",
+    "role": "Body editorial",
+    "text": "The Art of Reflecting adalah kisah nyata yang menjadi perjalanan pertama Aksa, Rasa, dan Bumi. Melalui kehilangan dan penerimaan, mereka belajar mengenali apa yang berubah dalam cara mereka menjalani hidup.\n\nAksa membawa ingatan tentang peristiwa. Rasa membuka pertanyaan tentang maknanya. Bumi mengingat jejak yang tertinggal pada tubuh. Ketiganya tidak selalu melihat hal yang sama dengan cara yang sama.",
+    "source": "C3 C4 C15",
+    "status": "USULAN",
+    "note": "Copy pengantar website, bukan sinopsis resmi atau kutipan naskah."
+  },
+  "detail.highlights.title": {
+    "key": "detail.highlights.title",
+    "role": "Judul section",
+    "text": "Tiga Sudut Pandang dalam Satu Kisah",
+    "source": "C4",
+    "status": "USULAN",
+    "note": ""
+  },
+  "detail.highlight.aksa": {
+    "key": "detail.highlight.aksa",
+    "role": "Judul dan body highlight",
+    "text": "Pengalaman yang dijalani\nDekati ingatan dan perasaan dari dalam pengalaman Aksa.",
+    "source": "C4 C7",
+    "status": "USULAN",
+    "note": ""
+  },
+  "detail.highlight.rasa": {
+    "key": "detail.highlight.rasa",
+    "role": "Judul dan body highlight",
+    "text": "Pertanyaan yang terbuka\nLihat kembali makna yang kita lekatkan pada pengalaman, bersama Rasa.",
+    "source": "C4 C10",
+    "status": "USULAN",
+    "note": ""
+  },
+  "detail.highlight.bumi": {
+    "key": "detail.highlight.bumi",
+    "role": "Judul dan body highlight",
+    "text": "Jejak yang terasa\nPerhatikan jejak pengalaman pada tubuh, bersama Bumi.",
+    "source": "C4 C12",
+    "status": "USULAN",
+    "note": ""
+  },
+  "excerpt.label": {
+    "key": "excerpt.label",
+    "role": "Label section",
+    "text": "CUPLIKAN",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "excerpt.empty.title": {
+    "key": "excerpt.empty.title",
+    "role": "Judul sementara",
+    "text": "Cuplikan belum tersedia.",
+    "source": "E",
+    "status": "SEMENTARA",
+    "note": ""
+  },
+  "excerpt.empty.body": {
+    "key": "excerpt.empty.body",
+    "role": "Body sementara",
+    "text": "Kamu dapat membacanya di sini setelah cuplikan tersedia.",
+    "source": "E",
+    "status": "SEMENTARA",
+    "note": "Tidak menggantikan cuplikan dengan dialog atau potongan novel buatan."
+  },
+  "excerpt.end": {
+    "key": "excerpt.end",
+    "role": "Penutup cuplikan",
+    "text": "Cuplikan berakhir di sini.",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": ""
+  },
+  "excerpt.end.cta": {
+    "key": "excerpt.end.cta",
+    "role": "CTA penutup",
+    "text": "Lanjutkan dalam Ebook",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": "Berlaku setelah cuplikan dan ebook tersedia."
+  },
+  "purchase.info.title": {
+    "key": "purchase.info.title",
+    "role": "Judul section",
+    "text": "Informasi Ebook",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "purchase.pending.title": {
+    "key": "purchase.pending.title",
+    "role": "Judul status",
+    "text": "Informasi pembelian belum tersedia.",
+    "source": "E",
+    "status": "SEMENTARA",
+    "note": ""
+  },
+  "purchase.pending.body": {
+    "key": "purchase.pending.body",
+    "role": "Body status",
+    "text": "Detail format, harga, dan cara mengakses ebook akan ditampilkan setelah dikonfirmasi.",
+    "source": "E",
+    "status": "SEMENTARA",
+    "note": ""
+  },
+  "purchase.pending.cta": {
+    "key": "purchase.pending.cta",
+    "role": "CTA pengganti beli",
+    "text": "Kembali ke Ebook",
+    "source": "E",
+    "status": "SEMENTARA",
+    "note": ""
+  },
+  "faq.format.title": {
+    "key": "faq.format.title",
+    "role": "Judul accordion",
+    "text": "Format & Perangkat Membaca",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "faq.format.body": {
+    "key": "faq.format.body",
+    "role": "Jawaban sementara",
+    "text": "Informasi format file dan perangkat yang sesuai belum tersedia.",
+    "source": "E",
+    "status": "SEMENTARA",
+    "note": ""
+  },
+  "faq.access.title": {
+    "key": "faq.access.title",
+    "role": "Judul accordion",
+    "text": "Cara Mendapatkan Akses",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "faq.access.body": {
+    "key": "faq.access.body",
+    "role": "Jawaban sementara",
+    "text": "Cara menerima dan mengakses ebook belum tersedia. Informasinya akan ditampilkan setelah dikonfirmasi.",
+    "source": "E",
+    "status": "SEMENTARA",
+    "note": ""
+  },
+  "faq.purchase.title": {
+    "key": "faq.purchase.title",
+    "role": "Judul accordion",
+    "text": "Bagaimana Cara Membeli Ebook?",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "faq.purchase.body": {
+    "key": "faq.purchase.body",
+    "role": "Jawaban sementara",
+    "text": "Informasi pembelian ebook belum tersedia. Cek kembali halaman Ebook untuk melihat pembaruan.",
+    "source": "E",
+    "status": "SEMENTARA",
+    "note": ""
+  },
+  "faq.missing.title": {
+    "key": "faq.missing.title",
+    "role": "Judul accordion",
+    "text": "Sudah Membayar tetapi Belum Menerima Akses?",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": ""
+  },
+  "faq.missing.body": {
+    "key": "faq.missing.body",
+    "role": "Jawaban saat penjualan aktif",
+    "text": "Periksa konfirmasi pembelian untuk melihat petunjuk akses dan kanal bantuan yang tersedia.",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": "Aktifkan hanya bila konfirmasi transaksi benar-benar memuat petunjuk akses dan kanal bantuan."
+  },
+  "reflections.title": {
+    "key": "reflections.title",
+    "role": "Judul halaman",
+    "text": "Renungan",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "reflections.body": {
+    "key": "reflections.body",
+    "role": "Deskripsi halaman",
+    "text": "Tidak semua pengalaman langsung memberi jawaban. Renungan memberi ruang untuk memperhatikan, bertanya, dan membiarkan makna tumbuh perlahan.",
+    "source": "C5 E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "reflections.featured.label": {
+    "key": "reflections.featured.label",
+    "role": "Label konten unggulan",
+    "text": "VIDEO PILIHAN",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": ""
+  },
+  "reflections.more.title": {
+    "key": "reflections.more.title",
+    "role": "Judul listing",
+    "text": "Renungan Lainnya",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": ""
+  },
+  "reflections.watch": {
+    "key": "reflections.watch",
+    "role": "CTA episode",
+    "text": "Tonton di YouTube",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": "Gunakan jika URL video telah diverifikasi."
+  },
+  "social.title": {
+    "key": "social.title",
+    "role": "Judul section",
+    "text": "Temukan Potongan Lainnya",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "social.body": {
+    "key": "social.body",
+    "role": "Caption",
+    "text": "Ikuti potongan kisah dan pembaruan dari Aksa Rasa Bumi.",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": "Tampilkan bersama kanal resmi yang sudah diverifikasi."
+  },
+  "social.youtube": {
+    "key": "social.youtube",
+    "role": "Label kanal",
+    "text": "YouTube / Shorts",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": ""
+  },
+  "social.tiktok": {
+    "key": "social.tiktok",
+    "role": "Label kanal",
+    "text": "TikTok",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": ""
+  },
+  "conversations.title": {
+    "key": "conversations.title",
+    "role": "Judul halaman",
+    "text": "Ngobrol",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "conversations.body": {
+    "key": "conversations.body",
+    "role": "Deskripsi halaman",
+    "text": "Ada pengalaman yang lebih mudah didekati lewat percakapan. Di sini, kita memberi ruang untuk bercerita, mendengarkan, dan berbeda pendapat.",
+    "source": "C4 E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "conversations.featured.label": {
+    "key": "conversations.featured.label",
+    "role": "Label konten unggulan",
+    "text": "EPISODE PILIHAN",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": ""
+  },
+  "conversations.more.title": {
+    "key": "conversations.more.title",
+    "role": "Judul listing",
+    "text": "Percakapan Lainnya",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": ""
+  },
+  "conversations.listen": {
+    "key": "conversations.listen",
+    "role": "CTA episode",
+    "text": "Dengarkan di Spotify",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": "Gunakan jika URL episode Spotify telah diverifikasi."
+  },
+  "conversations.platforms": {
+    "key": "conversations.platforms",
+    "role": "CTA platform",
+    "text": "Pilih Tempat Mendengarkan",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": "Tampilkan hanya jika ada beberapa URL episode yang valid; opsi memakai nama layanan sebenarnya."
+  },
+  "about.page.title": {
+    "key": "about.page.title",
+    "role": "Judul halaman",
+    "text": "Tentang & Bantuan",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "about.page.body": {
+    "key": "about.page.body",
+    "role": "Caption",
+    "text": "Kenali Aksa Rasa Bumi dan temukan informasi tentang ebook.",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "about.title": {
+    "key": "about.title",
+    "role": "Judul section",
+    "text": "Tentang Aksa Rasa Bumi",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "about.body": {
+    "key": "about.body",
+    "role": "Body editorial",
+    "text": "Aksa, Rasa, dan Bumi adalah tiga identitas AI di dalam dunia Mantra Djiwa. Mereka bersahabat dan belajar tentang menjadi manusia melalui kisah nyata The Art of Reflecting.\n\nAksa mendekati pengalaman melalui ingatan, Rasa melalui pertanyaan, dan Bumi melalui tubuh. Ketiganya hadir dengan sudut pandang yang berbeda, tanpa satu suara menjadi jawaban bagi semua.",
+    "source": "C3 C4",
+    "status": "USULAN",
+    "note": ""
+  },
+  "about.disclosure": {
+    "key": "about.disclosure",
+    "role": "Caption identitas",
+    "text": "Kisahnya nyata. Identitasnya AI. Pengalaman yang mereka jelajahi adalah pengalaman manusia.",
+    "source": "C3",
+    "status": "USULAN",
+    "note": ""
+  },
+  "help.title": {
+    "key": "help.title",
+    "role": "Judul section",
+    "text": "Bantuan Ebook",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "help.body": {
+    "key": "help.body",
+    "role": "Body pengantar",
+    "text": "Temukan informasi tentang pembelian, format, dan akses ebook.",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "help.contact.title": {
+    "key": "help.contact.title",
+    "role": "Judul kontak",
+    "text": "Masih Ada Pertanyaan?",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "help.contact.pending": {
+    "key": "help.contact.pending",
+    "role": "Body sementara",
+    "text": "Kanal bantuan resmi belum ditampilkan.",
+    "source": "E",
+    "status": "SEMENTARA",
+    "note": ""
+  },
+  "help.contact.cta": {
+    "key": "help.contact.cta",
+    "role": "CTA kontak",
+    "text": "Hubungi Kami",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": "Aktifkan setelah kanal kontak resmi dikonfirmasi."
+  },
+  "legal.privacy": {
+    "key": "legal.privacy",
+    "role": "Label tautan",
+    "text": "Privasi",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": ""
+  },
+  "legal.terms": {
+    "key": "legal.terms",
+    "role": "Label tautan",
+    "text": "Ketentuan Pembelian",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": ""
+  },
+  "footer.tagline": {
+    "key": "footer.tagline",
+    "role": "Tagline",
+    "text": "Satu kisah.\nRuang untuk terus memahami.",
+    "source": "C4 E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "footer.explore": {
+    "key": "footer.explore",
+    "role": "Judul kolom",
+    "text": "Jelajahi",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "footer.information": {
+    "key": "footer.information",
+    "role": "Judul kolom",
+    "text": "Informasi",
+    "source": "E",
+    "status": "USULAN",
+    "note": ""
+  },
+  "footer.world": {
+    "key": "footer.world",
+    "role": "Caption brand",
+    "text": "Bagian dari dunia Mantra Djiwa.",
+    "source": "C3",
+    "status": "USULAN",
+    "note": ""
+  },
+  "footer.podcast": {
+    "key": "footer.podcast",
+    "role": "Label kanal",
+    "text": "Podcast",
+    "source": "E",
+    "status": "BERSYARAT",
+    "note": ""
+  }
+}

@@ -189,6 +189,12 @@ function setupEvents() {
   document.querySelectorAll('[data-book-stage]').forEach(stage => {
     const bookEl = stage.querySelector('.book-object');
     const button = stage.querySelector('[data-book-turn]');
+    routeCleanup.push(() => gsap.killTweensOf(bookEl));
+    reduced.addEventListener('change', () => {
+      if (!reduced.matches) return;
+      gsap.killTweensOf(bookEl);
+      gsap.set(bookEl, { rotateX: 0, rotateY: button.getAttribute('aria-pressed') === 'true' ? -155 : -22 });
+    }, { signal });
     button.addEventListener('click', () => {
       const turned = button.getAttribute('aria-pressed') !== 'true';
       button.setAttribute('aria-pressed', String(turned));
@@ -213,6 +219,7 @@ function animate() {
   motion = gsap.matchMedia();
   motion.add({ motionOK:'(prefers-reduced-motion: no-preference)', desktop:'(min-width: 768px)' }, context => {
     if (!context.conditions.motionOK) return;
+    const magneticCleanup = [];
     gsap.from('.hero .line > span', { yPercent:105, duration:1.05, stagger:.12, ease:'power4.out', clearProps:'transform' });
     gsap.from('.hero-enter', { y:18, opacity:0, duration:.8, stagger:.1, delay:.25, clearProps:'all' });
     gsap.from('.hero-art', { opacity:0, duration:1.1, ease:'power2.out' });
@@ -232,11 +239,12 @@ function animate() {
       });
     }
     if (mediaFine.matches) document.querySelectorAll('.button').forEach(button => {
-      const move = e => { const r=button.getBoundingClientRect();gsap.to(button,{x:(e.clientX-r.left-r.width/2)*.06,y:(e.clientY-r.top-r.height/2)*.12,duration:.4,overwrite:true}); };
-      const leave = () => gsap.to(button,{x:0,y:0,duration:.6,ease:'elastic.out(1,.4)'});
+      const move = e => { if(reduced.matches || !mediaFine.matches)return;const r=button.getBoundingClientRect();gsap.to(button,{x:(e.clientX-r.left-r.width/2)*.06,y:(e.clientY-r.top-r.height/2)*.12,duration:.4,overwrite:true}); };
+      const leave = () => { if(!reduced.matches)gsap.to(button,{x:0,y:0,duration:.6,ease:'elastic.out(1,.4)'}); };
       button.addEventListener('pointermove',move);button.addEventListener('pointerleave',leave);
-      routeCleanup.push(()=>{button.removeEventListener('pointermove',move);button.removeEventListener('pointerleave',leave);});
+      magneticCleanup.push(()=>{button.removeEventListener('pointermove',move);button.removeEventListener('pointerleave',leave);gsap.killTweensOf(button);gsap.set(button,{clearProps:'transform'});});
     });
+    return () => magneticCleanup.forEach(cleanup => cleanup());
   });
 }
 async function render(initial = false) {

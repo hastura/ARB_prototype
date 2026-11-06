@@ -269,6 +269,66 @@ test.describe('accessibility and motion', () => {
     expect(errors).toEqual([]);
   });
 
+  test('live reduced motion survives breakpoint changes without magnetic CTA movement', async ({ page }) => {
+    const errors = captureErrors(page);
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await openRoute(page, '/home/E');
+    const cta = page.getByRole('link', { name: 'Kenali Mereka', exact: true });
+    const readOffset = () => cta.evaluate((element) => {
+      const matrix = new DOMMatrixReadOnly(getComputedStyle(element).transform);
+      return Math.max(Math.abs(matrix.m41), Math.abs(matrix.m42));
+    });
+    const moveWithinCTA = async () => {
+      await cta.scrollIntoViewIfNeeded();
+      const bounds = await cta.boundingBox();
+      expect(bounds).not.toBeNull();
+      await page.mouse.move(bounds.x + bounds.width * 0.85, bounds.y + bounds.height * 0.65);
+    };
+    const expectNoMovementAcrossFrames = async () => {
+      // Sample longer than the magnetic tween duration to catch an improperly
+      // retained pointer listener, including movement that starts after the event.
+      const maxOffset = await cta.evaluate(async (element) => {
+        const start = performance.now();
+        let maximum = 0;
+        do {
+          const matrix = new DOMMatrixReadOnly(getComputedStyle(element).transform);
+          maximum = Math.max(maximum, Math.abs(matrix.m41), Math.abs(matrix.m42));
+          await new Promise(requestAnimationFrame);
+        } while (performance.now() - start < 600);
+        return maximum;
+      });
+      expect(maxOffset, 'Reduced motion keeps the CTA at its layout position for the entire observation').toBeLessThan(0.01);
+    };
+
+    await expect(page.locator('.hero .line > span').first()).toHaveCSS('transform', 'none');
+    await expect(page.locator('.hero-copy .actions')).toHaveCSS('opacity', '1');
+    await moveWithinCTA();
+    await expect.poll(readOffset, { message: 'Normal motion enables the magnetic CTA before the preference changes' }).toBeGreaterThan(0.4);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await expect.poll(readOffset).toBeLessThan(0.01);
+    for (const width of [390, 1440, 768]) {
+      await page.setViewportSize({ width, height: 1000 });
+      await expect(page.locator('main h1')).toBeVisible();
+      await moveWithinCTA();
+      await expectNoMovementAcrossFrames();
+    }
+
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.setViewportSize({ width: 390, height: 1000 });
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await expect(page.locator('.hero .line > span').first()).toHaveCSS('transform', 'none');
+    await expect(page.locator('.hero-copy .actions')).toHaveCSS('opacity', '1');
+    await moveWithinCTA();
+    await expect.poll(readOffset).toBeGreaterThan(0.4);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await expect.poll(readOffset).toBeLessThan(0.01);
+    await moveWithinCTA();
+    await expectNoMovementAcrossFrames();
+    await expect(page.locator('main h1')).toBeVisible();
+    await expectNoOverflow(page);
+    expect(errors).toEqual([]);
+  });
+
   test('reduced motion retains all content and avoids looping motion', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await openRoute(page, '/home/E');

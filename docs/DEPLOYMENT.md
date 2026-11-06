@@ -16,7 +16,7 @@ Every push to `main`, or a manual run of **QA and deploy client preview**, perfo
 
 1. `npm ci` using the committed lockfile.
 2. `npm run build` to create the static `dist` directory.
-3. Chromium installation and `npm run test:e2e`.
+3. Version check of the Ubuntu 24.04 runner's preinstalled Google Chrome, followed by `npm run test:e2e` with Playwright's supported `chrome` channel (`PW_CHANNEL=chrome`). This avoids a separate apt/browser download during each run; it retains the complete browser suite. Local QA defaults to Playwright Chromium.
 4. Upload of the tested build as a GitHub Pages artifact.
 5. Deployment through the `github-pages` environment.
 

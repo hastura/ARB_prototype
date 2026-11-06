@@ -2,7 +2,7 @@
 
 Local final build: **passed** (`npm run build`, Vite 8.3.6).
 
-Browser suite: **58 / 58 passed** in Chromium on the final build (18.7 seconds). Tests are in `tests/prototype.spec.js`; CI repeats this suite before deployment.
+Browser suite: **90 / 90 passed** in Chromium on the bilingual build (32.0 seconds). Tests are in `tests/prototype.spec.js` and `tests/localization.spec.js`; CI repeats this suite before deployment.
 
 | Area | Verified |
 | --- | --- |
@@ -16,6 +16,11 @@ Browser suite: **58 / 58 passed** in Chromium on the final build (18.7 seconds).
 | Motion | Skippable first-visit welcome, normal-motion route changes, immediate reduced-motion content, plus live preference changes across breakpoints |
 | Accessibility | Automated axe WCAG 2 A/AA and 2.1 A/AA: zero violations on Home E, detail, Renungan, Ngobrol, help, review hub |
 | Dependencies | `npm audit`: zero known vulnerabilities at verification time |
+| Languages | Fresh visits default to EN; EN/ID switch, saved preference, explicit URL override, cross-page/tab persistence, iframe language, localized dialogs/welcome/404 |
+| English layouts | All five Home alternatives and five onward pages at 320 and 1440 px, including loaded artwork and no horizontal overflow |
+| Review thumbnails | All five previews use live EN/ID text instead of text baked into raster screenshots |
+
+The Indonesian regression suite remains intact with an explicit ID preference. New English checks also run axe on Home E, review hub and help, with zero violations. Language switching through the visible header retains the current alternative and scroll position; the test uses an actual pointer click to avoid automation's automatic scrolling of sticky controls. The additional English copy has 112 keys aligned with the existing Indonesian source, with source/status metadata preserved.
 
 Visual review compared the source PDF/screens with desktop/mobile full-page captures for A–E, Ebook, detail and review. Additional tablet inspection verified the hero copy is separated from the photograph. The D illustration retains its full 16:9 composition. E portraits preserve source facial/garment pixels and separate background geometry. Screenshots and source audit artifacts remain in project `tmp/prototype-qa/` and `tmp/prototype-source/`, outside this standalone repository.
 

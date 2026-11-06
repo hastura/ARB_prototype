@@ -2,6 +2,8 @@
 
 Prototype interaktif **Aksa Rasa Bumi**, berdasarkan `ARB_Web_UI_Preview_v02.pdf` (25 halaman, UI Draft v04). Dibuat untuk review client pada desktop, tablet, dan mobile.
 
+Bahasa default **EN**, dengan switch **EN / ID** di header. Pilihan tersimpan dan mengikuti navigasi serta simulator perangkat. Lihat `docs/LOCALIZATION.md`.
+
 **[Buka ruang review](https://hastura.github.io/ARB_prototype/#/preview)** · **[Mulai alternatif E](https://hastura.github.io/ARB_prototype/#/home/E)**
 
 ## Isi preview

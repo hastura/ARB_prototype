@@ -13,7 +13,10 @@ const sourceRoutes = [
 ];
 
 test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => sessionStorage.setItem('arb-welcome', 'seen'));
+  await page.addInitScript(() => {
+    sessionStorage.setItem('arb-welcome', 'seen');
+    localStorage.setItem('arb-language', 'id');
+  });
 });
 
 function captureErrors(page) {
@@ -233,6 +236,7 @@ test.describe('accessibility and motion', () => {
     const context = await browser.newContext({ baseURL, reducedMotion: 'no-preference' });
     try {
       const firstVisit = await context.newPage();
+      await firstVisit.addInitScript(() => localStorage.setItem('arb-language', 'id'));
       // Freeze the automatic dismissal so this exercises the user's skip action,
       // even on a slow CI runner. Resume real time before the route interaction.
       await firstVisit.clock.install();

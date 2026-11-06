@@ -1,0 +1,117 @@
+.mini-preview {
+  container-type: inline-size;
+  position: relative;
+  display: grid;
+  grid-template-rows: 10% 90%;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--paper, #f6f1e7);
+  color: var(--ink, #2b2923);
+  box-shadow: 0 8px 24px #2b292318;
+  text-align: left;
+}
+.mini-masthead {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-inline: 5.5%;
+  border-bottom: 1px solid #c7c2b580;
+  font: 7px/1.2 var(--serif, Georgia, serif);
+  font-size: clamp(6px, 1.35cqw, 9px);
+}
+.mini-masthead > span:last-child {
+  font-family: var(--sans, Arial, sans-serif);
+  font-size: .8em;
+  color: var(--forest, #3f4a38);
+}
+.mini-hero { position: relative; min-height: 0; }
+.mini-hero-copy {
+  position: relative;
+  z-index: 1;
+  padding: 4% 5.5%;
+}
+.mini-eyebrow {
+  display: block;
+  margin-bottom: 3%;
+  color: var(--clay, #a45136);
+  font: 600 6px/1.4 var(--sans, Arial, sans-serif);
+  font-size: clamp(5px, 1cqw, 7px);
+  letter-spacing: .07em;
+}
+.mini-title {
+  display: block;
+  font: 400 22px/1.1 var(--serif, Georgia, serif);
+  font-size: clamp(13px, 4.2cqw, 28px);
+  letter-spacing: -.035em;
+}
+.mini-title > span { display: block; }
+.mini-actions { display: flex; gap: 2%; margin-top: 4%; }
+.mini-actions > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 7px;
+  min-width: 27%;
+  padding: 1.7% 3%;
+  border: 1px solid var(--forest, #3f4a38);
+  border-radius: 1px;
+  background: var(--forest, #3f4a38);
+  color: var(--raised, #fffcf6);
+  font: 500 7px/1.25 var(--sans, Arial, sans-serif);
+  font-size: clamp(5px, 1.25cqw, 9px);
+}
+.mini-actions > span:last-child { background: var(--raised, #fffcf6); color: var(--forest, #3f4a38); }
+.mini-actions i { font-style: normal; }
+.mini-hero-art { position: absolute; overflow: hidden; }
+.mini-preview .mini-hero-art img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  box-shadow: none;
+}
+.mini-preview-a .mini-hero-copy { height: 42%; padding-top: 3%; }
+.mini-preview-a .mini-eyebrow { margin-bottom: 1.5%; }
+.mini-preview-a .mini-title { font-size: clamp(12px, 3.75cqw, 25px); }
+.mini-preview-a .mini-actions { margin-top: 2%; }
+.mini-preview-a .mini-actions > span { padding-block: 1%; }
+.mini-preview-a .mini-hero-art { inset: 45% 5.5% 0; }
+.mini-preview-a .mini-hero-art img { object-position: center 35%; }
+.mini-preview-b .mini-hero-copy { position: absolute; left: 0; top: 16%; width: 47%; }
+.mini-preview-b .mini-title { font-size: clamp(12px, 3.5cqw, 24px); }
+.mini-preview-b .mini-actions { flex-direction: column; gap: 6px; margin-top: 10%; width: 88%; }
+.mini-preview-b .mini-actions > span { padding: 5% 8%; }
+.mini-preview-b .mini-hero-art { inset: 10% 5.5% 9% 49%; }
+.mini-preview-b .mini-hero-art img { object-position: 80% center; }
+.mini-preview-c .mini-hero-art, .mini-preview-e .mini-hero-art { inset: 0; }
+.mini-preview-c .mini-hero-copy, .mini-preview-e .mini-hero-copy {
+  position: absolute;
+  top: 9%;
+  left: 4%;
+  width: 29%;
+  padding: 3%;
+}
+.mini-preview-c .mini-hero-copy { background: var(--paper, #f6f1e7); }
+.mini-preview-c .mini-title, .mini-preview-e .mini-title { font-size: clamp(11px, 2.55cqw, 19px); }
+.mini-preview-c .mini-title > span, .mini-preview-e .mini-title > span { display: inline; }
+.mini-preview-c .mini-actions, .mini-preview-e .mini-actions { flex-direction: column; gap: 5px; margin-top: 12%; }
+.mini-preview-c .mini-actions > span, .mini-preview-e .mini-actions > span { padding: 5% 7%; font-size: clamp(4px, .9cqw, 7px); }
+.mini-preview-e .mini-hero-copy { left: 3%; top: 8%; width: 30%; padding-inline: 2%; }
+.mini-preview-e .mini-eyebrow { color: var(--forest, #3f4a38); }
+.mini-preview-d .mini-hero-copy { height: 43%; padding-top: 3%; text-align: center; }
+.mini-preview-d .mini-eyebrow { margin-bottom: 1.5%; }
+.mini-preview-d .mini-title { font-size: clamp(12px, 3.65cqw, 25px); }
+.mini-preview-d .mini-actions { justify-content: center; margin-top: 2%; }
+.mini-preview-d .mini-actions > span { min-width: 0; padding-block: 1%; }
+.mini-preview-d .mini-hero-art { inset: 44% 5.5% 0; }
+.mini-preview-d .mini-hero-art img { object-fit: contain; }
+
+@media (max-width: 359px) {
+  .mini-preview-c .mini-eyebrow, .mini-preview-e .mini-eyebrow { letter-spacing: 0; }
+}

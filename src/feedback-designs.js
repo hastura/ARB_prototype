@@ -67,26 +67,41 @@ export function mountFeedbackMotion({ gsap, ScrollTrigger, reduced, signal }) {
   const status = home.querySelector('[data-film-status]');
   const reduce = reduced || matchMedia('(prefers-reduced-motion: reduce)');
   const isID = document.documentElement.lang === 'id';
-  let context, trigger, targetTime = 0, seekFrame = 0, disposed = false;
+  let context, trigger, targetTime = 0, seekFrame = 0, disposed = false, primed = false;
+  const playhead = { progress: 0 };
   const sourceStart = ({ 'living-room': 2.5, 'amber-cinematic': 5.8, 'amber-collage': 2.5 })[video.dataset.mediaKey] || 0;
+  const sourceDuration = video.dataset.mediaKey === 'living-room' ? 45.083333 : 48.083333;
+  // Give every source second room to breathe, independently of viewport height.
+  const scrollDistance = Math.round((sourceDuration - sourceStart - .8) * 240);
+  const heroVisible = () => !trigger || (scrollY < trigger.end + innerHeight && scrollY + innerHeight > trigger.start);
   const seek = () => {
     seekFrame = 0;
     if (disposed || reduce.matches || !Number.isFinite(video.duration) || video.seeking) return;
-    if (Math.abs(video.currentTime - targetTime) > .055) {
-      try { video.currentTime = Math.max(0, Math.min(targetTime, video.duration - .08)); } catch { /* Retain the supplied poster until metadata is available. */ }
+    const delta = targetTime - video.currentTime;
+    if (Math.abs(delta) > .035) {
+      // Small scroll gestures stay gentle. Larger intentional jumps may catch up
+      // a little faster, without requesting a whole scene in one visible seek.
+      const step = !primed || !heroVisible() ? delta : gsap.utils.clamp(Math.abs(delta) > 2 ? -.45 : -.18, Math.abs(delta) > 2 ? .45 : .18, delta);
+      try {
+        video.currentTime = Math.max(0, Math.min(video.currentTime + step, video.duration - .08));
+        primed = true;
+      } catch { /* Retain the supplied poster until metadata is available. */ }
     }
   };
   const requestSeek = progress => {
-    if (!Number.isFinite(video.duration)) return;
+    if (disposed || reduce.matches || !Number.isFinite(video.duration)) return;
+    // Anchor jumps past the hero settle once offscreen, avoiding a background
+    // queue of intermediate decodes while the reader explores another section.
+    if (!heroVisible()) progress = trigger?.progress ?? progress;
     targetTime = sourceStart + gsap.utils.clamp(0, 1, progress) * Math.max(0, video.duration - .8 - sourceStart);
-    if (!seekFrame) seekFrame = requestAnimationFrame(seek);
+    if (!seekFrame && !video.seeking && Math.abs(video.currentTime - targetTime) > .035) seekFrame = requestAnimationFrame(seek);
   };
   const seeked = () => {
     if (disposed || reduce.matches) return;
     home.classList.add('fb-media-visible');
-    if (Math.abs(video.currentTime - targetTime) > .12 && !seekFrame) seekFrame = requestAnimationFrame(seek);
+    if (Math.abs(video.currentTime - targetTime) > .035 && !seekFrame) seekFrame = requestAnimationFrame(seek);
   };
-  const metadata = () => { if (!reduce.matches) requestSeek(trigger?.progress || 0); };
+  const metadata = () => { if (!reduce.matches) requestSeek(playhead.progress); };
   const failed = () => {
     home.classList.remove('fb-media-visible');
     status.textContent = isID ? 'Film belum dapat dimuat. Gambar statis tetap ditampilkan.' : 'The film could not load. The still image remains available.';
@@ -95,6 +110,7 @@ export function mountFeedbackMotion({ gsap, ScrollTrigger, reduced, signal }) {
   const rebuild = () => {
     context?.revert(); trigger = null;
     cancelAnimationFrame(seekFrame); seekFrame = 0;
+    playhead.progress = 0; primed = false;
     video.pause(); home.classList.remove('fb-media-visible');
     home.dataset.motionMode = reduce.matches ? 'still' : 'scroll';
     if (reduce.matches) {
@@ -103,13 +119,15 @@ export function mountFeedbackMotion({ gsap, ScrollTrigger, reduced, signal }) {
     }
     context = gsap.context(() => {
       home.querySelectorAll('.fb-reveal').forEach(element => gsap.from(element, { y: 32, opacity: 0, duration: .9, ease: 'power3.out', clearProps: 'all', scrollTrigger: { trigger: element, start: 'top 96%', once: true } }));
+      const filmMotion = gsap.to(playhead, { progress: 1, duration: 1, ease: 'none', paused: true, onUpdate: () => requestSeek(playhead.progress) });
       trigger = ScrollTrigger.create({
         trigger: home.querySelector('[data-hero-scroll]'), start: 'top top',
-        end: () => `+=${Math.max(1800, Math.min(3200, innerHeight * 3))}`,
+        end: `+=${scrollDistance}`,
+        animation: filmMotion, scrub: 1.5,
         pin: home.querySelector('.fb-film-stage'), pinSpacing: true, anticipatePin: 1,
         invalidateOnRefresh: true,
-        onUpdate: self => { requestSeek(self.progress); syncHeader(); },
-        onRefresh: self => { requestSeek(self.progress); syncHeader(); },
+        onUpdate: () => { if (!heroVisible()) requestSeek(playhead.progress); syncHeader(); },
+        onRefresh: () => { requestSeek(playhead.progress); syncHeader(); },
       });
       if (matchMedia('(min-width: 1001px)').matches) {
         home.querySelectorAll('[data-fb-drift]').forEach((element, index) => gsap.fromTo(element, { y: 34, rotation: index ? 3 : -3 }, { y: -34, rotation: index ? -1 : 1, ease: 'none', scrollTrigger: { trigger: element, start: 'top bottom', end: 'bottom top', scrub: 1 } }));
@@ -117,7 +135,7 @@ export function mountFeedbackMotion({ gsap, ScrollTrigger, reduced, signal }) {
       }
     }, home);
     if (!video.getAttribute('src')) { video.src = video.dataset.src; video.preload = 'auto'; video.load(); }
-    requestSeek(trigger?.progress || 0); syncHeader();
+    requestSeek(playhead.progress); syncHeader();
   };
   video.muted = true;
   video.addEventListener('loadedmetadata', metadata);

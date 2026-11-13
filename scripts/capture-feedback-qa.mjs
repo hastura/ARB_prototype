@@ -1,7 +1,7 @@
 import { chromium, expect } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
-const out=resolve('../tmp/character-native-v01/browser');
+const out=resolve('../tmp/hero-pacing-v01/browser');
 await mkdir(out,{recursive:true});
 const browser=await chromium.launch();
 const mediaKeys={F:'living-room',G:'amber-cinematic',H:'amber-collage'};
@@ -36,8 +36,8 @@ try {
     await ready(page,variant);
     const video=page.locator('video[data-scroll-video]');
     await expect.poll(()=>video.evaluate(el=>Number.isFinite(el.duration)),{timeout:15000}).toBe(true);
-    const start=await page.locator('[data-hero-scroll]').evaluate(el=>el.getBoundingClientRect().top+scrollY);
-    await page.evaluate(y=>scrollTo(0,y),start+900);
+    const range=await page.locator('[data-hero-scroll]').evaluate(el=>({top:el.getBoundingClientRect().top+scrollY,travel:parseFloat(getComputedStyle(el.querySelector('.fb-film-stage').parentElement).paddingBottom)}));
+    await page.evaluate(g=>scrollTo(0,g.top+g.travel*.4),range);
     await expect.poll(()=>video.evaluate(el=>el.currentTime),{timeout:15000}).toBeGreaterThan(8);
     await expect.poll(()=>video.evaluate(el=>el.seeking),{timeout:15000}).toBe(false);
     await page.screenshot({path:resolve(out,`${variant}-motion-middle.png`)});

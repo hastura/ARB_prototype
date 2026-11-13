@@ -1,3 +1,16 @@
+# Calmer F/G/H hero scroll — 13 November 2026
+
+Release build: **passed** (24 modules, Vite 8.3.6). Full Chromium suite: **171 / 171 passed** (1.8 minutes) from the isolated staged-source export.
+
+- Six hero cases (F/G/H ×1440/390px) verify fullscreen framing, a substantially longer scroll interval, an actual 120px wheel step advancing less than 0.8 seconds, visible intermediate video positions, bounded forward/reverse frame jumps and eventual accurate settling.
+- Hero intervals are F 10,028px / G 9,956px / H 10,748px, with 240px per source second and a 1.5-second eased playhead catch-up. The source remains paused/muted and its original scene timing remains intact.
+- The seek queue always uses its latest target. Visible steps are bounded; initial metadata alignment and offscreen anchor jumps can settle directly. Route/reduced-motion cleanup stops tweens, RAF work and media listeners. Existing poster and reduced-motion fallbacks remain covered.
+- All previous native character, EN/ID, routing, keyboard, book, accessibility, source-asset, responsive and review-hub checks remain covered. No new dependencies or media assets were introduced.
+
+Independent measurements passed all six F/G/H desktop/mobile cases: the largest sampled step was 0.45 seconds, large forward/reverse jumps settled in roughly 1.7–2.8 seconds, initial poster alignment was correct, and character-anchor jumps had no continuing seek queue. The dedicated offscreen/reduced-motion probe also recorded zero page errors and zero seek activity after settling. Pacing evidence is stored in project `tmp/hero-pacing-v01/`. Headless Chromium measurements do not establish physical device FPS or Safari/Firefox performance. No PDF was generated, replaced or archived.
+
+---
+
 # Native HTML/CSS character introduction — 13 November 2026
 
 Final staged-source build: **passed**, 24 modules, Vite 8.3.6, locally bundled Cormorant font. Full Chromium suite: **171 / 171 passed** (1.3 minutes). Source export excludes the separate uncommitted motion-room/portrait-depth experiments.

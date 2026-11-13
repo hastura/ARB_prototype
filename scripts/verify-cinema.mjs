@@ -4,7 +4,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const base = process.env.ARB_PREVIEW_URL || 'https://hastura.github.io/ARB_prototype/';
-const out = resolve('../tmp/character-native-v01/live');
+const out = resolve('../tmp/hero-pacing-v01/live');
 await mkdir(out, { recursive: true });
 const browser = await chromium.launch();
 const results = [];
@@ -33,11 +33,25 @@ try {
         const video = page.locator('video[data-scroll-video]');
         await expect.poll(() => video.evaluate(el => el.duration), { timeout: 30000 }).toBeGreaterThan(40);
         const filmTravel = await page.locator('.fb-film-stage').evaluate(el => parseFloat(getComputedStyle(el.parentElement).paddingBottom));
+        assert.ok(filmTravel > 7000, 'Hero pacing must have a longer scroll interval');
+        const opening = ({ F: 2.5, G: 5.8, H: 2.5 })[variant];
+        const duration = await video.evaluate(el => el.duration);
+        const timeAt = p => opening + p * (duration - .8 - opening);
+        const settle = async p => expect.poll(() => video.evaluate((el, target) => Math.abs(el.currentTime - target), timeAt(p)), { timeout: 30000 }).toBeLessThan(.08);
         await page.evaluate(y => scrollTo(0, y), filmTravel * .6);
-        await expect.poll(() => video.evaluate(el => el.currentTime), { timeout: 30000 }).toBeGreaterThan(25);
+        await settle(.6);
         await page.evaluate(y => scrollTo(0, y), filmTravel * .2);
-        await expect.poll(() => video.evaluate(el => el.currentTime), { timeout: 30000 }).toBeLessThan(18);
+        await settle(.2);
+        const beforeWheel = await video.evaluate(el => el.currentTime);
+        const beforeScroll = await page.evaluate(() => scrollY);
+        await page.mouse.move(width / 2, height / 2);
+        await page.mouse.wheel(0, 120);
+        await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(beforeScroll + 100);
+        await settle(await page.evaluate(travel => scrollY / travel, filmTravel));
+        const wheelAdvance = await video.evaluate((el, previous) => el.currentTime - previous, beforeWheel);
+        assert.ok(wheelAdvance > .05 && wheelAdvance < .8, `Calm wheel pacing: ${wheelAdvance}`);
         media = await video.evaluate(el => ({ time: el.currentTime, duration: el.duration, decoded: el.getVideoPlaybackQuality().totalVideoFrames, paused: el.paused, muted: el.muted }));
+        media = { ...media, heroTravel: filmTravel, wheelAdvance };
         assert.ok(media.paused && media.muted && media.decoded > 0);
         await page.screenshot({ path: resolve(out, `${variant}-${width}-film.png`) });
       }
@@ -74,5 +88,5 @@ try {
     await page.close();
   }
   await writeFile(resolve(out, 'verification.json'), JSON.stringify({ url: base, verifiedAt: new Date().toISOString(), browserErrors: 0, results }, null, 2));
-  console.log(JSON.stringify({ url: base, checks: results.length, fullscreenHeroes: 'passed', directScrollBothDirections: 'passed', nativeCodeABFG: 'passed', retainedPortraitCinemaH: 'passed', desktopMobileENID: 'passed', browserErrors: 0 }));
+  console.log(JSON.stringify({ url: base, checks: results.length, fullscreenHeroes: 'passed', calmHeroWheelPacing: 'passed', directScrollBothDirections: 'passed', nativeCodeABFG: 'passed', retainedPortraitCinemaH: 'passed', desktopMobileENID: 'passed', browserErrors: 0 }));
 } finally { await browser.close(); }

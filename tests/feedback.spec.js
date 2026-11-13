@@ -6,6 +6,8 @@ const sourceMedia = {
   G: /amber-cinematic\.mp4$/,
   H: /amber-collage\.mp4$/,
 };
+// Opening times match the supplied posters in docs/feedback-media.json.
+const heroOpening = { F: 2.5, G: 5.8, H: 2.5 };
 const languages = {
   en: { home: /Meet them/, about: 'About us', ebook: 'Ebook', reflection: 'Reflection', pending: 'Official link not available yet.' },
   id: { home: /Kenali mereka/, about: 'Tentang kami', ebook: 'Ebook', reflection: 'Renungan', pending: 'Tautan resmi belum tersedia.' },
@@ -268,7 +270,8 @@ test.describe('immersive scroll cinema', () => {
   });
   for (const width of [1440, 390]) {
     for (const variant of ['F', 'G', 'H']) {
-      test(`${variant} ${width}px: edge-to-edge hero seeks forward and backward directly from scroll`, async ({ page }) => {
+      test(`${variant} ${width}px: edge-to-edge hero advances calmly and eases through forward and reverse scroll`, async ({ page }) => {
+        test.setTimeout(60_000);
         await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
         const errors = browserErrors(page);
         await openHome(page, variant);
@@ -284,13 +287,49 @@ test.describe('immersive scroll cinema', () => {
         await expect(video).toHaveCSS('object-fit', 'cover');
         const pin = await page.locator('[data-hero-scroll]').evaluate(el => ({ top: el.getBoundingClientRect().top + scrollY, travel: parseFloat(getComputedStyle(el.querySelector('.fb-film-stage').parentElement).paddingBottom) }));
         expect(pin.top).toBeCloseTo(0, 0);
-        expect(pin.travel).toBeGreaterThan(1000);
-        await page.evaluate(p => scrollTo(0, p.travel * .65), pin);
-        await expect.poll(() => video.evaluate(el => el.currentTime), { timeout: 10000 }).toBeGreaterThan(25);
+        expect(pin.travel, 'The full source film needs a substantially longer reading interval than the old 3,000px hero').toBeGreaterThan(7000);
+        const duration = await video.evaluate(el => el.duration);
+        const timeAt = progress => heroOpening[variant] + progress * (duration - .8 - heroOpening[variant]);
+        const settleAt = async progress => {
+          await expect.poll(() => video.evaluate((el, expected) => Math.abs(el.currentTime - expected), timeAt(progress)), { timeout: 20000 }).toBeLessThan(.15);
+          await expect.poll(() => video.evaluate(el => el.seeking)).toBe(false);
+        };
+        // Measure an ordinary wheel increment after a settled interior frame,
+        // so poster loading and the first seek do not affect pacing evidence.
+        await page.evaluate(p => scrollTo(0, p.top + p.travel * .25), pin);
+        await settleAt(.25);
+        const beforeWheel = await video.evaluate(el => el.currentTime);
+        const beforeScroll = await page.evaluate(() => scrollY);
+        await page.mouse.move(width / 2, width === 390 ? 422 : 500);
+        await page.mouse.wheel(0, 120);
+        await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(beforeScroll + 100);
+        const wheelProgress = await page.evaluate(p => (scrollY - p.top) / p.travel, pin);
+        await settleAt(wheelProgress);
+        const afterWheel = await video.evaluate(el => el.currentTime);
+        expect(afterWheel - beforeWheel, 'One normal wheel increment should not skip over a second of film').toBeLessThan(.8);
+        expect(afterWheel - beforeWheel).toBeGreaterThan(.05);
+        const sampleScroll = async progress => video.evaluate(async (element, { destination }) => {
+          const values = [element.currentTime];
+          const started = performance.now();
+          scrollTo(0, destination);
+          do {
+            await new Promise(requestAnimationFrame);
+            values.push(element.currentTime);
+          } while (performance.now() - started < 650);
+          return values;
+        }, { destination: pin.top + pin.travel * progress });
+        const forward = await sampleScroll(.65);
+        expect(forward.some(time => time > afterWheel + .1 && time < timeAt(.65) - .25), 'A large scroll movement must show intermediate video positions').toBe(true);
+        expect(Math.max(...forward.slice(1).map((time, i) => Math.abs(time - forward[i]))), 'A presented scroll sample must not jump abruptly across scenes').toBeLessThan(1);
+        await settleAt(.65);
+        expect(await video.evaluate(el => el.currentTime)).toBeGreaterThan(25);
         await expect.poll(() => video.evaluate(el => el.seeking)).toBe(false);
         const later = await video.evaluate(el => el.currentTime);
-        await page.evaluate(p => scrollTo(0, p.travel * .2), pin);
-        await expect.poll(() => video.evaluate(el => el.currentTime), { timeout: 10000 }).toBeLessThan(later - 5);
+        const reverse = await sampleScroll(.2);
+        expect(reverse.some(time => time < later - .1 && time > timeAt(.2) + .25), 'Reverse scrolling must retain intermediate video positions').toBe(true);
+        expect(Math.max(...reverse.slice(1).map((time, i) => Math.abs(time - reverse[i]))), 'Reverse scroll must remain paced as well').toBeLessThan(1);
+        await settleAt(.2);
+        expect(await video.evaluate(el => el.currentTime)).toBeLessThan(later - 5);
         expect(await video.evaluate(el => el.paused && el.muted)).toBe(true);
         const corner = await visual.boundingBox();
         expect(corner.y).toBeCloseTo(0, 0);

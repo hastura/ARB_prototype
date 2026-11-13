@@ -1,3 +1,27 @@
+# Prototype QA — 13 November 2026
+
+Release build: **passed** (`npm run build`, Vite 8.3.6, single-entry staged-source export). Browser suite: **133 / 133 passed**, 49.2 seconds, on Chromium. The export excludes separate uncommitted motion-room and portrait-depth experiments.
+
+| Area | Verified for this revision |
+| --- | --- |
+| Client feedback | Exact supplied intro, removed strapline/disclosures/footer copy, three-item navigation, question hierarchy, four localized dummy social dialogs |
+| Alternatives | Eight directions A–H in the hub; F/G/H first, desktop and exact-width mobile/tablet simulator |
+| Responsive and languages | F–H in EN/ID at 320, 390, 768 and 1440 px; existing A–E and onward regressions retained |
+| Film motion | Actual source-video seeks while paused, reversible scroll pause/resume, route cleanup, explicit muted mobile playback, reduced-motion poster with no film source loaded |
+| Floating book | Transparent page canvas; keyboard rotate/open/close, honest pending excerpt, disabled rotation while open, mobile control/note collision checks |
+| Visual review | F–H full pages at 390/768/1440, all six mobile EN/ID open-book states, actual mid-scroll and endpoint film frames, corrected legacy-card width |
+| Accessibility and errors | Tested keyboard/dialog focus behavior; zero axe WCAG A/AA violations on tested screens; no browser errors or horizontal document overflow in the suite |
+| Local release smoke | HTTP 200, eight alternatives, default English, EN/ID persistence, mobile detail refresh and dummy social dialog; zero browser errors |
+| Media | 15 assets from supplied sources; three H.264 1280×720/24fps films, no audio, faststart and maximum 0.5-second keyframe spacing; 12 WebP decode checks |
+
+QA corrected a gallery last-card width regression and an open-book note collision. A separate test setup initially sought beyond the film's pin interval; it now tests interior scroll points and retains the freeze/catch-up assertions. Final full-suite result above uses the corrected product and tests.
+
+Source mapping, reference access limits and content scope are in `CLIENT_FEEDBACK_2026-11-13.md`. The supplied films retain their embedded English graphics when the surrounding UI is Indonesian. Social destinations are deliberately dummy controls, per user instruction. Product/payment/manuscript data remains pending. Pinterest could not be opened; exact fidelity to that pin is not asserted.
+
+Automated checks do not establish complete accessibility conformance. Physical devices, Safari/Firefox and screen-reader narration remain unverified. No PDF was generated, replaced or archived.
+
+---
+
 # Prototype QA — 6 November 2026
 
 Local final build: **passed** (`npm run build`, Vite 8.3.6).

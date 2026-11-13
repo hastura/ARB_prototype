@@ -18,18 +18,18 @@
   "nav.ebook": {
     "key": "nav.ebook",
     "role": "Menu",
-    "text": "Ebooks",
+    "text": "Ebook",
     "source": "E",
     "status": "USULAN",
-    "note": ""
+    "note": "Applied client feedback 2026-11-13; EN intro ending preserved verbatim as requested."
   },
   "nav.reflections": {
     "key": "nav.reflections",
     "role": "Menu",
-    "text": "Reflections",
+    "text": "Reflection",
     "source": "E",
     "status": "USULAN",
-    "note": ""
+    "note": "Applied client feedback 2026-11-13; EN intro ending preserved verbatim as requested."
   },
   "nav.conversations": {
     "key": "nav.conversations",
@@ -42,10 +42,10 @@
   "nav.help": {
     "key": "nav.help",
     "role": "Menu",
-    "text": "About & help",
+    "text": "About us",
     "source": "E",
     "status": "USULAN",
-    "note": ""
+    "note": "Applied client feedback 2026-11-13; EN intro ending preserved verbatim as requested."
   },
   "nav.home": {
     "key": "nav.home",
@@ -138,18 +138,18 @@
   "intro.body": {
     "key": "intro.body",
     "role": "Body",
-    "text": "Aksa remembers what happened. Rasa listens for the questions beneath it. Bumi recognizes the traces it leaves in the body. As friends, they bring different perspectives and keep learning from the same experience.",
+    "text": "Aksa remembers what happened. Rasa listens for the questions beneath it. Bumi recognizes the traces it leaves in the body. As friends, they bring different perspectives and keep learning from every experiences.",
     "source": "C4",
     "status": "USULAN",
-    "note": ""
+    "note": "Applied client feedback 2026-11-13; EN intro ending preserved verbatim as requested."
   },
   "intro.question": {
     "key": "intro.question",
     "role": "Pertanyaan pemantik",
-    "text": "What are you still learning from something you have lived through?",
+    "text": "What are you still learning\nfrom something you have lived through?",
     "source": "E",
     "status": "USULAN",
-    "note": ""
+    "note": "Applied client feedback 2026-11-13; EN intro ending preserved verbatim as requested."
   },
   "characters.title": {
     "key": "characters.title",
@@ -298,10 +298,10 @@
   "home.reflections.title": {
     "key": "home.reflections.title",
     "role": "Judul section",
-    "text": "Reflections",
+    "text": "Reflection",
     "source": "E",
     "status": "USULAN",
-    "note": ""
+    "note": "Applied client feedback 2026-11-13; EN intro ending preserved verbatim as requested."
   },
   "home.reflections.body": {
     "key": "home.reflections.body",
@@ -314,10 +314,10 @@
   "home.reflections.cta": {
     "key": "home.reflections.cta",
     "role": "CTA listing",
-    "text": "View all reflections",
+    "text": "View all reflection",
     "source": "E",
     "status": "USULAN",
-    "note": ""
+    "note": "Applied client feedback 2026-11-13; EN intro ending preserved verbatim as requested."
   },
   "home.conversations.title": {
     "key": "home.conversations.title",
@@ -378,10 +378,10 @@
   "catalog.title": {
     "key": "catalog.title",
     "role": "Judul halaman",
-    "text": "Ebooks",
+    "text": "Ebook",
     "source": "E",
     "status": "USULAN",
-    "note": ""
+    "note": "Applied client feedback 2026-11-13; EN intro ending preserved verbatim as requested."
   },
   "catalog.body": {
     "key": "catalog.body",
@@ -642,10 +642,10 @@
   "reflections.title": {
     "key": "reflections.title",
     "role": "Judul halaman",
-    "text": "Reflections",
+    "text": "Reflection",
     "source": "E",
     "status": "USULAN",
-    "note": ""
+    "note": "Applied client feedback 2026-11-13; EN intro ending preserved verbatim as requested."
   },
   "reflections.body": {
     "key": "reflections.body",
@@ -762,10 +762,10 @@
   "about.page.title": {
     "key": "about.page.title",
     "role": "Judul halaman",
-    "text": "About & help",
+    "text": "About us",
     "source": "E",
     "status": "USULAN",
-    "note": ""
+    "note": "Applied client feedback 2026-11-13; EN intro ending preserved verbatim as requested."
   },
   "about.page.body": {
     "key": "about.page.body",

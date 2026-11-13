@@ -9,7 +9,7 @@ const sourceRoutes = [
   { route: '/ebook/the-art-of-reflecting', title: /The Art of\s+Reflecting/ },
   { route: '/renungan', title: /^Renungan$/ },
   { route: '/ngobrol', title: /^Ngobrol$/ },
-  { route: '/tentang-bantuan', title: /Tentang\s*&\s*Bantuan/ },
+  { route: '/tentang-bantuan', title: /^Tentang kami$/ },
 ];
 
 test.beforeEach(async ({ page }) => {
@@ -130,9 +130,10 @@ test.describe('complete journeys', () => {
     await expect(menu).not.toBeVisible();
     await expect(page.locator('main h1')).toHaveText('Renungan');
     await expect(page.getByText('Belum ada video yang ditampilkan.', { exact: true })).toBeVisible();
-    await page.getByRole('link', { name: 'Lihat Semua Ngobrol', exact: true }).first().click();
-    await expect(page.locator('main h1')).toHaveText('Ngobrol');
-    await expect(page.getByText('Belum ada percakapan yang ditampilkan.', { exact: true })).toBeVisible();
+    await page.getByRole('button', { name: 'Buka menu', exact: true }).click();
+    await page.getByRole('dialog').getByRole('link', { name: 'Tentang kami', exact: true }).click();
+    await expect(page.locator('main h1')).toHaveText('Tentang kami');
+    await expect(page.locator('summary').filter({ hasText: 'Bagaimana Cara Membeli Ebook?' })).toBeVisible();
     await expectNoOverflow(page);
   });
 
@@ -183,7 +184,7 @@ test.describe('complete journeys', () => {
       await expect.poll(() => frame.locator('html').evaluate(() => window.innerWidth)).toBe(width);
     }
     const alternatives = page.getByLabel('Alternatif', { exact: true });
-    await expect(alternatives.locator('option')).toHaveCount(5);
+    await expect(alternatives.locator('option')).toHaveCount(8);
     await alternatives.selectOption({ index: 1 });
     await expect(frame.locator('main h1')).toBeVisible();
     const pages = page.getByLabel('Halaman', { exact: true });

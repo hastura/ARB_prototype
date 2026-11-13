@@ -3,7 +3,7 @@ import { chromium } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-const base = 'https://hastura.github.io/ARB_prototype/';
+const base = process.env.ARB_PREVIEW_URL || 'https://hastura.github.io/ARB_prototype/';
 const out = resolve('../tmp/prototype-qa');
 await mkdir(out, { recursive: true });
 const browser = await chromium.launch();
@@ -15,7 +15,8 @@ try {
   await page.addInitScript(() => sessionStorage.setItem('arb-welcome', 'seen'));
   const response = await page.goto(`${base}#/preview`);
   assert.equal(response.status(), 200, 'Published Pages URL must return HTTP 200');
-  await page.getByRole('heading', { name: 'Five ways to open a story.', exact: true }).waitFor();
+  await page.getByRole('heading', { name: 'Eight ways to open a story.', exact: true }).waitFor();
+  assert.equal(await page.locator('.variant-tile').count(), 8);
   assert.equal(await page.locator('html').getAttribute('lang'), 'en', 'Fresh visits default to English');
   await page.locator('main img').evaluateAll(async images => {
     await Promise.all(images.map(async image => { image.loading = 'eager'; await image.decode(); }));
@@ -29,8 +30,8 @@ try {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(`${base}#/home/E?lang=en`);
   await page.getByRole('button', { name: 'Open menu', exact: true }).click();
-  await page.getByRole('dialog').getByRole('link', { name: 'Ebooks', exact: true }).click();
-  await page.getByRole('heading', { name: 'Ebooks', exact: true }).waitFor();
+  await page.getByRole('dialog').getByRole('link', { name: 'Ebook', exact: true }).click();
+  await page.getByRole('heading', { name: 'Ebook', exact: true }).waitFor();
   await page.getByRole('link', { name: 'Discover the story', exact: true }).first().click();
   await page.reload();
   await page.locator('main h1').waitFor();
@@ -45,8 +46,23 @@ try {
   await page.getByText('The excerpt is not available yet.', { exact: true }).waitFor();
   assert.equal(await page.locator('html').getAttribute('lang'), 'en');
   await page.screenshot({ path: resolve(out, 'deployed-detail-mobile.png'), fullPage: true });
+  const newHeroes = {};
+  for (const variant of ['F', 'G', 'H']) {
+    await page.goto(`${base}#/home/${variant}?lang=en`);
+    await page.locator('.feedback-hero').waitFor();
+    assert.match(await page.locator('main h1').innerText(), /Meet them/);
+    const media = page.locator('video[data-scroll-video]');
+    assert.equal(await media.evaluate(el => el.paused), true);
+    await page.getByRole('button', { name: 'ID', exact: true }).click();
+    await page.getByRole('heading', { name: /Kenali mereka/ }).waitFor();
+    assert.equal(await page.locator('html').getAttribute('lang'), 'id');
+    newHeroes[variant] = 'passed';
+  }
+  await page.locator('footer [data-social="instagram"]').click();
+  await page.getByRole('dialog', { name: 'Tautan resmi belum tersedia.', exact: true }).waitFor();
+  await page.keyboard.press('Escape');
   assert.deepEqual(errors, [], 'Published journeys must have no browser errors');
-  console.log(JSON.stringify({ url: base, http: 200, defaultEnglish: 'passed', languageSwitchAndPersistence: 'passed', desktopHub: 'passed', exactMobileSimulator: 'passed', mobileJourney: 'passed', deepRefresh: 'passed', browserErrors: 0, screenshots: out }));
+  console.log(JSON.stringify({ url: base, http: 200, alternatives: 8, newHeroes, dummySocial: 'passed', defaultEnglish: 'passed', languageSwitchAndPersistence: 'passed', desktopHub: 'passed', exactMobileSimulator: 'passed', mobileJourney: 'passed', deepRefresh: 'passed', browserErrors: 0, screenshots: out }));
 } finally {
   await browser.close();
 }

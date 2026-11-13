@@ -1,0 +1,157 @@
+{
+  "date": "2026-11-13",
+  "sourcePolicy": "Only user-supplied project renders; no generation, dialogue invention or source replacement.",
+  "assets": [
+    {
+      "key": "living-room",
+      "source": "Motion\\ARB_Living_Room_Collage\\render\\ARB_Living_Room_Collage_v01.mp4",
+      "sourceSha256": "51943dcd480256d8f3990229a47e385f539fff12c2b018c757d2915b1a7418eb",
+      "video": "assets/feedback-v02/living-room.mp4",
+      "poster": "assets/feedback-v02/living-room-poster.webp",
+      "posterTimestamp": 2.5,
+      "stills": [
+        "assets/feedback-v02/living-room-still-01.webp",
+        "assets/feedback-v02/living-room-still-02.webp",
+        "assets/feedback-v02/living-room-still-03.webp"
+      ],
+      "stillSources": [
+        "Motion\\ARB_Living_Room_Collage\\public\\stills\\01-Aksa.png",
+        "Motion\\ARB_Living_Room_Collage\\public\\stills\\04-Rasa.png",
+        "Motion\\ARB_Living_Room_Collage\\public\\stills\\06-Bumi.png"
+      ],
+      "duration": 45.083333,
+      "width": 1280,
+      "height": 720,
+      "frameRate": "24/1",
+      "bytes": 11313105,
+      "audioStreams": 0,
+      "codec": "h264",
+      "keyframeIntervalSeconds": 0.5,
+      "operation": "H.264 web derivative; source visuals unchanged; audio removed",
+      "sampledPosterColors": [
+        "#e9e3d1",
+        "#402c1e",
+        "#7a6751",
+        "#bcb5a3",
+        "#e9e3d0",
+        "#ede7d6",
+        "#eae3d1",
+        "#e2e9ea"
+      ]
+    },
+    {
+      "key": "amber-cinematic",
+      "source": "Motion\\ARB_Alt03_Amber_Cinematic\\render\\ARB_Alt03_Amber_Cinematic_v02.mp4",
+      "sourceSha256": "bfce582e0d5c7c7d8201e8a073d2d8ddf69889117e0fcb23a8a22dbe3a560c51",
+      "video": "assets/feedback-v02/amber-cinematic.mp4",
+      "poster": "assets/feedback-v02/amber-cinematic-poster.webp",
+      "posterTimestamp": 5.8,
+      "stills": [
+        "assets/feedback-v02/amber-cinematic-still-01.webp",
+        "assets/feedback-v02/amber-cinematic-still-02.webp",
+        "assets/feedback-v02/amber-cinematic-still-03.webp"
+      ],
+      "stillSources": [
+        "Motion\\ARB_Alt03_Amber_Cinematic\\public\\stills\\01-Aksa.png",
+        "Motion\\ARB_Alt03_Amber_Cinematic\\public\\stills\\04-Rasa.png",
+        "Motion\\ARB_Alt03_Amber_Cinematic\\public\\stills\\06-Bumi.png"
+      ],
+      "duration": 48.083333,
+      "width": 1280,
+      "height": 720,
+      "frameRate": "24/1",
+      "bytes": 5871440,
+      "audioStreams": 0,
+      "codec": "h264",
+      "keyframeIntervalSeconds": 0.5,
+      "operation": "H.264 web derivative; source visuals unchanged; audio removed",
+      "sampledPosterColors": [
+        "#110c07",
+        "#1e150d",
+        "#2c1c11",
+        "#6e533f",
+        "#170f08",
+        "#040301",
+        "#4d3423",
+        "#0a0603"
+      ]
+    },
+    {
+      "key": "amber-collage",
+      "source": "Motion\\ARB_Alt03_Amber_Cinematic\\render\\ARB_Amber_Collage_Parallax_Cinematic_v01.mp4",
+      "sourceSha256": "849409d6db72ff7300fa89325d4c477f55d3d15911a51a876d914555686f964e",
+      "video": "assets/feedback-v02/amber-collage.mp4",
+      "poster": "assets/feedback-v02/amber-collage-poster.webp",
+      "posterTimestamp": 2.5,
+      "stills": [
+        "assets/feedback-v02/amber-collage-still-01.webp",
+        "assets/feedback-v02/amber-collage-still-02.webp",
+        "assets/feedback-v02/amber-collage-still-03.webp"
+      ],
+      "stillSources": [
+        "Motion\\ARB_Alt03_Amber_Cinematic\\public\\stills\\01-Aksa.png",
+        "Motion\\ARB_Alt03_Amber_Cinematic\\public\\stills\\04-Rasa.png",
+        "Motion\\ARB_Alt03_Amber_Cinematic\\public\\stills\\06-Bumi.png"
+      ],
+      "duration": 48.083333,
+      "width": 1280,
+      "height": 720,
+      "frameRate": "24/1",
+      "bytes": 7030475,
+      "audioStreams": 0,
+      "codec": "h264",
+      "keyframeIntervalSeconds": 0.5,
+      "operation": "H.264 web derivative; source visuals unchanged; audio removed",
+      "sampledPosterColors": [
+        "#1a110a",
+        "#342115",
+        "#150d07",
+        "#050301",
+        "#25170c",
+        "#110a04",
+        "#503a29",
+        "#0b0803"
+      ]
+    }
+  ],
+  "qa": {
+    "pass": true,
+    "videoMetadataChecks": 3,
+    "webpDecodeChecks": 12,
+    "keyframes": [
+      {
+        "key": "living-room",
+        "keyframeCount": 91,
+        "maxKeyframeGap": 0.5,
+        "imageDecodeChecks": 4
+      },
+      {
+        "key": "amber-cinematic",
+        "keyframeCount": 97,
+        "maxKeyframeGap": 0.5,
+        "imageDecodeChecks": 4
+      },
+      {
+        "key": "amber-collage",
+        "keyframeCount": 97,
+        "maxKeyframeGap": 0.5,
+        "imageDecodeChecks": 4
+      }
+    ],
+    "sourceRendersModified": false,
+    "issues": []
+  },
+  "referenceAudit": {
+    "bookReference": {
+      "source": "Motion References/Haruki Murakami - Book Author Website Animation _ Interaction.mp4",
+      "duration": 8.212993,
+      "observed": "Horizontal cover shelf; selected cover expands to floating book with side details; book rotates/opens into page and excerpt view; back reverses into shelf. Borrow motion/composition, not titles, ratings, metadata or manuscript content."
+    },
+    "layoutReference": {
+      "source": "Motion References/Website UI_UX Design.mp4",
+      "duration": 13.8138,
+      "observed": "Full-bleed scenic-depth opening, asymmetric text-and-art section, overlapping central card/deck, then a full-width feature. Vary section placement and depth instead of repeating uniform cards."
+    },
+    "visualEvidence": "Project tmp/feedback-v02 contains 8-frame contact sheets for each supplied source and reference video."
+  }
+}

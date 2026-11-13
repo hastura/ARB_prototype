@@ -42,10 +42,10 @@
   "nav.help": {
     "key": "nav.help",
     "role": "Menu",
-    "text": "Tentang & Bantuan",
+    "text": "Tentang kami",
     "source": "E",
     "status": "USULAN",
-    "note": ""
+    "note": "Applied client feedback 2026-11-13; EN intro ending preserved verbatim as requested."
   },
   "nav.home": {
     "key": "nav.home",
@@ -138,18 +138,18 @@
   "intro.body": {
     "key": "intro.body",
     "role": "Body",
-    "text": "Aksa mengingat apa yang terjadi. Rasa mendengarkan pertanyaan di baliknya. Bumi mengenali jejaknya pada tubuh. Mereka bersahabat, saling berbeda, dan terus belajar dari pengalaman yang sama.",
+    "text": "Aksa mengingat apa yang terjadi. Rasa mendengarkan pertanyaan di baliknya. Bumi mengenali jejaknya pada tubuh. Mereka bersahabat, membawa sudut pandang yang berbeda, dan terus belajar dari setiap pengalaman.",
     "source": "C4",
     "status": "USULAN",
-    "note": ""
+    "note": "Applied client feedback 2026-11-13; EN intro ending preserved verbatim as requested."
   },
   "intro.question": {
     "key": "intro.question",
     "role": "Pertanyaan pemantik",
-    "text": "Apa yang masih kamu pelajari dari pengalaman yang pernah kamu jalani?",
+    "text": "Apa yang masih kamu pelajari\ndari pengalaman yang pernah kamu jalani?",
     "source": "E",
     "status": "USULAN",
-    "note": ""
+    "note": "Applied client feedback 2026-11-13; EN intro ending preserved verbatim as requested."
   },
   "characters.title": {
     "key": "characters.title",
@@ -762,10 +762,10 @@
   "about.page.title": {
     "key": "about.page.title",
     "role": "Judul halaman",
-    "text": "Tentang & Bantuan",
+    "text": "Tentang kami",
     "source": "E",
     "status": "USULAN",
-    "note": ""
+    "note": "Applied client feedback 2026-11-13; EN intro ending preserved verbatim as requested."
   },
   "about.page.body": {
     "key": "about.page.body",

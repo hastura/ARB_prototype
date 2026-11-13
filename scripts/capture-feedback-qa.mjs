@@ -1,0 +1,46 @@
+import { chromium, expect } from '@playwright/test';
+import { mkdir } from 'node:fs/promises';
+import { resolve } from 'node:path';
+const out=resolve('../tmp/feedback-v02/browser');
+await mkdir(out,{recursive:true});
+const browser=await chromium.launch();
+const mediaKeys={F:'living-room',G:'amber-cinematic',H:'amber-collage'};
+async function ready(page,variant){
+  await expect(page.locator('body')).toHaveAttribute('data-variant',variant);
+  await expect(page.locator('video[data-scroll-video]')).toHaveAttribute('data-media-key',mediaKeys[variant]);
+  await expect.poll(()=>page.locator('.route-veil').evaluate(el=>getComputedStyle(el).transform)).toMatch(/matrix\(1, 0, 0, 0, 0, 0\)/);
+}
+try {
+  const page=await browser.newPage({reducedMotion:'reduce',viewport:{width:1440,height:1000}});
+  await page.addInitScript(()=>sessionStorage.setItem('arb-welcome','seen'));
+  for(const width of [1440,768,390]) {
+    await page.setViewportSize({width,height:1000});
+    for(const variant of ['F','G','H']) {
+      await page.goto(`http://127.0.0.1:4173/#/home/${variant}?lang=en`);
+      await page.locator('main h1').waitFor();
+      await ready(page,variant);
+      await page.locator('main img').evaluateAll(async imgs=>Promise.all(imgs.map(async img=>{img.loading='eager';try{await img.decode();}catch{}})));
+      await page.screenshot({path:resolve(out,`${variant}-${width}.png`),fullPage:true});
+    }
+  }
+  await page.setViewportSize({width:1440,height:1000});
+  for(const [name,route] of [['E-feedback','/home/E'],['catalog-F','/ebook?v=F'],['detail-G','/ebook/the-art-of-reflecting?v=G'],['hub','/preview']]){
+    await page.goto(`http://127.0.0.1:4173/#${route}${route.includes('?')?'&':'?'}lang=en`);
+    await page.locator('main h1').waitFor();
+    await page.locator('main img').evaluateAll(async imgs=>Promise.all(imgs.map(async img=>{img.loading='eager';try{await img.decode();}catch{}})));
+    await page.screenshot({path:resolve(out,`${name}.png`),fullPage:true});
+  }
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  for(const variant of ['F','G','H']){
+    await page.goto(`http://127.0.0.1:4173/#/home/${variant}?lang=en`);
+    await ready(page,variant);
+    const video=page.locator('video[data-scroll-video]');
+    await expect.poll(()=>video.evaluate(el=>Number.isFinite(el.duration)),{timeout:15000}).toBe(true);
+    const start=await page.locator('[data-hero-scroll]').evaluate(el=>el.getBoundingClientRect().top+scrollY);
+    await page.evaluate(y=>scrollTo(0,y),start+900);
+    await expect.poll(()=>video.evaluate(el=>el.currentTime),{timeout:15000}).toBeGreaterThan(8);
+    await expect.poll(()=>video.evaluate(el=>el.seeking),{timeout:15000}).toBe(false);
+    await page.screenshot({path:resolve(out,`${variant}-motion-middle.png`)});
+  }
+  console.log(`Captured feedback QA: ${out}`);
+} finally {await browser.close();}

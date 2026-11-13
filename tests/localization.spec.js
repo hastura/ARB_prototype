@@ -5,11 +5,11 @@ const englishScreens = [
   ...['A', 'B', 'C', 'D', 'E'].map((alternative) => ({
     route: `/home/${alternative}`, title: /Meet them\.\s*Discover their story\./,
   })),
-  { route: '/ebook', title: /^Ebooks$/ },
+  { route: '/ebook', title: /^Ebook$/ },
   { route: '/ebook/the-art-of-reflecting', title: /The Art of\s+Reflecting/ },
-  { route: '/renungan', title: /^Reflections$/ },
+  { route: '/renungan', title: /^Reflection$/ },
   { route: '/ngobrol', title: /^Conversations$/ },
-  { route: '/tentang-bantuan', title: /^About\s*&\s*help$/i },
+  { route: '/tentang-bantuan', title: /^About us$/i },
 ];
 
 const indonesianLeaks = /Kenali mereka\.|Temukan kisahnya\.|Informasi ebook belum tersedia|Belum ada video yang ditampilkan|Belum ada percakapan yang ditampilkan|Kanal bantuan resmi belum ditampilkan|Bagian dari dunia Mantra Djiwa|Kembali ke atas|Jelajahi Ebook/;
@@ -93,10 +93,10 @@ test.describe('locale journeys and controls', () => {
     const menu = page.getByRole('dialog');
     await expect(menu).toBeVisible();
     await expect(menu.getByRole('button', { name: 'Close menu', exact: true })).toBeVisible();
-    await expect(menu.getByRole('link', { name: 'Story & characters', exact: true })).toBeVisible();
-    await expect(menu.getByRole('link', { name: 'Ebooks', exact: true })).toBeVisible();
-    await menu.getByRole('link', { name: 'Reflections', exact: true }).click();
-    await expect(page.locator('main h1')).toHaveText('Reflections');
+    await expect(menu.getByRole('link', { name: 'About us', exact: true })).toBeVisible();
+    await expect(menu.getByRole('link', { name: 'Ebook', exact: true })).toBeVisible();
+    await menu.getByRole('link', { name: 'Reflection', exact: true }).click();
+    await expect(page.locator('main h1')).toHaveText('Reflection');
     await expectLanguage(page, 'en');
   });
 
@@ -128,8 +128,8 @@ test.describe('locale journeys and controls', () => {
     await expect(page).toHaveURL(/#\/home\/C\?/);
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeCloseTo(initialScroll, 0);
     await expect(page.locator('#karakter')).toBeInViewport();
-    await page.getByRole('link', { name: 'Ebooks', exact: true }).first().click();
-    await expect(page.locator('main h1')).toHaveText('Ebooks');
+    await page.getByRole('link', { name: 'Ebook', exact: true }).first().click();
+    await expect(page.locator('main h1')).toHaveText('Ebook');
     await expect(page).toHaveURL(/lang=en/);
     expect(new URLSearchParams((await page.url()).split('?').at(-1)).get('v')).toBe('C');
     await noOverflow(page);
@@ -164,7 +164,7 @@ test.describe('locale journeys and controls', () => {
     await page.evaluate(() => localStorage.setItem('arb-language', 'id'));
     await page.goto('./#/renungan?lang=en');
     await expectLanguage(page, 'en');
-    await expect(page.locator('main h1')).toHaveText('Reflections');
+    await expect(page.locator('main h1')).toHaveText('Reflection');
     await page.evaluate(() => localStorage.setItem('arb-language', 'en'));
     await page.goto('./#/ngobrol?lang=id');
     await expectLanguage(page, 'id');
@@ -182,7 +182,7 @@ test.describe('locale journeys and controls', () => {
     await expect(iframe).toHaveAttribute('src', /lang=en/);
     await page.locator('#variant-select').selectOption('C');
     await page.locator('#page-select').selectOption('/renungan');
-    await expect(frame.locator('main h1')).toHaveText('Reflections');
+    await expect(frame.locator('main h1')).toHaveText('Reflection');
     await expect(frame.locator('html')).toHaveAttribute('lang', 'en');
     await expect(iframe).toHaveAttribute('src', /lang=en/);
     await page.getByRole('button', { name: 'ID', exact: true }).first().click();
@@ -190,16 +190,16 @@ test.describe('locale journeys and controls', () => {
     await page.locator('iframe').scrollIntoViewIfNeeded();
     await expect(frame.locator('html')).toHaveAttribute('lang', 'id');
     await page.locator('#variant-select').selectOption('D');
-    await page.locator('#page-select').selectOption('/ngobrol');
-    await expect(frame.locator('main h1')).toHaveText('Ngobrol');
+    await page.locator('#page-select').selectOption('/tentang-bantuan');
+    await expect(frame.locator('main h1')).toHaveText('Tentang kami');
     await expect(page.locator('iframe')).toHaveAttribute('src', /lang=id/);
     expect(errors).toEqual([]);
   });
 
-  test('all five gallery thumbnails use live localized preview text in both languages', async ({ page }) => {
+  test('all eight gallery thumbnails use live localized preview text in both languages', async ({ page }) => {
     await openEnglish(page, '/preview');
     const thumbnails = page.locator('.variant-thumbnail');
-    await expect(thumbnails).toHaveCount(5);
+    await expect(thumbnails).toHaveCount(8);
     await expect(thumbnails.locator('img[src*="preview-"]')).toHaveCount(0);
     for (const thumbnail of await thumbnails.all()) {
       await expect(thumbnail).toContainText(/Meet them\.\s*Discover their story\./);

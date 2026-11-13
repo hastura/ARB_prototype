@@ -1,3 +1,18 @@
+# Fullscreen cinema follow-up — 13 November 2026
+
+Final staged-source build: **passed** (22 modules, Vite 8.3.6). Full browser suite: **141 / 141 passed**, 47.9 seconds, Chromium. The independent source export excludes uncommitted motion-room and portrait-depth experiments.
+
+- F/G/H film stages touch all four viewport edges. No pause, resume or play control is rendered. Fresh cinematic visits have no welcome gate.
+- Actual muted videos seek forward and backward from scroll at 1440×1000 and 390×844, without autoplay or a play-button prerequisite. Reduced motion unloads the video source.
+- Aksa, Rasa and Bumi remain three semantic articles with original localized descriptions and source portraits. Their lateral sequence works forward/backward at 1440×1000, 768×1000, 390×844 and 844×390; copy does not intersect the foreground portrait or large name.
+- EN/ID, all eight alternatives, onward journeys, keyboard interactions, routing, book states, no horizontal overflow and existing automated axe checks remain covered.
+- Visual QA reviewed source-reference frames, full pages, actual film scrubbing, all three character positions and short/mobile/tablet/landscape compositions. A tablet portrait/copy overlap and landscape name/body overlap were corrected before the final run.
+- Evidence is in project `tmp/fullbleed-v03/`; fullscreen films use cover cropping, so baked-in video graphics can be cropped at unlike aspect ratios. Main website and character copy remains HTML.
+
+Physical devices, Safari/Firefox and screen-reader narration remain unverified. Reduced motion preserves a static hero and readable stacked characters. Existing content, payment and official social-link limitations still apply. No PDF was generated, replaced or archived.
+
+---
+
 # Prototype QA — 13 November 2026
 
 Release build: **passed** (`npm run build`, Vite 8.3.6, single-entry staged-source export). Browser suite: **133 / 133 passed**, 49.2 seconds, on Chromium. The export excludes separate uncommitted motion-room and portrait-depth experiments.

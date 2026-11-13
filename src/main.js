@@ -3,10 +3,13 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { language, validLanguage, resolveLanguage, setLanguage, copyText, t, localizedPath } from './i18n';
 import { miniPreview } from './mini-preview';
 import { renderFeedbackHome, mountFeedbackMotion } from './feedback-designs';
+import { mountCharacterCinema } from './character-cinema';
 import './mini-preview.css';
 import './style.css';
 import './feedback-overrides.css';
 import './feedback-designs.css';
+import './character-cinema.css';
+import './fullbleed-cinema.css';
 
 gsap.registerPlugin(ScrollTrigger);
 const app = document.querySelector('#app');
@@ -336,11 +339,16 @@ async function render(initial = false, options = {}) {
   document.querySelector('.skip-link').textContent = t('Lewati ke konten');
   document.querySelector('meta[name="description"]').content = t('Prototype interaktif Aksa Rasa Bumi. Delapan arah visual, satu perjalanan kisah. Draft untuk review client.');
   document.body.dataset.variant=variant;
+  document.body.classList.toggle('feedback-landing', 'FGH'.includes(variant) && Boolean(match || path === '/'));
+  document.body.classList.remove('film-in-view');
   document.body.classList.toggle('embedded',embedded);
   app.innerHTML=`${header()}<main id="main" tabindex="-1">${content}</main>${footer()}${dock()}`;
   if (options.preserveScroll === undefined) window.scrollTo(0,0);
   setupEvents(options.sandbox);animate();
-  if ('FGH'.includes(variant) && (match || path === '/')) routeCleanup.push(mountFeedbackMotion({ variant, gsap, ScrollTrigger, reduced, signal: routeController.signal }));
+  if ('FGH'.includes(variant) && (match || path === '/')) {
+    routeCleanup.push(mountFeedbackMotion({ variant, gsap, ScrollTrigger, reduced, signal: routeController.signal }));
+    routeCleanup.push(mountCharacterCinema({ gsap, ScrollTrigger, reduced, signal: routeController.signal }));
+  }
   if (!initial) {
     document.querySelector('main').focus({preventScroll:true});
     document.querySelector('#announcer').textContent=`${t('Halaman')} ${t(title)}`;
@@ -370,7 +378,7 @@ async function changeLanguage(next) {
   if (embedded && language === next) parent.postMessage({ type: 'arb-language', language: next }, location.origin);
 }
 function welcome() {
-  if (embedded || reduced.matches || sessionStorage.getItem('arb-welcome') === 'seen' || activeRoute === '/preview') return;
+  if (document.body.classList.contains('feedback-landing') || embedded || reduced.matches || sessionStorage.getItem('arb-welcome') === 'seen' || activeRoute === '/preview') return;
   sessionStorage.setItem('arb-welcome','seen');
   const el = document.createElement('div');
   el.className='welcome';el.setAttribute('role','dialog');el.setAttribute('aria-label',t('Pembuka prototype'));el.setAttribute('aria-modal','true');

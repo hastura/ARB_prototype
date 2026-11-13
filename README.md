@@ -25,7 +25,7 @@ Copy berasal dari 112 string sumber dengan status, provenance, dan catatan di `s
 
 Harga, format, SKU, checkout, akses, cuplikan novel, episode, durasi, kontak, dan kebijakan tidak dikarang. Journey pembelian/cuplikannya menunjukkan status menunggu materi. Transaksi, audiobook dan kanal sosial belum terhubung ke layanan produksi. Film hero F–H berasal dari render yang disediakan; kanal sosial memakai dialog dummy yang diminta user. Tidak ada akun, cart, atau riwayat pembelian.
 
-`docs/asset-manifest.json` mencatat sumber dan optimasi artwork. Hero E mempertahankan alignment tujuh layer dan karakter statis; gerak scenery maksimal ±2 piksel sumber. Hero E memakai gambar statis pada mobile dan reduced motion. F–H memakai poster, dengan pemutaran film tanpa suara yang diaktifkan pengguna pada layar kecil; reduced motion tetap statis. Manifest film dan gambar F–H tersedia di `docs/feedback-media.json`. Seluruh aset dikirim lokal, tanpa CDN runtime.
+`docs/asset-manifest.json` mencatat sumber dan optimasi artwork. Hero E mempertahankan alignment tujuh layer dan karakter statis; gerak scenery maksimal ±2 piksel sumber. Hero E memakai gambar statis pada mobile dan reduced motion. Hero F–H memenuhi viewport tanpa bingkai dan langsung mengikuti scroll maju/mundur pada desktop maupun mobile, tanpa kontrol play/pause; reduced motion tetap statis. Pengenalan Aksa, Rasa dan Bumi memakai portrait berlapis, tipografi besar, dan perjalanan horizontal cinematic dari referensi video yang disediakan. Manifest film dan gambar F–H tersedia di `docs/feedback-media.json`. Seluruh aset dikirim lokal, tanpa CDN runtime.
 
 ## Development
 

@@ -25,7 +25,11 @@ The current launch does not publish the long-term navigation as available conten
 
 The review hub puts F–H first, followed by the five earlier directions A–E. All eight preserve the shared onward journey, source content constraints and EN/ID switching; first visits still default to EN.
 
-Desktop GSAP ScrollTrigger pins only the film stage and maps scroll to an actual paused video's `currentTime`. The opening frame matches its poster (F/H 2.5s, G 5.8s); the final 0.8 seconds are excluded from scrubbing to avoid the source fade to black. Pause freezes the current film frame; resume catches up to the reader's scroll. Route changes remove triggers and media listeners. Smaller screens use a complete still with optional, explicit muted film playback. Reduced motion retains the still and does not load a film source.
+The follow-up revision makes all three film heroes edge to edge and viewport height, with navigation over the image. GSAP ScrollTrigger maps both desktop and mobile scroll directly to a paused, muted source video's `currentTime`; there are no play/pause transport controls and no first-visit welcome gate on F–H. Scrolling backward also reverses the film. The opening frame matches its poster (F/H 2.5s, G 5.8s); the final 0.8 seconds are excluded to avoid the source fade to black. Route changes remove triggers and media listeners. Reduced motion retains the still and does not load a film source.
+
+The fullscreen media uses `object-fit: cover`, with responsive framing and 1.14× overscan on the amber sources to remove their baked-in letterbox. Filling a viewport with a different aspect ratio crops the source composition; its embedded graphics do not reflow. The story's website copy remains separate, readable HTML.
+
+The character section is present on F, G and H: all three existing Aksa/Rasa/Bumi portraits and localized descriptions appear in a pinned lateral procession. Large names sit behind the foreground portraits, while a smaller duplicate of each source portrait moves at a different rate. Character copy stays separate from foreground portraits at desktop, tablet, mobile and landscape. Reduced motion presents all three articles as a natural vertical stack.
 
 The films are derived from the three supplied renders. Their embedded English dialogue/graphics are retained from those sources, including when the surrounding UI is Indonesian. Those visual words are not newly asserted novel excerpts, production credits, or additional canon. Source photographs supply the supporting stills; no new character imagery or dialogue was generated for this revision.
 
@@ -35,12 +39,14 @@ The films are derived from the three supplied renders. Their embedded English di
 
 `Website UI_UX Design.mp4` was inspected across eight frames: full scenic hero, asymmetric text/art, layered central cards, and full-width features. This informs changes in section scale, alternating image weight and restrained diagonal overlaps.
 
+`Top 10 Website Designs _ Web Design Inspiration.mp4` was inspected across 16 timestamped frames over its approximately 12.35-second duration. It shows a lateral fashion-portrait composition: large foreground and smaller background figures, oversized type behind portraits, content entering laterally, then a return to earlier compositions. This supplies the character section's scale contrast, horizontal procession and differential layer motion. The clip does not expose its implementation or prove a particular animation library; the prototype implements the observed visual pattern in GSAP. Contact sheets and metadata remain in `../tmp/fullbleed-v03/`.
+
 The Pinterest pin URL was attempted through web and browser access but could not be opened in this environment. Exact fidelity to that inaccessible pin is not claimed. The attached feedback images and the supplied local videos were inspected and used directly.
 
 ## Verification and preserved work
 
 Media QA: 15 web assets, three 1280×720 H.264 films at 24fps, no audio, faststart, maximum keyframe spacing 0.5 seconds; 12 WebP decode checks. See `feedback-media.json` for source hashes, timestamps and sizes.
 
-Browser QA covers the feedback changes, all eight directions, both UI languages, 320/390/768/1440 layouts, book opening/closing, real scroll seeking, pause/resume, mobile playback opt-in, keyboard, route cleanup and automated axe checks. Final staged-source release: build passed; 133/133 browser tests passed in 49.2 seconds. Local release smoke passed with HTTP 200 and zero browser errors. Detailed evidence and scope are recorded in `QA.md`.
+Browser QA covers the feedback changes, all eight directions, both UI languages, 320/390/768/1440 layouts, book opening/closing, real forward/backward film seeking on desktop/mobile, character sequencing, keyboard, route cleanup and automated axe checks. Latest staged-source release: build passed; 141/141 browser tests passed in 47.9 seconds. Local release smoke passed with HTTP 200 and zero browser errors. Detailed evidence and scope are recorded in `QA.md`.
 
 Uncommitted motion-room/portrait-depth experiments and the user's Vite multipage configuration are preserved. Release QA uses an export of the staged repository so those separate experiments are not accidentally published or required by this release. No PDF was created, replaced or archived.

@@ -169,6 +169,15 @@ test.describe('three source-based cinematic alternatives', () => {
           await expect(page.locator('main h1')).toHaveText(languages[language].home);
           const video = page.locator('.feedback-hero video[data-scroll-video]');
           await expect(video).toHaveCount(1);
+          await expect(page.locator('[data-motion-toggle], .fb-film-controls')).toHaveCount(0);
+          await expect(video).not.toHaveAttribute('src');
+          const characters = page.locator('[data-character-cinema] article');
+          await expect(characters).toHaveCount(3);
+          await expect(characters.locator('h3')).toHaveText(['Aksa', 'Rasa', 'Bumi']);
+          await expect(page.locator('[data-character-cinema]')).not.toHaveClass(/is-cinematic/);
+          for (const key of ['aksa', 'rasa', 'bumi']) {
+            await expect(page.locator(`[data-character="${key}"] p`)).toContainText(key === 'aksa' ? 'Aksa' : key === 'rasa' ? 'Rasa' : 'Bumi');
+          }
           const media = await video.evaluate(element => ({
             source: element.getAttribute('src') || element.querySelector('source')?.getAttribute('src') || element.dataset.src || '',
             poster: element.poster,
@@ -244,94 +253,106 @@ test.describe('three source-based cinematic alternatives', () => {
   }
 });
 
-test.describe('real scroll-controlled media', () => {
+test.describe('immersive scroll cinema', () => {
   test.use({ reducedMotion: 'no-preference' });
-  for (const variant of ['F', 'G', 'H']) {
-    test(`${variant}: desktop scroll seeks a paused source video, pause freezes it and resume catches up`, async ({ page }) => {
+  test('a fresh cinematic visit opens directly into scroll without a welcome gate', async ({ browser }) => {
+    const fresh = await browser.newPage({ reducedMotion: 'no-preference', viewport: { width: 1440, height: 1000 } });
+    try {
+      await fresh.goto('./#/home/F?lang=en');
+      await expect(fresh.locator('[data-feedback-home]')).toHaveAttribute('data-motion-mode', 'scroll');
+      await expect(fresh.locator('.welcome, [data-motion-toggle]')).toHaveCount(0);
+      expect(await fresh.locator('#app').evaluate(el => el.inert)).toBe(false);
+      expect(await fresh.locator('.fb-film-visual').evaluate(el => el.getBoundingClientRect().top)).toBe(0);
+    } finally { await fresh.close(); }
+  });
+  for (const width of [1440, 390]) {
+    for (const variant of ['F', 'G', 'H']) {
+      test(`${variant} ${width}px: edge-to-edge hero seeks forward and backward directly from scroll`, async ({ page }) => {
+        await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
+        const errors = browserErrors(page);
+        await openHome(page, variant);
+        await expect(page.locator('[data-motion-toggle], .fb-film-controls')).toHaveCount(0);
+        const video = page.locator('video[data-scroll-video]');
+        await expect.poll(() => video.evaluate(el => el.duration), { timeout: 15000 }).toBeGreaterThan(40);
+        const visual = page.locator('.fb-film-visual');
+        const bounds = await visual.boundingBox();
+        expect(bounds.x).toBeCloseTo(0, 0);
+        expect(bounds.y).toBeCloseTo(0, 0);
+        expect(bounds.width).toBe(width);
+        expect(bounds.height).toBe(width === 390 ? 844 : 1000);
+        await expect(video).toHaveCSS('object-fit', 'cover');
+        const pin = await page.locator('[data-hero-scroll]').evaluate(el => ({ top: el.getBoundingClientRect().top + scrollY, travel: parseFloat(getComputedStyle(el.querySelector('.fb-film-stage').parentElement).paddingBottom) }));
+        expect(pin.top).toBeCloseTo(0, 0);
+        expect(pin.travel).toBeGreaterThan(1000);
+        await page.evaluate(p => scrollTo(0, p.travel * .65), pin);
+        await expect.poll(() => video.evaluate(el => el.currentTime), { timeout: 10000 }).toBeGreaterThan(25);
+        await expect.poll(() => video.evaluate(el => el.seeking)).toBe(false);
+        const later = await video.evaluate(el => el.currentTime);
+        await page.evaluate(p => scrollTo(0, p.travel * .2), pin);
+        await expect.poll(() => video.evaluate(el => el.currentTime), { timeout: 10000 }).toBeLessThan(later - 5);
+        expect(await video.evaluate(el => el.paused && el.muted)).toBe(true);
+        const corner = await visual.boundingBox();
+        expect(corner.y).toBeCloseTo(0, 0);
+        await noOverflow(page);
+        if (width === 390) {
+          await page.getByRole('button', { name: 'Open menu', exact: true }).click();
+          await page.getByRole('dialog').getByRole('link', { name: 'Ebook', exact: true }).click();
+        } else await page.getByRole('link', { name: 'Ebook', exact: true }).first().click();
+        await expect(page.locator('main h1')).toHaveText('Ebook');
+        await expect(page.locator('video[data-scroll-video]')).toHaveCount(0);
+        await expect(page.locator('body')).not.toHaveClass(/feedback-landing|film-in-view/);
+        expect(errors).toEqual([]);
+      });
+    }
+  }
+  for (const [width, height] of [[1440, 1000], [768, 1000], [390, 844], [844, 390]]) {
+    test(`${width}px: three character portraits travel in sequence and reverse with the reader`, async ({ page }) => {
+      await page.setViewportSize({ width, height });
       const errors = browserErrors(page);
-      await openHome(page, variant);
-      const video = page.locator('.feedback-hero video[data-scroll-video]');
-      await expect.poll(() => video.evaluate(element => element.duration), { timeout: 15_000 }).toBeGreaterThan(1);
-      const pinGeometry = await page.locator('[data-hero-scroll]').evaluate(element => {
-        const stage = element.querySelector('.fb-film-stage');
-        const spacer = stage.parentElement;
-        return {
-          top: element.getBoundingClientRect().top + window.scrollY,
-          travel: Number.parseFloat(getComputedStyle(spacer).paddingBottom),
-          pinned: spacer.classList.contains('pin-spacer'),
-        };
-      });
-      expect(pinGeometry.pinned, 'Desktop scroll media must have an active pin interval').toBe(true);
-      expect(pinGeometry.travel).toBeGreaterThan(1000);
-      const firstPosition = pinGeometry.top + pinGeometry.travel * 0.2;
-      const secondPosition = pinGeometry.top + pinGeometry.travel * 0.55;
-      const before = await video.evaluate(element => element.currentTime);
-      // The hero height includes GSAP's added pin spacing. Using a fraction of
-      // that expanded height can scroll beyond the film's end before pausing.
-      // Two interior points in the actual pin interval leave room to catch up.
-      await page.evaluate(position => window.scrollTo(0, position), firstPosition);
-      await expect.poll(() => video.evaluate(element => element.currentTime), { timeout: 10_000 }).toBeGreaterThan(before + 0.1);
-      expect(await video.evaluate(element => element.paused)).toBe(true);
-      const toggle = page.locator('[data-motion-toggle]');
-      const clickVisibleToggle = async () => {
-        await expect(toggle).toBeInViewport({ ratio: 1 });
-        const bounds = await toggle.boundingBox();
-        expect(bounds).not.toBeNull();
-        await page.mouse.click(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
-      };
-      await expect(toggle).toHaveAttribute('aria-pressed', 'true');
-      await expect(toggle).toHaveText('Pause scroll motion');
-      await clickVisibleToggle();
-      await expect(toggle).toHaveAttribute('aria-pressed', 'false');
-      await expect(toggle).toHaveText('Resume scroll motion');
-      await expect.poll(() => video.evaluate(element => element.seeking)).toBe(false);
-      const frozen = await video.evaluate(element => element.currentTime);
-      await page.evaluate(position => window.scrollTo(0, position), secondPosition);
-      const drift = await video.evaluate(async element => {
-        const start = performance.now(), initial = element.currentTime;
-        let maximum = 0;
-        do {
-          maximum = Math.max(maximum, Math.abs(element.currentTime - initial));
-          await new Promise(requestAnimationFrame);
-        } while (performance.now() - start < 400);
-        return maximum;
-      });
-      expect(drift, 'Paused scroll motion must not keep seeking as the reader scrolls').toBeLessThan(0.05);
-      await clickVisibleToggle();
-      await expect(toggle).toHaveAttribute('aria-pressed', 'true');
-      await expect(toggle).toHaveText('Pause scroll motion');
-      await expect.poll(() => video.evaluate(element => element.currentTime), { timeout: 10_000 }).toBeGreaterThan(frozen + 0.1);
-      await page.getByRole('link', { name: 'Ebook', exact: true }).first().click();
-      await expect(page.locator('main h1')).toHaveText('Ebook');
-      await expect(page.locator('video[data-scroll-video]')).toHaveCount(0);
-      await expect(page.getByRole('button', { name: 'EN', exact: true }).first()).toBeVisible();
+      await openHome(page, 'G');
+      const section = page.locator('[data-character-cinema]');
+      await expect(section).toHaveClass(/is-cinematic/);
+      const geometry = await section.locator('[data-character-stage]').evaluate(el => ({ top: el.getBoundingClientRect().top + scrollY, travel: parseFloat(getComputedStyle(el.parentElement).paddingBottom) }));
+      expect(geometry.travel).toBeGreaterThan(2000);
+      for (const [fraction, key] of [[0, 'aksa'], [.5, 'rasa'], [1, 'bumi'], [.5, 'rasa'], [0, 'aksa']]) {
+        await page.evaluate(({ g, f }) => scrollTo(0, g.top + g.travel * f), { g: geometry, f: fraction });
+        await expect(section).toHaveAttribute('data-character-active', key);
+        await expect.poll(() => section.locator(`[data-character="${key}"]`).evaluate(el => Math.abs(el.getBoundingClientRect().x)), { timeout: 7000 }).toBeLessThan(2);
+        const portrait = section.locator(`[data-character="${key}"] .cinema-person`);
+        await expect(portrait).toBeVisible();
+        const copy = section.locator(`[data-character="${key}"] .cinema-copy`);
+        await expect(copy).toBeInViewport({ ratio: 1 });
+        const name = section.locator(`[data-character="${key}"] h3`);
+        await expect(name).toBeInViewport({ ratio: 1 });
+        const copyBox = await copy.boundingBox(), portraitBox = await portrait.boundingBox(), nameBox = await name.boundingBox();
+        const intersects = (a, b) => a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
+        expect(intersects(copyBox, portraitBox), 'Character copy must not overlap the foreground portrait').toBe(false);
+        expect(intersects(copyBox, nameBox), 'Character body must be separate from its large name').toBe(false);
+      }
       await noOverflow(page);
       expect(errors).toEqual([]);
     });
   }
-
-  test('mobile film playback is a muted opt-in and can be paused', async ({ page }) => {
+  test('live reduced-motion and viewport changes reset films and keep all three characters readable', async ({ page }) => {
+    await openHome(page, 'H');
+    const video = page.locator('video[data-scroll-video]');
+    const section = page.locator('[data-character-cinema]');
+    await expect.poll(() => video.evaluate(el => el.duration)).toBeGreaterThan(40);
     await page.setViewportSize({ width: 390, height: 844 });
-    const errors = browserErrors(page);
-    await openHome(page, 'F');
-    const video = page.locator('.feedback-hero video[data-scroll-video]');
-    const toggle = page.locator('[data-motion-toggle]');
-    await expect(toggle).toBeEnabled();
-    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
-    await expect(toggle).toHaveText('Play film');
-    expect(await video.evaluate(element => element.paused)).toBe(true);
-    expect(await video.getAttribute('src')).toBeNull();
-    await toggle.click();
-    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
-    await expect(toggle).toHaveText('Pause film');
-    await expect.poll(() => video.evaluate(element => element.paused)).toBe(false);
-    expect(await video.evaluate(element => element.muted)).toBe(true);
-    await expect.poll(() => video.evaluate(element => element.currentTime), { timeout: 10_000 }).toBeGreaterThan(0.15);
-    await toggle.click();
-    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
-    await expect(toggle).toHaveText('Play film');
-    expect(await video.evaluate(element => element.paused)).toBe(true);
+    await expect(page.locator('[data-feedback-home]')).toHaveAttribute('data-motion-mode', 'scroll');
+    await expect(section).toHaveClass(/is-cinematic/);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await expect(video).not.toHaveAttribute('src');
+    await expect(section).not.toHaveClass(/is-cinematic/);
+    await expect(section.locator('h3')).toHaveText(['Aksa', 'Rasa', 'Bumi']);
+    for (const key of ['aksa', 'rasa', 'bumi']) {
+      const article = section.locator(`[data-character="${key}"]`);
+      await article.scrollIntoViewIfNeeded();
+      await expect(article.locator('.cinema-copy')).toBeInViewport({ ratio: 1 });
+    }
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await expect(section).toHaveClass(/is-cinematic/);
+    await expect.poll(() => video.evaluate(el => el.duration)).toBeGreaterThan(40);
     await noOverflow(page);
-    expect(errors).toEqual([]);
   });
 });

@@ -1,7 +1,7 @@
 import { chromium, expect } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
-const out=resolve('../tmp/feedback-v02/browser');
+const out=resolve('../tmp/fullbleed-v03/browser');
 await mkdir(out,{recursive:true});
 const browser=await chromium.launch();
 const mediaKeys={F:'living-room',G:'amber-cinematic',H:'amber-collage'};
@@ -41,6 +41,13 @@ try {
     await expect.poll(()=>video.evaluate(el=>el.currentTime),{timeout:15000}).toBeGreaterThan(8);
     await expect.poll(()=>video.evaluate(el=>el.seeking),{timeout:15000}).toBe(false);
     await page.screenshot({path:resolve(out,`${variant}-motion-middle.png`)});
+    const cinema=page.locator('[data-character-stage]');
+    const geometry=await cinema.evaluate(el=>({top:el.getBoundingClientRect().top+scrollY,travel:parseFloat(getComputedStyle(el.parentElement).paddingBottom)}));
+    for(const [fraction,key] of [[0,'aksa'],[.5,'rasa'],[1,'bumi']]){
+      await page.evaluate(({g,f})=>scrollTo(0,g.top+g.travel*f),{g:geometry,f:fraction});
+      await expect.poll(()=>page.locator(`[data-character="${key}"]`).evaluate(el=>Math.abs(el.getBoundingClientRect().left))).toBeLessThan(2);
+      await page.screenshot({path:resolve(out,`${variant}-${key}-desktop.png`)});
+    }
   }
   console.log(`Captured feedback QA: ${out}`);
 } finally {await browser.close();}

@@ -171,13 +171,13 @@ test.describe('three source-based cinematic alternatives', () => {
           await expect(video).toHaveCount(1);
           await expect(page.locator('[data-motion-toggle], .fb-film-controls')).toHaveCount(0);
           await expect(video).not.toHaveAttribute('src');
-          const characterSection = page.locator(variant === 'H' ? '[data-character-cinema]' : '[data-character-video-cinema]');
+          const characterSection = page.locator(variant === 'H' ? '[data-character-cinema]' : '[data-character-native]');
           const characters = characterSection.locator('article');
           await expect(characters).toHaveCount(3);
           await expect(characters.locator('h3')).toHaveText(['Aksa', 'Rasa', 'Bumi']);
           if (variant === 'H') await expect(characterSection).not.toHaveClass(/is-cinematic/);
           for (const key of ['aksa', 'rasa', 'bumi']) {
-            await expect(characterSection.locator(`[${variant === 'H' ? 'data-character' : 'data-character-copy'}="${key}"] p`)).toContainText(key === 'aksa' ? 'Aksa' : key === 'rasa' ? 'Rasa' : 'Bumi');
+            await expect(characterSection.locator(`[${variant === 'H' ? 'data-character' : 'data-native-character'}="${key}"] p`)).toContainText(key === 'aksa' ? 'Aksa' : key === 'rasa' ? 'Rasa' : 'Bumi');
           }
           const media = await video.evaluate(element => ({
             source: element.getAttribute('src') || element.querySelector('source')?.getAttribute('src') || element.dataset.src || '',

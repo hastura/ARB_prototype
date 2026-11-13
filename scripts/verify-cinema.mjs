@@ -4,7 +4,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const base = process.env.ARB_PREVIEW_URL || 'https://hastura.github.io/ARB_prototype/';
-const out = resolve('../tmp/character-intro-v01/live');
+const out = resolve('../tmp/character-native-v01/live');
 await mkdir(out, { recursive: true });
 const browser = await chromium.launch();
 const results = [];
@@ -13,6 +13,8 @@ try {
     const page = await browser.newPage({ viewport: { width, height }, reducedMotion: 'no-preference' });
     await page.addInitScript(() => sessionStorage.setItem('arb-welcome', 'seen'));
     const errors = [];
+    const characterMovies = [];
+    page.on('request', request => { if (/character-intro-v01\/character-introduction\.mp4/.test(request.url())) characterMovies.push(request.url()); });
     page.on('pageerror', error => errors.push(error.message));
     page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
     for (const variant of ['A', 'B', 'F', 'G', 'H']) {
@@ -39,23 +41,21 @@ try {
         assert.ok(media.paused && media.muted && media.decoded > 0);
         await page.screenshot({ path: resolve(out, `${variant}-${width}-film.png`) });
       }
-      const supplied = page.locator('[data-character-video-cinema]');
-      if (await supplied.count()) {
-        const film = supplied.locator('[data-character-video]');
-        await expect.poll(() => film.evaluate(el => el.duration), { timeout: 30000 }).toBeGreaterThan(39);
-        const duration = await film.evaluate(el => el.duration);
-        const g = await supplied.locator('[data-character-video-stage]').evaluate(el => ({ start: el.parentElement.getBoundingClientRect().top + scrollY - document.querySelector('.site-header').getBoundingClientRect().height, travel: parseFloat(getComputedStyle(el.parentElement).paddingBottom) }));
-        for (const [time, key] of [[6, 'aksa'], [18, 'rasa'], [30, 'bumi'], [6, 'aksa'], [38.5, 'ensemble']]) {
-          await page.evaluate(({ g, p }) => scrollTo(0, g.start + g.travel * p), { g, p: (time - .8) / (duration - .88) });
-          await expect.poll(() => film.evaluate((el, t) => Math.abs(el.currentTime - t), time), { timeout: 30000 }).toBeLessThan(.25);
-          await expect.poll(() => film.evaluate(el => el.seeking)).toBe(false);
-          await expect(supplied).toHaveAttribute('data-character-video-active', key);
+      const native = page.locator('[data-character-native]');
+      if (await native.count()) {
+        await expect(native.locator('video')).toHaveCount(0);
+        const stops = JSON.parse(await native.getAttribute('data-native-stops'));
+        const g = await native.locator('[data-character-native-stage]').evaluate(el => ({ start: el.parentElement.getBoundingClientRect().top + scrollY - document.querySelector('.site-header').getBoundingClientRect().height, travel: parseFloat(getComputedStyle(el.parentElement).paddingBottom) }));
+        for (const key of ['aksa', 'rasa', 'bumi', 'rasa', 'aksa', 'ensemble']) {
+          await page.evaluate(({ g, p }) => scrollTo(0, g.start + g.travel * p), { g, p: stops[key] });
+          await expect.poll(() => native.evaluate((el, target) => Math.abs(Number(el.dataset.nativeProgress) - target), stops[key]), { timeout: 10000 }).toBeLessThan(.002);
+          await expect(native).toHaveAttribute('data-native-active', key);
+          if (key !== 'ensemble') await expect(native.locator(`[data-native-character="${key}"] [data-native-copy]`)).toBeInViewport({ ratio: .999 });
+          await page.screenshot({ path: resolve(out, `${variant}-${width}-${key}-native.png`) });
         }
-        assert.ok(await film.evaluate(el => el.paused && el.muted && el.getVideoPlaybackQuality().totalVideoFrames > 0));
-        await expect(film).toHaveCSS('object-fit', 'contain');
-        await expect(supplied.locator('article[data-character-copy] h3')).toHaveText(['Aksa', 'Rasa', 'Bumi']);
-        await page.screenshot({ path: resolve(out, `${variant}-${width}-character-film.png`) });
-        results.push({ variant, width, height, language, suppliedCharacterFilm: true, directSeekBothDirections: true, ...media });
+        await expect(native.locator('article[data-native-character] h3')).toHaveText(['Aksa', 'Rasa', 'Bumi']);
+        assert.ok(await native.locator('img').evaluateAll(images => images.every(img => img.complete && img.naturalWidth > 0)));
+        results.push({ variant, width, height, language, nativeCharacterIntro: true, easedForwardReverse: true, ...media });
         continue;
       }
       const section = page.locator('[data-character-cinema]');
@@ -70,8 +70,9 @@ try {
       results.push({ variant, width, height, language, fullscreen: true, forwardBackwardSeek: true, characters: ['aksa', 'rasa', 'bumi'], ...media });
     }
     assert.deepEqual(errors, []);
+    assert.deepEqual(characterMovies, [], 'Native introductions must not request the character MP4');
     await page.close();
   }
   await writeFile(resolve(out, 'verification.json'), JSON.stringify({ url: base, verifiedAt: new Date().toISOString(), browserErrors: 0, results }, null, 2));
-  console.log(JSON.stringify({ url: base, checks: results.length, fullscreenHeroes: 'passed', directScrollBothDirections: 'passed', suppliedFilmABFG: 'passed', retainedPortraitCinemaH: 'passed', desktopMobileENID: 'passed', browserErrors: 0 }));
+  console.log(JSON.stringify({ url: base, checks: results.length, fullscreenHeroes: 'passed', directScrollBothDirections: 'passed', nativeCodeABFG: 'passed', retainedPortraitCinemaH: 'passed', desktopMobileENID: 'passed', browserErrors: 0 }));
 } finally { await browser.close(); }

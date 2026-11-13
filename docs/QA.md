@@ -1,3 +1,18 @@
+# Native HTML/CSS character introduction — 13 November 2026
+
+Final staged-source build: **passed**, 24 modules, Vite 8.3.6, locally bundled Cormorant font. Full Chromium suite: **171 / 171 passed** (1.3 minutes). Source export excludes the separate uncommitted motion-room/portrait-depth experiments.
+
+- A/B/F/G use native HTML/CSS/GSAP figures and localized text; no character MP4 is requested. F/G/H hero films and the existing C/D/E/H introductions retain their earlier behavior.
+- Tests observe intermediate eased timeline positions during a large scroll step, forward/reverse character transitions, readable detail holds and the final ensemble. Chapter state follows rendered progress.
+- Touch viewport height-only changes retain the current pin. Width/orientation changes rebuild geometry, and reduced motion restores three readable articles. Route cleanup removes the scoped animation and resize/scroll listeners.
+- Independent visual QA covered 32 alternative/language/viewport combinations, plus all three ID details at 320×640. A duplicate ensemble caption collision in short landscape was corrected; the three names are now unobstructed.
+- No horizontal overflow, browser errors or axe violations appeared in the tested journeys. All prior localization, keyboard, routing, book, source-asset and review-hub checks remain covered.
+- Pose asset QA: 12 lossless RGBA crops match the source-sheet pixels exactly, total 2,613,464 bytes. No source sheet was changed, upscaled or mirrored. Font/license and source hashes are recorded in `character-native-media.json`.
+
+Evidence remains in project `tmp/character-native-v01/`. Collision checks use visible foreground pixels bounded by their clipping ancestors; viewport-frame checks allow a one-pixel layout-rounding margin. Smoothing checks verify actual rendered interpolation, not a hardware FPS guarantee. Physical mobile browser-toolbar behavior, Safari/Firefox and screen-reader narration remain outside the current manual coverage. No PDF was generated, replaced or archived.
+
+---
+
 # Supplied character-introduction film — 13 November 2026
 
 Release build: **passed**, 24 modules, Vite 8.3.6. Full Chromium suite: **170 / 170 passed** (1.1 minutes) from the isolated staged-source export. The release excludes separate uncommitted motion-room/portrait-depth work.

@@ -1,7 +1,7 @@
 import { chromium, expect } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
-const out=resolve('../tmp/character-intro-v01/browser');
+const out=resolve('../tmp/character-native-v01/browser');
 await mkdir(out,{recursive:true});
 const browser=await chromium.launch();
 const mediaKeys={F:'living-room',G:'amber-cinematic',H:'amber-collage'};
@@ -41,17 +41,14 @@ try {
     await expect.poll(()=>video.evaluate(el=>el.currentTime),{timeout:15000}).toBeGreaterThan(8);
     await expect.poll(()=>video.evaluate(el=>el.seeking),{timeout:15000}).toBe(false);
     await page.screenshot({path:resolve(out,`${variant}-motion-middle.png`)});
-    const supplied=page.locator('[data-character-video-cinema]');
-    if(await supplied.count()){
-      const film=supplied.locator('[data-character-video]');
-      await expect.poll(()=>film.evaluate(el=>el.duration)).toBeGreaterThan(39);
-      const duration=await film.evaluate(el=>el.duration);
-      const g=await supplied.locator('[data-character-video-stage]').evaluate(el=>({start:el.parentElement.getBoundingClientRect().top+scrollY-document.querySelector('.site-header').getBoundingClientRect().height,travel:parseFloat(getComputedStyle(el.parentElement).paddingBottom)}));
-      for(const [time,key] of [[6,'aksa'],[18,'rasa'],[30,'bumi']]){
-        await page.evaluate(({g,p})=>scrollTo(0,g.start+g.travel*p),{g,p:(time-.8)/(duration-.88)});
-        await expect.poll(()=>film.evaluate((el,t)=>Math.abs(el.currentTime-t),time)).toBeLessThan(.25);
-        await expect.poll(()=>film.evaluate(el=>el.seeking)).toBe(false);
-        await page.screenshot({path:resolve(out,`${variant}-${key}-film-desktop.png`)});
+    const native=page.locator('[data-character-native]');
+    if(await native.count()){
+      const stops=JSON.parse(await native.getAttribute('data-native-stops'));
+      const g=await native.locator('[data-character-native-stage]').evaluate(el=>({start:el.parentElement.getBoundingClientRect().top+scrollY-document.querySelector('.site-header').getBoundingClientRect().height,travel:parseFloat(getComputedStyle(el.parentElement).paddingBottom)}));
+      for(const key of ['aksa','rasa','bumi','ensemble']){
+        await page.evaluate(({g,p})=>scrollTo(0,g.start+g.travel*p),{g,p:stops[key]});
+        await expect.poll(()=>native.evaluate((el,p)=>Math.abs(Number(el.dataset.nativeProgress)-p),stops[key])).toBeLessThan(.002);
+        await page.screenshot({path:resolve(out,`${variant}-${key}-native-desktop.png`)});
       }
       continue;
     }

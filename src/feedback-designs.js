@@ -1,5 +1,5 @@
 import { renderCharacterCinema } from './character-cinema';
-import { renderCharacterVideoCinema } from './character-video-cinema';
+import { renderCharacterNative } from './character-native';
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
 
 export const feedbackDesigns = {
@@ -43,7 +43,7 @@ export function renderFeedbackHome({ variant, language, c, href, link, book }) {
       <div class="fb-intro-body fb-reveal"><p>${content('intro.body')}</p>${link('/tentang-bantuan?section=tentang', pick('Tentang kami', 'About us'), 'text-link')}</div>
       <figure class="fb-cutaway fb-cutaway-intro" data-fb-drift><img src="${asset(`${design.media}-still-01.webp`)}" alt="${pick('Salah satu gambar sumber percakapan Aksa, Rasa, dan Bumi.', 'An original image from the Aksa, Rasa, and Bumi conversation.')}" width="1280" height="720" loading="lazy" decoding="async"><figcaption>${pick('Tiga cara memahaminya.', 'Three ways to understand it.')}</figcaption></figure>
     </section>
-    ${variant === 'H' ? renderCharacterCinema({ variant, language, c }) : renderCharacterVideoCinema({ language, c })}
+    ${variant === 'H' ? renderCharacterCinema({ variant, language, c }) : renderCharacterNative({ language, c })}
     <section class="fb-books" aria-labelledby="fb-book-title">
       <div class="fb-section-index fb-reveal"><span>02</span><span>${pick('EBOOK', 'EBOOK')}</span><i aria-hidden="true"></i></div>
       <div class="fb-book-copy fb-reveal"><span class="eyebrow">${content('story.label')}</span><h2 id="fb-book-title">${content('story.title')}</h2><p>${content('story.short')}</p></div>

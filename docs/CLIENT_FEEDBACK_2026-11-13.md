@@ -33,9 +33,21 @@ The first follow-up introduced a pinned lateral portrait procession on F, G and 
 
 The films are derived from the three supplied renders. Their embedded English dialogue/graphics are retained from those sources, including when the surrounding UI is Indonesian. Those visual words are not newly asserted novel excerpts, production credits, or additional canon. Source photographs supply the supporting stills; no new character imagery or dialogue was generated for this revision.
 
-## Supplied character film — A, B, F and G
+## Current native character introduction — A, B, F and G
 
-The latest request replaces the character introduction on **A, B, F and G** with the exact supplied `Motion/ARB_Character_Introduction_v01/render/ARB_Character_Introduction_v01.mp4`. C/D/E retain their previous character sections; H retains the earlier GSAP portrait procession.
+The character section is now built with HTML/CSS and GSAP, following the supplied film's overview → pose-rail pan → readable detail → next character → ensemble sequence. A/B/F/G use this native section; C/D/E/H retain their prior introductions. Hero films on F/G/H are unchanged.
+
+Four original full-body poses per character are separate image layers. The 12 transparent WebPs are mechanical crops of the supplied film's original alpha sheets, with exact decoded RGBA equality to the source crops. No figure was resized in asset generation, mirrored or synthesized. Together the poses total 2,613,464 bytes; the source Cormorant font and its OFL license are bundled. See `character-native-media.json` and `scripts/prepare-character-native.py`.
+
+Only transforms and opacity animate. The pinned timeline uses a 0.95-second scrub catch-up, eased layer pans, text reveals and readable hold regions. Chapter indicators follow the actual rendered timeline rather than raw scroll position. Forward and reverse scrolling preserve the same poses and content. The website does not intercept wheel/touch input or replace native page scrolling.
+
+Text is now real localized HTML in both EN and ID, including the source headings and descriptions. Portrait/tablet layouts recompose the figures above the copy; short landscape places figures beside the copy and omits the duplicate ensemble caption. Reduced motion shows three readable natural-flow articles. The floating review dock hides while the animated stage is in view and returns afterward.
+
+Stable small-viewport sizing and touch-aware resize handling keep browser-toolbar height changes from tearing down the pin. Width/orientation changes and desktop resizing rebuild the responsive geometry. The old character MP4 remains as an archived reference asset in the repository; the active native section has no video element and makes no request for that MP4. The original film and pose sheets remain untouched.
+
+## Earlier supplied character film — A, B, F and G
+
+The earlier supplied-film revision replaced the character introduction on **A, B, F and G** with the exact supplied `Motion/ARB_Character_Introduction_v01/render/ARB_Character_Introduction_v01.mp4`. C/D/E retain their previous character sections; H retains the earlier GSAP portrait procession.
 
 The source was inspected at timestamped frames: Aksa 0–13s, Rasa 12–25s, Bumi 24–37s, and an ensemble ending 36–40s. The web derivative is 40.0 seconds, H.264 1280×720/24fps, 5,011,204 bytes, faststart, maximum 0.5-second keyframe spacing, with audio removed for deterministic scroll seeking. Source SHA256 was identical before and after processing. See `character-intro-media.json` and `scripts/prepare-character-intro.py`.
 

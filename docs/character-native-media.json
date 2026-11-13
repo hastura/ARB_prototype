@@ -1,0 +1,385 @@
+{
+  "sourceSpec": "Motion/ARB_Character_Introduction_v01/src/characters.ts",
+  "sourceSpecSha256": "b88cdb2174e6180b5a1c9c2658e1efba88035ab0a3e0f5f87b27f2c11ad17e5f",
+  "operation": "Mechanical normalized-bound crops from existing alpha sheets; lossless WebP; no resizing, mirroring, synthesized pixels or alpha changes.",
+  "sources": [
+    {
+      "character": "aksa",
+      "path": "Motion/ARB_Character_Introduction_v01/public/characters/aksa-poses-v01.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "bytes": 1989796,
+      "sha256Before": "a49ed4ed7fb11ca42769f7f31d4ea325bbed8e2bb1e056fdf7466b1a596c0d3e",
+      "sha256After": "a49ed4ed7fb11ca42769f7f31d4ea325bbed8e2bb1e056fdf7466b1a596c0d3e"
+    },
+    {
+      "character": "rasa",
+      "path": "Motion/ARB_Character_Introduction_v01/public/characters/rasa-poses-v01.png",
+      "width": 1662,
+      "height": 946,
+      "mode": "RGBA",
+      "bytes": 1079777,
+      "sha256Before": "085f6a2e37460db87e6b055b9892596b8d1e5ac904ae841e37794717997132af",
+      "sha256After": "085f6a2e37460db87e6b055b9892596b8d1e5ac904ae841e37794717997132af"
+    },
+    {
+      "character": "bumi",
+      "path": "Motion/ARB_Character_Introduction_v01/public/characters/bumi-poses-v01.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "bytes": 1920520,
+      "sha256Before": "6f57a5ea2508c24c032e28a167e65dc7ea2057b527d683882d85e72e39c2f051",
+      "sha256After": "6f57a5ea2508c24c032e28a167e65dc7ea2057b527d683882d85e72e39c2f051"
+    }
+  ],
+  "assets": [
+    {
+      "character": "aksa",
+      "pose": 0,
+      "asset": "assets/character-native-v01/aksa-pose-0.webp",
+      "width": 279,
+      "height": 869,
+      "bytes": 247348,
+      "normalizedCrop": [
+        0.058,
+        0.056,
+        0.239,
+        0.904
+      ],
+      "pixelCrop": [
+        89,
+        57,
+        368,
+        926
+      ],
+      "sha256": "687be11c7bde9ad5079b8edf0425f4bf5d90232d1f21871dded6ed7cdf167cd5",
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "decodedPixelsEqualSourceCrop": true
+    },
+    {
+      "character": "aksa",
+      "pose": 1,
+      "asset": "assets/character-native-v01/aksa-pose-1.webp",
+      "width": 292,
+      "height": 870,
+      "bytes": 252502,
+      "normalizedCrop": [
+        0.272,
+        0.055,
+        0.461,
+        0.904
+      ],
+      "pixelCrop": [
+        417,
+        56,
+        709,
+        926
+      ],
+      "sha256": "2c73277c276994dcca051771c7a89303d994452ac5d3b9ffbb09f88a3d17a8ae",
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "decodedPixelsEqualSourceCrop": true
+    },
+    {
+      "character": "aksa",
+      "pose": 2,
+      "asset": "assets/character-native-v01/aksa-pose-2.webp",
+      "width": 182,
+      "height": 869,
+      "bytes": 158094,
+      "normalizedCrop": [
+        0.508,
+        0.056,
+        0.626,
+        0.904
+      ],
+      "pixelCrop": [
+        780,
+        57,
+        962,
+        926
+      ],
+      "sha256": "c3e577b779f77e57ab8655c0655f89977443e60323c4ce4a3466fb8a3e3ec85e",
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "decodedPixelsEqualSourceCrop": true
+    },
+    {
+      "character": "aksa",
+      "pose": 3,
+      "asset": "assets/character-native-v01/aksa-pose-3.webp",
+      "width": 455,
+      "height": 869,
+      "bytes": 339052,
+      "normalizedCrop": [
+        0.659,
+        0.056,
+        0.955,
+        0.904
+      ],
+      "pixelCrop": [
+        1012,
+        57,
+        1467,
+        926
+      ],
+      "sha256": "a2916f80ca79f97cc6999d4274285de0bd8f148dbddeab72729313c5293503eb",
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "decodedPixelsEqualSourceCrop": true
+    },
+    {
+      "character": "rasa",
+      "pose": 0,
+      "asset": "assets/character-native-v01/rasa-pose-0.webp",
+      "width": 244,
+      "height": 863,
+      "bytes": 197316,
+      "normalizedCrop": [
+        0.083,
+        0.033,
+        0.229,
+        0.944
+      ],
+      "pixelCrop": [
+        137,
+        31,
+        381,
+        894
+      ],
+      "sha256": "0e575124dd616be806910eba3c5dfa732bb27412158500a510cb9d65987c4678",
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "decodedPixelsEqualSourceCrop": true
+    },
+    {
+      "character": "rasa",
+      "pose": 1,
+      "asset": "assets/character-native-v01/rasa-pose-1.webp",
+      "width": 234,
+      "height": 863,
+      "bytes": 176750,
+      "normalizedCrop": [
+        0.324,
+        0.033,
+        0.464,
+        0.944
+      ],
+      "pixelCrop": [
+        538,
+        31,
+        772,
+        894
+      ],
+      "sha256": "bda143e28ae0641e91fa17770fbd907f2707abae76c33d75bc20414d6bec2dd3",
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "decodedPixelsEqualSourceCrop": true
+    },
+    {
+      "character": "rasa",
+      "pose": 2,
+      "asset": "assets/character-native-v01/rasa-pose-2.webp",
+      "width": 184,
+      "height": 863,
+      "bytes": 135594,
+      "normalizedCrop": [
+        0.566,
+        0.033,
+        0.676,
+        0.944
+      ],
+      "pixelCrop": [
+        940,
+        31,
+        1124,
+        894
+      ],
+      "sha256": "36bd38de8611cd9a4c84a97277ab6fcb3656335309739ea2a7c792501805d784",
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "decodedPixelsEqualSourceCrop": true
+    },
+    {
+      "character": "rasa",
+      "pose": 3,
+      "asset": "assets/character-native-v01/rasa-pose-3.webp",
+      "width": 235,
+      "height": 863,
+      "bytes": 189166,
+      "normalizedCrop": [
+        0.778,
+        0.033,
+        0.919,
+        0.944
+      ],
+      "pixelCrop": [
+        1293,
+        31,
+        1528,
+        894
+      ],
+      "sha256": "e19f163f7a5fa217caff72108630d32d6ae9e970a3a944b472997d78fd1311a3",
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "decodedPixelsEqualSourceCrop": true
+    },
+    {
+      "character": "bumi",
+      "pose": 0,
+      "asset": "assets/character-native-v01/bumi-pose-0.webp",
+      "width": 305,
+      "height": 907,
+      "bytes": 257656,
+      "normalizedCrop": [
+        0.065,
+        0.047,
+        0.263,
+        0.932
+      ],
+      "pixelCrop": [
+        99,
+        48,
+        404,
+        955
+      ],
+      "sha256": "95d8853cfb9c80a50b4b1e5083664a6486527e11289a8885ac75831206ff50a4",
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "decodedPixelsEqualSourceCrop": true
+    },
+    {
+      "character": "bumi",
+      "pose": 1,
+      "asset": "assets/character-native-v01/bumi-pose-1.webp",
+      "width": 270,
+      "height": 907,
+      "bytes": 235806,
+      "normalizedCrop": [
+        0.311,
+        0.047,
+        0.486,
+        0.932
+      ],
+      "pixelCrop": [
+        477,
+        48,
+        747,
+        955
+      ],
+      "sha256": "b7bef8ca0cf6280f1a7d52d2a41c68b707f51627e71d6e212ecf392f4f0b43ca",
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "decodedPixelsEqualSourceCrop": true
+    },
+    {
+      "character": "bumi",
+      "pose": 2,
+      "asset": "assets/character-native-v01/bumi-pose-2.webp",
+      "width": 201,
+      "height": 907,
+      "bytes": 177440,
+      "normalizedCrop": [
+        0.55,
+        0.047,
+        0.68,
+        0.932
+      ],
+      "pixelCrop": [
+        844,
+        48,
+        1045,
+        955
+      ],
+      "sha256": "21005b13eb9ad9d1e47f6e230b8c92a4d6f36e4e84727c4800610d15b8efa3b9",
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "decodedPixelsEqualSourceCrop": true
+    },
+    {
+      "character": "bumi",
+      "pose": 3,
+      "asset": "assets/character-native-v01/bumi-pose-3.webp",
+      "width": 299,
+      "height": 907,
+      "bytes": 246740,
+      "normalizedCrop": [
+        0.74,
+        0.047,
+        0.934,
+        0.932
+      ],
+      "pixelCrop": [
+        1136,
+        48,
+        1435,
+        955
+      ],
+      "sha256": "bc9d47b992c10e96c4769be3e9c23deb732ff2957b038e23384b50ec239f2a5d",
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "decodedPixelsEqualSourceCrop": true
+    }
+  ],
+  "fonts": [
+    {
+      "source": "Motion/ARB_Character_Introduction_v01/public/fonts/CormorantGaramond-Regular.woff2",
+      "asset": "assets/character-native-v01/CormorantGaramond-Regular.woff2",
+      "bytes": 22908,
+      "sha256": "727acdbfd81848bcc9a5c2a6c64ba1b97ba93c69515382785483ce0cc068be08"
+    },
+    {
+      "source": "Motion/ARB_Character_Introduction_v01/public/fonts/Cormorant-Garamond-LICENSE.txt",
+      "asset": "assets/character-native-v01/Cormorant-Garamond-LICENSE.txt",
+      "bytes": 4314,
+      "sha256": "18aabf190848725e2576eefb5c29ba06aac1029d02132252a7f312eac2e50cf3"
+    }
+  ],
+  "qa": {
+    "pass": true,
+    "webpDecodeChecks": 12,
+    "sourceSheetsModified": false,
+    "losslessRGBAEqualityChecks": 12,
+    "noUpscaling": true,
+    "totalPoseBytes": 2613464
+  }
+}

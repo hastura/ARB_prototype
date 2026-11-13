@@ -4,11 +4,13 @@ import { language, validLanguage, resolveLanguage, setLanguage, copyText, t, loc
 import { miniPreview } from './mini-preview';
 import { renderFeedbackHome, mountFeedbackMotion } from './feedback-designs';
 import { mountCharacterCinema } from './character-cinema';
+import { renderCharacterVideoCinema, mountCharacterVideoCinema } from './character-video-cinema';
 import './mini-preview.css';
 import './style.css';
 import './feedback-overrides.css';
 import './feedback-designs.css';
 import './character-cinema.css';
+import './character-video-cinema.css';
 import './fullbleed-cinema.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -74,6 +76,7 @@ function portrait(key) {
 }
 const characters = ['aksa', 'rasa', 'bumi'];
 function characterSection() {
+  if ('AB'.includes(variant)) return renderCharacterVideoCinema({ language, c });
   const rows = variant === 'E';
   return `<section class="shell section characters" id="karakter"><div class="section-heading" data-reveal><span class="eyebrow">${t("TIGA PERSPEKTIF")}</span><h2>${text('characters.title')}</h2><p>${text('characters.caption')}</p></div><div class="${rows ? 'character-rows' : 'character-grid'}">${characters.map((key, i) => `<article class="character-card" data-reveal>${rows ? portrait(key) : `<div class="character-photo">${img(`card-${key}.webp`, c(`character.${key}.name`))}</div>`}<div class="character-copy"><span class="eyebrow">0${i + 1} / ${t("TIGA PERSPEKTIF")}</span><h3>${text(`character.${key}.name`)}</h3><h4>${esc(c(`detail.highlight.${key}`).split('\n')[0])}</h4><p>${text(`character.${key}.body`)}</p>${link('/ebook', c('character.cta'), 'text-link')}</div></article>`).join('')}</div></section>`;
 }
@@ -349,6 +352,7 @@ async function render(initial = false, options = {}) {
     routeCleanup.push(mountFeedbackMotion({ variant, gsap, ScrollTrigger, reduced, signal: routeController.signal }));
     routeCleanup.push(mountCharacterCinema({ gsap, ScrollTrigger, reduced, signal: routeController.signal }));
   }
+  if (match || path === '/') routeCleanup.push(mountCharacterVideoCinema({ gsap, ScrollTrigger, reduced, signal: routeController.signal }));
   if (!initial) {
     document.querySelector('main').focus({preventScroll:true});
     document.querySelector('#announcer').textContent=`${t('Halaman')} ${t(title)}`;

@@ -171,12 +171,13 @@ test.describe('three source-based cinematic alternatives', () => {
           await expect(video).toHaveCount(1);
           await expect(page.locator('[data-motion-toggle], .fb-film-controls')).toHaveCount(0);
           await expect(video).not.toHaveAttribute('src');
-          const characters = page.locator('[data-character-cinema] article');
+          const characterSection = page.locator(variant === 'H' ? '[data-character-cinema]' : '[data-character-video-cinema]');
+          const characters = characterSection.locator('article');
           await expect(characters).toHaveCount(3);
           await expect(characters.locator('h3')).toHaveText(['Aksa', 'Rasa', 'Bumi']);
-          await expect(page.locator('[data-character-cinema]')).not.toHaveClass(/is-cinematic/);
+          if (variant === 'H') await expect(characterSection).not.toHaveClass(/is-cinematic/);
           for (const key of ['aksa', 'rasa', 'bumi']) {
-            await expect(page.locator(`[data-character="${key}"] p`)).toContainText(key === 'aksa' ? 'Aksa' : key === 'rasa' ? 'Rasa' : 'Bumi');
+            await expect(characterSection.locator(`[${variant === 'H' ? 'data-character' : 'data-character-copy'}="${key}"] p`)).toContainText(key === 'aksa' ? 'Aksa' : key === 'rasa' ? 'Rasa' : 'Bumi');
           }
           const media = await video.evaluate(element => ({
             source: element.getAttribute('src') || element.querySelector('source')?.getAttribute('src') || element.dataset.src || '',
@@ -309,7 +310,7 @@ test.describe('immersive scroll cinema', () => {
     test(`${width}px: three character portraits travel in sequence and reverse with the reader`, async ({ page }) => {
       await page.setViewportSize({ width, height });
       const errors = browserErrors(page);
-      await openHome(page, 'G');
+      await openHome(page, 'H');
       const section = page.locator('[data-character-cinema]');
       await expect(section).toHaveClass(/is-cinematic/);
       const geometry = await section.locator('[data-character-stage]').evaluate(el => ({ top: el.getBoundingClientRect().top + scrollY, travel: parseFloat(getComputedStyle(el.parentElement).paddingBottom) }));

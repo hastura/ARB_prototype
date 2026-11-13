@@ -29,9 +29,19 @@ The follow-up revision makes all three film heroes edge to edge and viewport hei
 
 The fullscreen media uses `object-fit: cover`, with responsive framing and 1.14× overscan on the amber sources to remove their baked-in letterbox. Filling a viewport with a different aspect ratio crops the source composition; its embedded graphics do not reflow. The story's website copy remains separate, readable HTML.
 
-The character section is present on F, G and H: all three existing Aksa/Rasa/Bumi portraits and localized descriptions appear in a pinned lateral procession. Large names sit behind the foreground portraits, while a smaller duplicate of each source portrait moves at a different rate. Character copy stays separate from foreground portraits at desktop, tablet, mobile and landscape. Reduced motion presents all three articles as a natural vertical stack.
+The first follow-up introduced a pinned lateral portrait procession on F, G and H. The supplied-film revision below now replaces it on F/G and additionally updates A/B; H retains that procession. In the retained portrait section, all three existing Aksa/Rasa/Bumi portraits and localized descriptions appear in sequence. Large names sit behind the foreground portraits, while a smaller duplicate of each source portrait moves at a different rate. Character copy stays separate from foreground portraits at desktop, tablet, mobile and landscape. Reduced motion presents all three articles as a natural vertical stack.
 
 The films are derived from the three supplied renders. Their embedded English dialogue/graphics are retained from those sources, including when the surrounding UI is Indonesian. Those visual words are not newly asserted novel excerpts, production credits, or additional canon. Source photographs supply the supporting stills; no new character imagery or dialogue was generated for this revision.
+
+## Supplied character film — A, B, F and G
+
+The latest request replaces the character introduction on **A, B, F and G** with the exact supplied `Motion/ARB_Character_Introduction_v01/render/ARB_Character_Introduction_v01.mp4`. C/D/E retain their previous character sections; H retains the earlier GSAP portrait procession.
+
+The source was inspected at timestamped frames: Aksa 0–13s, Rasa 12–25s, Bumi 24–37s, and an ensemble ending 36–40s. The web derivative is 40.0 seconds, H.264 1280×720/24fps, 5,011,204 bytes, faststart, maximum 0.5-second keyframe spacing, with audio removed for deterministic scroll seeking. Source SHA256 was identical before and after processing. See `character-intro-media.json` and `scripts/prepare-character-intro.py`.
+
+GSAP pins the section below the current header and maps forward/backward scroll to the film's `currentTime`; playback remains paused and muted, with no play/pause controls. The film uses contain framing so its supplied composition is preserved. On short landscape screens, the floating review dock and scroll cue are hidden while this film occupies the viewport, so they cannot cover its embedded names; review controls return after leaving the section. A localized mobile caption accompanies the current character; three readable EN/ID character articles remain below the film. Reduced motion shows three source stills (6s / 18s / 30s) and the complete localized introductions without loading the video source.
+
+Embedded English type, brand graphics, index and arrows are pixels in the supplied film, not new interactive controls or website navigation. They are retained as provided. Source character copy matches the existing English website descriptions; the surrounding UI and companion copy still support EN/ID with English default. No new character artwork, story facts or dialogue was generated.
 
 ## References actually inspected
 

@@ -1,3 +1,18 @@
+# Supplied character-introduction film — 13 November 2026
+
+Release build: **passed**, 24 modules, Vite 8.3.6. Full Chromium suite: **170 / 170 passed** (1.1 minutes) from the isolated staged-source export. The release excludes separate uncommitted motion-room/portrait-depth work.
+
+- Exact selected source film is mapped to A/B/F/G only. C/D/E retain their prior introductions, and H retains the GSAP portrait sequence.
+- All four integrations have EN/ID companion copy, three readable source stills and correct reduced-motion behavior at 390/1440 px. The original English graphics remain embedded in the film.
+- Actual paused, muted film seeks forward and backward from scroll on all four alternatives at desktop and mobile widths. Route cleanup, resizing and live reduced-motion rebuilding are covered.
+- Prior hero, localization, keyboard, book, routing, asset, overflow, eight-alternative hub and axe regressions remain covered. New axe checks on A/B report zero violations.
+- Local release smoke passed for ten alternative/device combinations: A/B/F/G supplied film and H portrait sequence, plus the existing F/G/H fullscreen heroes, in desktop EN and mobile ID. No browser errors were recorded.
+- Media QA: exact 40-second web derivative, H.264 1280×720/24fps, 80 keyframes with maximum 0.5-second spacing, faststart and no audio; four WebP decode checks. Original source SHA256 remained unchanged. See `character-intro-media.json`.
+
+Independent visual QA covered 32 alternative/language/viewport combinations. It found a review-dock overlap in short landscape; the dock and cue now hide while this film is visible, and restoration after leaving was verified. Visual evidence and source contact sheets are in project `tmp/character-intro-v01/`. The new film retains its full composition with contain framing; mobile also supplies a readable localized caption. Existing physical-device, Safari/Firefox and screen-reader verification limits remain. No PDF was generated, replaced or archived.
+
+---
+
 # Fullscreen cinema follow-up — 13 November 2026
 
 Final staged-source build: **passed** (22 modules, Vite 8.3.6). Full browser suite: **141 / 141 passed**, 47.9 seconds, Chromium. The independent source export excludes uncommitted motion-room and portrait-depth experiments.

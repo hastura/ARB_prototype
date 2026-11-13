@@ -54,7 +54,7 @@ try {
     const media = page.locator('video[data-scroll-video]');
     assert.equal(await media.evaluate(el => el.paused), true);
     assert.equal(await page.locator('[data-motion-toggle], .fb-film-controls').count(), 0);
-    assert.deepEqual(await page.locator('[data-character-cinema] article h3').allTextContents(), ['Aksa', 'Rasa', 'Bumi']);
+    assert.deepEqual(await page.locator('[data-character-cinema] article h3, [data-character-video-cinema] article[data-character-copy] h3').allTextContents(), ['Aksa', 'Rasa', 'Bumi']);
     await page.getByRole('button', { name: 'ID', exact: true }).click();
     await page.getByRole('heading', { name: /Kenali mereka/ }).waitFor();
     assert.equal(await page.locator('html').getAttribute('lang'), 'id');

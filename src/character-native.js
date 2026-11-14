@@ -1,5 +1,5 @@
 const keys = ['aksa', 'rasa', 'bumi'];
-const timing = { total: 19.9, chapters: [0, 4.5, 10.7], ensemble: 16.9, slide: 2.5, pan: 2.4, copy: .65 };
+const timing = { total: 19.9, chapters: [0, 4.5, 10.7], ensemble: 16.9, slide: 2.5, pan: 2.4, copy: .65, exitFade: .35 };
 const stops = { aksa: 3.9 / timing.total, rasa: 10.3 / timing.total, bumi: 16.5 / timing.total, ensemble: 19.7 / timing.total };
 const motionProbes = { pan: 1.75 / timing.total, transition: 5.75 / timing.total };
 const dimensions = {
@@ -84,9 +84,15 @@ export function mountCharacterNative({ gsap, ScrollTrigger, reduced, signal }) {
       top: [.176, .089, .131, short ? -.02 : -.10], size: [.694, .794, 1.241, short ? 1.9 : 2.222],
     };
     context = gsap.context(() => {
-      gsap.set(chapters, { xPercent: 100 }); gsap.set(chapters[0], { xPercent: 0 });
+      gsap.set(chapters, { xPercent: 100, autoAlpha: 1 }); gsap.set(chapters[0], { xPercent: 0 });
       gsap.set(ensemble, { xPercent: 100 });
       timeline = gsap.timeline({ onUpdate: update });
+      const exitChapter = (chapter, start) => {
+        timeline.to(chapter, { xPercent: -100, duration: timing.slide, ease: 'none' }, start);
+        // A pose may extend beyond its panel. Fade the whole departing rail
+        // at the end, so overscan leaves naturally without a moving hard mask.
+        timeline.to(chapter, { autoAlpha: 0, duration: timing.exitFade, ease: 'power1.in' }, start + timing.slide - timing.exitFade);
+      };
       chapters.forEach((chapter, index) => {
         const start = timing.chapters[index];
         // Enter at H's steady lateral pace, then pan the pose rail and reveal
@@ -102,16 +108,19 @@ export function mountCharacterNative({ gsap, ScrollTrigger, reduced, signal }) {
           const figureHeight = layout.size[layer] * artHeight;
           gsap.set(figure, { left: layout.start[layer] * artWidth, top: layout.top[layer] * artHeight, height: figureHeight, width: figureHeight * Number(figure.dataset.nativeRatio), xPercent: -50, x: 0 });
           timeline.to(figure, { x: (layout.end[layer] - layout.start[layer]) * artWidth, duration: timing.pan, ease: 'sine.inOut' }, panStart);
+          // In split landscape this left-going layer exits into the copy column.
+          // Let it dissolve before text appears, instead of cutting its body.
+          if (short && pose === 1) timeline.to(figure, { autoAlpha: 0, duration: .5, ease: 'power1.in' }, panStart + timing.pan - .5);
         });
         gsap.set(copy, { opacity: 0, y: 24 });
         timeline.to(copy, { opacity: 1, y: 0, duration: timing.copy, ease: 'power1.out' }, panStart + timing.pan);
         timeline.fromTo(name, { x: 0, opacity: 1 }, { x: -artWidth * (portrait ? .12 : .47), opacity: .12, duration: timing.pan, ease: 'sine.inOut' }, panStart);
         if (index) {
-          timeline.to(chapters[index - 1], { xPercent: -100, duration: timing.slide, ease: 'none' }, start);
+          exitChapter(chapters[index - 1], start);
           timeline.to(chapter, { xPercent: 0, duration: timing.slide, ease: 'none' }, start);
         }
       });
-      timeline.to(chapters[2], { xPercent: -100, duration: timing.slide, ease: 'none' }, timing.ensemble);
+      exitChapter(chapters[2], timing.ensemble);
       timeline.to(ensemble, { xPercent: 0, duration: timing.slide, ease: 'none' }, timing.ensemble);
       timeline.fromTo(ensemble.querySelectorAll('.native-ensemble-person'), { y: 32, opacity: 0 }, { y: 0, opacity: 1, duration: .8, stagger: .1, ease: 'power1.out' }, 18.1);
       timeline.to({}, { duration: .5 }, timing.total - .5); // A settled ensemble hold at the end.

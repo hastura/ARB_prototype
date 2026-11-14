@@ -45,6 +45,8 @@ Only transforms and opacity animate. Following the user's H pacing reference, th
 
 Text is now real localized HTML in both EN and ID, including the source headings and descriptions. Portrait/tablet layouts recompose the figures above the copy; short landscape places figures beside the copy and omits the duplicate ensemble caption. Reduced motion shows three readable natural-flow articles. The floating review dock hides while the animated stage is in view and returns afterward.
 
+The clipping follow-up fixes complete figures being sliced by their moving panel edge during a handoff. Moving chapters and the ensemble have transparent backgrounds; art can extend horizontally beyond its chapter, while the stage clips at the viewport and a vertical-only art mask preserves the mobile text region. A short fade removes a fully departing rail without a hard vertical cut. In short landscape, the left-going middle pose dissolves before the detail text appears, so it cannot enter the copy column. The 12 image crops, source sheets, H-referenced scroll distance and scrub timing are unchanged.
+
 Stable small-viewport sizing and touch-aware resize handling keep browser-toolbar height changes from tearing down the pin. Width/orientation changes and desktop resizing rebuild the responsive geometry. The old character MP4 remains as an archived reference asset in the repository; the active native section has no video element and makes no request for that MP4. The original film and pose sheets remain untouched.
 
 ## Earlier supplied character film — A, B, F and G
@@ -71,6 +73,6 @@ The Pinterest pin URL was attempted through web and browser access but could not
 
 Media QA: 15 web assets, three 1280×720 H.264 films at 24fps, no audio, faststart, maximum keyframe spacing 0.5 seconds; 12 WebP decode checks. See `feedback-media.json` for source hashes, timestamps and sizes.
 
-Browser QA covers the feedback changes, all eight directions, both UI languages, 320/390/768/1440 layouts, book opening/closing, real forward/backward film seeking on desktop/mobile, character sequencing, keyboard, route cleanup and automated axe checks. The 14 November staged-source release passed its build and all 173 browser tests in 1.6 minutes, including actual wheel-motion comparisons against H for A/B/F/G. Detailed evidence and verification limits are recorded in `QA.md`.
+Browser QA covers the feedback changes, all eight directions, both UI languages, 320/390/768/1440 layouts, book opening/closing, real forward/backward film seeking on desktop/mobile, character sequencing, keyboard, route cleanup and automated axe checks. The 14 November clipping-fix release passed its build and all 181 browser tests in 2.2 minutes, including actual wheel-motion comparisons against H and opaque-body-pixel checks across A/B/F/G handoffs. Detailed evidence and verification limits are recorded in `QA.md`.
 
 Uncommitted motion-room/portrait-depth experiments and the user's Vite multipage configuration are preserved. Release QA uses an export of the staged repository so those separate experiments are not accidentally published or required by this release. No PDF was created, replaced or archived.

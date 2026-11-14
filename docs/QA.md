@@ -1,3 +1,17 @@
+# Complete character silhouettes during handoffs — 14 November 2026
+
+Release build: **passed** (24 modules, Vite 8.3.6). Full Chromium suite: **181 / 181 passed** (2.2 minutes), from the isolated staged-source export.
+
+- Reproduced the reported cut on G at two intermediate handoffs: the translated chapter/art edge was inside the stage and clipped Aksa's walking pose and Rasa's rear pose. Incoming opaque panel backgrounds also masked the outgoing figure. All 12 source crops remain complete and RGBA-identical to their sources; no asset was regenerated or altered.
+- Moving chapters are now transparent and permit horizontal overscan. The stage supplies the fixed viewport boundary; a vertical-only art mask retains mobile copy separation. A short whole-rail departure fade prevents residual figures after a handoff. Short landscape dissolves the left-going middle pose before copy appears, keeping all visible poses clear of the text.
+- Eight new regressions cover A/B/F/G at 1440×1000 and 390×844. They sample actual opaque source-body pixels beyond a moving panel boundary and require those pixels to remain paintable, with no incoming blank background covering them. All three handoffs, reverse scrolling and hidden departed chapters are checked. The original build failed this exact assertion before the correction.
+- Detail collision checks now include every visible pose, effective ancestor opacity and actual computed clip-path bounds. Existing source, EN/ID, pacing against H, hero, reduced-motion, resize, keyboard, routing, book, overflow, review-hub and axe checks remain covered.
+- Independent visual review covered 36 frames at 1440×1000 EN, 390×844 ID and 844×390 landscape, including the two supplied cut positions, later handoff frames, all three details, ensemble and reverse transitions. Live reduced-motion rebuilding restores all three natural-flow articles and their normal visible poses, then correctly resumes reverse motion.
+
+Evidence is in project `tmp/character-crop-fix-v01/`. The scroll interval, 0.65-second catch-up, supplied copy and media are preserved. Physical devices, Safari/Firefox and hardware FPS remain unverified; client visual acceptance remains separate from these checks. No PDF was generated, replaced or archived.
+
+---
+
 # H-referenced character pacing — 14 November 2026
 
 Release build: **passed** (24 modules, Vite 8.3.6). Full Chromium suite: **173 / 173 passed** (1.6 minutes) from the isolated staged-source export.

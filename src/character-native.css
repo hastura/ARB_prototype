@@ -18,14 +18,16 @@
 .native-ensemble,.native-chapters{display:none}
 .is-native-scroll .native-stage{height:calc(100svh - var(--native-header));overflow:hidden;isolation:isolate}
 .is-native-scroll .native-track,.is-native-scroll .native-chapter{position:absolute;inset:0;width:100%;height:100%}
-.is-native-scroll .native-chapter{padding:0;overflow:hidden;will-change:transform}
-.is-native-scroll .native-art{position:absolute;inset:0;width:100%;height:100%;display:block;padding:0;overflow:hidden}
+/* Moving panel edges must not become masks through the middle of a figure. */
+.is-native-scroll .native-chapter{padding:0;background:transparent;overflow:visible;will-change:transform,opacity}
+/* Keep portraits above mobile copy, while allowing horizontal pose overscan. */
+.is-native-scroll .native-art{position:absolute;inset:0;width:100%;height:100%;display:block;padding:0;overflow:visible;clip-path:inset(0 -100vw)}
 .is-native-scroll .native-figure{position:absolute;margin:0;display:block;will-change:transform}
 .is-native-scroll .native-name{display:block;position:absolute;left:5.7%;top:37.7%;width:74%;text-align:center;font:clamp(160px,17vw,360px)/1 NativeCharacterSerif,var(--serif);letter-spacing:-.045em;color:#f4f5ed;pointer-events:none;will-change:transform,opacity}
 .is-native-scroll .native-copy{position:absolute;left:58.2%;top:37%;width:23.5%;max-width:460px;margin:0;will-change:transform,opacity}
 .is-native-scroll .native-copy h4{font-size:clamp(40px,4.4vw,68px)}
 .is-native-scroll .native-copy p{font-size:16px}
-.is-native-scroll .native-ensemble{display:block;position:absolute;inset:0;background:var(--native-paper);overflow:hidden;will-change:transform}
+.is-native-scroll .native-ensemble{display:block;position:absolute;inset:0;background:transparent;overflow:hidden;will-change:transform}
 .native-ensemble-person{position:absolute;left:calc(25% + var(--person-index)*25%);top:13%;height:63%;transform:translateX(-50%)}
 .native-ensemble-person img{height:100%;width:auto;max-width:none}
 .native-ensemble-person>span{display:block;text-align:center;font:clamp(32px,4vw,64px)/1 NativeCharacterSerif,var(--serif);margin-top:20px;letter-spacing:-.04em}

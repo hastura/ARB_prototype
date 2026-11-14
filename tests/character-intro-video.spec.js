@@ -88,18 +88,33 @@ async function readableDetail(page, key) {
   });
   expect(opacity, `${key} detail must actually be visible, not only have an offscreen/transparent DOM box`).toBeGreaterThan(.95);
   const bounds = await copy.boundingBox();
-  const foreground = await article.locator('[data-native-figure="2"]').evaluate(element => {
+  const figures = await article.locator('[data-native-figure]').evaluateAll(elements => elements.map(element => {
     const box = element.getBoundingClientRect();
+    let opacity = 1, visible = true;
     let left = Math.max(0, box.left), top = Math.max(0, box.top), right = Math.min(innerWidth, box.right), bottom = Math.min(innerHeight, box.bottom);
-    for (let ancestor = element.parentElement; ancestor; ancestor = ancestor.parentElement) {
+    for (let ancestor = element; ancestor; ancestor = ancestor.parentElement) {
       const style = getComputedStyle(ancestor), clip = ancestor.getBoundingClientRect();
+      opacity *= Number(style.opacity);
+      visible = visible && style.visibility !== 'hidden' && style.display !== 'none';
       if (/(hidden|clip|scroll|auto)/.test(style.overflowX)) { left = Math.max(left, clip.left); right = Math.min(right, clip.right); }
       if (/(hidden|clip|scroll|auto)/.test(style.overflowY)) { top = Math.max(top, clip.top); bottom = Math.min(bottom, clip.bottom); }
+      const inset = style.clipPath.match(/^inset\(([^)]+)\)$/);
+      if (inset) {
+        const values = inset[1].split(/\s+round\s+/)[0].trim().split(/\s+/);
+        const sides = values.length === 1 ? [values[0], values[0], values[0], values[0]] : values.length === 2 ? [values[0], values[1], values[0], values[1]] : values.length === 3 ? [values[0], values[1], values[2], values[1]] : values;
+        const pixels = (value, span) => parseFloat(value) * (value.endsWith('%') ? span / 100 : 1);
+        left = Math.max(left, clip.left + pixels(sides[3], clip.width));
+        right = Math.min(right, clip.right - pixels(sides[1], clip.width));
+        top = Math.max(top, clip.top + pixels(sides[0], clip.height));
+        bottom = Math.min(bottom, clip.bottom - pixels(sides[2], clip.height));
+      }
     }
-    return { x: left, y: top, width: Math.max(0, right - left), height: Math.max(0, bottom - top) };
-  });
-  const intersects = foreground.width > 0 && foreground.height > 0 && bounds.x < foreground.x + foreground.width && bounds.x + bounds.width > foreground.x && bounds.y < foreground.y + foreground.height && bounds.y + bounds.height > foreground.y;
-  expect(intersects, `${key} body copy must remain separate from the foreground portrait`).toBe(false);
+    return { pose: element.dataset.nativeFigure, x: left, y: top, width: Math.max(0, right - left), height: Math.max(0, bottom - top), opacity, visible };
+  }));
+  for (const figure of figures) {
+    const intersects = figure.visible && figure.opacity > .01 && figure.width > 0 && figure.height > 0 && bounds.x < figure.x + figure.width && bounds.x + bounds.width > figure.x && bounds.y < figure.y + figure.height && bounds.y + bounds.height > figure.y;
+    expect(intersects, `${key} body copy must remain separate from every visible pose: ${JSON.stringify(figure)}`).toBe(false);
+  }
 }
 
 async function frameFitsViewport(locator) {
@@ -126,6 +141,52 @@ async function wheelTravel(page, locator, range, progress, settle) {
   await settle(afterProgress);
   const afterX = await locator.evaluate(element => element.getBoundingClientRect().left);
   return Math.abs(afterX - beforeX);
+}
+
+async function completeRearPoseIsPaintable(page, key) {
+  const result = await page.locator(`[data-native-character="${key}"] [data-native-figure="3"] img`).evaluate(image => {
+    const canvas = document.createElement('canvas');
+    canvas.width = image.naturalWidth; canvas.height = image.naturalHeight;
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    context.drawImage(image, 0, 0);
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    const box = image.getBoundingClientRect();
+    const art = image.closest('.native-art').getBoundingClientRect();
+    const chapter = image.closest('[data-native-character]').getBoundingClientRect();
+    const probes = [];
+    // Select real opaque body pixels on the right of each vertical quarter,
+    // rather than treating the transparent image rectangle as visible artwork.
+    for (let quarter = 0; quarter < 4; quarter++) {
+      let candidate;
+      for (let py = Math.floor(canvas.height * quarter / 4); py < canvas.height * (quarter + 1) / 4; py += 3) {
+        for (let px = Math.floor(canvas.width * .6); px < canvas.width; px += 2) {
+          if (pixels[(py * canvas.width + px) * 4 + 3] < 250) continue;
+          const x = box.left + (px + .5) * box.width / canvas.width;
+          const y = box.top + (py + .5) * box.height / canvas.height;
+          if (x < 8 || x > innerWidth - 8 || y < Math.max(art.top, 0) + 8 || y > Math.min(art.bottom, innerHeight) - 8) continue;
+          if (!candidate || x > candidate.x) candidate = { x, y };
+        }
+      }
+      if (candidate) {
+        const hits = document.elementsFromPoint(candidate.x, candidate.y);
+        const index = hits.indexOf(image);
+        const opaqueCover = index < 0 ? [] : hits.slice(0, index).filter(element => {
+          const color = getComputedStyle(element).backgroundColor;
+          return color !== 'transparent' && color !== 'rgba(0, 0, 0, 0)';
+        }).map(element => element.className);
+        probes.push({ ...candidate, pastMovingPanel: candidate.x > chapter.right + 2, imageCanPaint: index >= 0, opaqueCover });
+      }
+    }
+    return { chapterRight: chapter.right, imageRight: box.right, probes };
+  });
+  expect(result.probes.length, `${key}: source body must have visible test pixels`).toBeGreaterThan(1);
+  if (result.imageRight > result.chapterRight + 12 && result.chapterRight > 8 && result.chapterRight < page.viewportSize().width - 24) {
+    expect(result.probes.some(probe => probe.pastMovingPanel), `${key}: exercise the body beyond the moving panel boundary`).toBe(true);
+  }
+  for (const probe of result.probes) {
+    expect(probe.imageCanPaint, `${key}: a moving panel must not cut a source body pixel: ${JSON.stringify(result)}`).toBe(true);
+    expect(probe.opaqueCover, `${key}: incoming blank paper must not cover the outgoing body pixel`).toEqual([]);
+  }
 }
 
 test.describe('code-built character introduction, reduced motion and scope', () => {
@@ -218,6 +279,30 @@ test.describe('code-built character introduction, eased scroll', () => {
   }
   for (const alternative of alternatives) {
     for (const width of [1440, 390]) {
+      test(`${alternative} ${width}px: outgoing bodies remain complete across moving panel boundaries`, async ({ page }) => {
+        await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
+        await open(page, alternative);
+        await completeNativeCopy(page);
+        await page.waitForTimeout(600);
+        const section = page.locator('[data-character-native]');
+        const range = await pinRange(page);
+        const stops = await stopsFor(page);
+        const settle = async progress => {
+          await page.evaluate(({ range, progress }) => scrollTo(0, range.start + range.travel * progress), { range, progress });
+          await expect.poll(() => section.evaluate((element, target) => Math.abs(Number(element.dataset.nativeProgress) - target), progress)).toBeLessThan(.0001);
+        };
+        for (const [key, time, next] of [['aksa', 5.4, 'rasa'], ['rasa', 11.6, 'bumi'], ['bumi', 17.8, 'ensemble']]) {
+          await settle(time / 19.9);
+          await completeRearPoseIsPaintable(page, key);
+          await settle(stops[next]);
+          await expect.poll(() => section.locator(`[data-native-character="${key}"]`).evaluate(element => Number(getComputedStyle(element).opacity))).toBeLessThan(.01);
+          // Reverse scrolling must restore the full outgoing body, too.
+          await settle(time / 19.9);
+          await completeRearPoseIsPaintable(page, key);
+        }
+        await noOverflow(page);
+      });
+
       test(`${alternative} ${width}px: figures interpolate smoothly, reverse through characters, and clean up on navigation`, async ({ page }) => {
         await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
         const errors = captureErrors(page);

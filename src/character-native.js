@@ -1,5 +1,7 @@
 const keys = ['aksa', 'rasa', 'bumi'];
-const stops = { aksa: 2.8 / 14, rasa: 6.8 / 14, bumi: 10.8 / 14, ensemble: 13.5 / 14 };
+const timing = { total: 19.9, chapters: [0, 4.5, 10.7], ensemble: 16.9, slide: 2.5, pan: 2.4, copy: .65 };
+const stops = { aksa: 3.9 / timing.total, rasa: 10.3 / timing.total, bumi: 16.5 / timing.total, ensemble: 19.7 / timing.total };
+const motionProbes = { pan: 1.75 / timing.total, transition: 5.75 / timing.total };
 const dimensions = {
   aksa: [[279, 869], [292, 870], [182, 869], [455, 869]],
   rasa: [[244, 863], [234, 863], [184, 863], [235, 863]],
@@ -13,7 +15,7 @@ export function renderCharacterNative({ language, c }) {
   const pick = (id, en) => language === 'id' ? id : en;
   const asset = (key, pose) => `${import.meta.env.BASE_URL}assets/character-native-v01/${key}-pose-${pose}.webp`;
   const figure = (key, pose) => `<div class="native-figure" data-native-figure="${pose}" data-native-ratio="${dimensions[key][pose][0] / dimensions[key][pose][1]}"><img src="${asset(key, pose)}" alt="" width="${dimensions[key][pose][0]}" height="${dimensions[key][pose][1]}" loading="lazy" decoding="async"></div>`;
-  return `<section class="character-native" id="karakter" data-character-native data-native-stops='${JSON.stringify(stops)}' aria-labelledby="native-character-title">
+  return `<section class="character-native" id="karakter" data-character-native data-native-stops='${JSON.stringify(stops)}' data-native-motion-probes='${JSON.stringify(motionProbes)}' aria-labelledby="native-character-title">
     <div class="native-heading"><span class="eyebrow">${pick('TIGA PERSPEKTIF', 'THREE PERSPECTIVES')}</span><h2 id="native-character-title">${content('characters.title')}</h2><p>${content('characters.caption')}</p></div>
     <div class="native-stage" data-character-native-stage>
       <div class="native-track" data-character-native-track>${keys.map((key, index) => `<article class="native-chapter" data-native-character="${key}" aria-labelledby="native-${key}-title">
@@ -34,6 +36,7 @@ export function mountCharacterNative({ gsap, ScrollTrigger, reduced, signal }) {
   const ensemble = section.querySelector('[data-native-ensemble]');
   const labels = [...section.querySelectorAll('[data-native-label]')];
   const meter = section.querySelector('[data-native-meter]');
+  const setMeter = gsap.quickSetter(meter, 'scaleX');
   const reduce = reduced || matchMedia('(prefers-reduced-motion: reduce)');
   const touch = matchMedia('(hover: none) and (pointer: coarse)');
   let context, timeline, trigger, resizeTimer = 0, disposed = false;
@@ -46,12 +49,12 @@ export function mountCharacterNative({ gsap, ScrollTrigger, reduced, signal }) {
   };
   const update = () => {
     const progress = timeline.progress();
-    const time = progress * 14;
-    const key = time < 4 ? 'aksa' : time < 8 ? 'rasa' : time < 12 ? 'bumi' : 'ensemble';
+    const time = progress * timing.total;
+    const key = time < timing.chapters[1] ? 'aksa' : time < timing.chapters[2] ? 'rasa' : time < timing.ensemble ? 'bumi' : 'ensemble';
     section.dataset.nativeProgress = progress.toFixed(5);
     section.dataset.nativeActive = key;
     labels.forEach(label => label.classList.toggle('is-current', key === 'ensemble' || label.dataset.nativeLabel === key));
-    gsap.set(meter, { scaleX: progress });
+    setMeter(progress);
   };
   const rebuild = () => {
     if (disposed) return;
@@ -85,8 +88,10 @@ export function mountCharacterNative({ gsap, ScrollTrigger, reduced, signal }) {
       gsap.set(ensemble, { xPercent: 100 });
       timeline = gsap.timeline({ onUpdate: update });
       chapters.forEach((chapter, index) => {
-        const start = index * 4;
-        const panStart = start + (index ? .9 : .55);
+        const start = timing.chapters[index];
+        // Enter at H's steady lateral pace, then pan the pose rail and reveal
+        // the copy after it settles. Keep a separate, readable detail hold.
+        const panStart = start + (index ? timing.slide : .55);
         const figures = [...chapter.querySelectorAll('[data-native-figure]')];
         const copy = chapter.querySelector('[data-native-copy]');
         const name = chapter.querySelector('.native-name');
@@ -96,24 +101,27 @@ export function mountCharacterNative({ gsap, ScrollTrigger, reduced, signal }) {
           const layer = ({ 0: 0, 3: 1, 1: 2, 2: 3 })[pose];
           const figureHeight = layout.size[layer] * artHeight;
           gsap.set(figure, { left: layout.start[layer] * artWidth, top: layout.top[layer] * artHeight, height: figureHeight, width: figureHeight * Number(figure.dataset.nativeRatio), xPercent: -50, x: 0 });
-          timeline.to(figure, { x: (layout.end[layer] - layout.start[layer]) * artWidth, duration: 1.25, ease: 'power3.inOut' }, panStart);
+          timeline.to(figure, { x: (layout.end[layer] - layout.start[layer]) * artWidth, duration: timing.pan, ease: 'sine.inOut' }, panStart);
         });
         gsap.set(copy, { opacity: 0, y: 24 });
-        timeline.to(copy, { opacity: 1, y: 0, duration: .65, ease: 'power3.out' }, panStart + .95);
-        timeline.fromTo(name, { x: 0, opacity: 1 }, { x: -artWidth * (portrait ? .12 : .47), opacity: .12, duration: 1.25, ease: 'power3.inOut' }, panStart);
+        timeline.to(copy, { opacity: 1, y: 0, duration: timing.copy, ease: 'power1.out' }, panStart + timing.pan);
+        timeline.fromTo(name, { x: 0, opacity: 1 }, { x: -artWidth * (portrait ? .12 : .47), opacity: .12, duration: timing.pan, ease: 'sine.inOut' }, panStart);
         if (index) {
-          timeline.to(chapters[index - 1], { xPercent: -100, duration: .85, ease: 'power3.inOut' }, start);
-          timeline.to(chapter, { xPercent: 0, duration: .85, ease: 'power3.inOut' }, start);
+          timeline.to(chapters[index - 1], { xPercent: -100, duration: timing.slide, ease: 'none' }, start);
+          timeline.to(chapter, { xPercent: 0, duration: timing.slide, ease: 'none' }, start);
         }
       });
-      timeline.to(chapters[2], { xPercent: -100, duration: .85, ease: 'power3.inOut' }, 12);
-      timeline.to(ensemble, { xPercent: 0, duration: .85, ease: 'power3.inOut' }, 12);
-      timeline.fromTo(ensemble.querySelectorAll('.native-ensemble-person'), { y: 32, opacity: 0 }, { y: 0, opacity: 1, duration: .8, stagger: .1, ease: 'power3.out' }, 12.5);
-      timeline.to({}, { duration: .5 }, 13.5); // A settled ensemble hold at the end.
+      timeline.to(chapters[2], { xPercent: -100, duration: timing.slide, ease: 'none' }, timing.ensemble);
+      timeline.to(ensemble, { xPercent: 0, duration: timing.slide, ease: 'none' }, timing.ensemble);
+      timeline.fromTo(ensemble.querySelectorAll('.native-ensemble-person'), { y: 32, opacity: 0 }, { y: 0, opacity: 1, duration: .8, stagger: .1, ease: 'power1.out' }, 18.1);
+      timeline.to({}, { duration: .5 }, timing.total - .5); // A settled ensemble hold at the end.
       trigger = ScrollTrigger.create({
         trigger: stage, start: () => `top top+=${headerHeight()}`,
-        end: () => `+=${Math.max(3600, Math.min(6000, stableHeight * 5.6))}`,
-        animation: timeline, scrub: .95, pin: stage, pinSpacing: true, anticipatePin: 1,
+        // H traverses two panels over max(2200px, 3.2 viewport heights).
+        // Give each native handoff that same distance, with additional room
+        // for the separate pose pans and the reading holds between them.
+        end: () => `+=${Math.round(Math.max(2200, stableHeight * 3.2) * timing.total / (2 * timing.slide))}`,
+        animation: timeline, scrub: .65, pin: stage, pinSpacing: true, anticipatePin: 1,
         onUpdate: syncView, onRefresh: syncView,
       });
       update();

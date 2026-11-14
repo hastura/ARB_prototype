@@ -113,6 +113,21 @@ async function frameFitsViewport(locator) {
   expect(geometry.bottom, JSON.stringify(geometry)).toBeLessThanOrEqual(geometry.height + 1);
 }
 
+async function wheelTravel(page, locator, range, progress, settle) {
+  await page.evaluate(({ range, progress }) => scrollTo(0, range.start + range.travel * progress), { range, progress });
+  const actualProgress = await page.evaluate(range => (scrollY - range.start) / range.travel, range);
+  await settle(actualProgress);
+  const beforeX = await locator.evaluate(element => element.getBoundingClientRect().left);
+  const beforeScroll = await page.evaluate(() => scrollY);
+  await page.mouse.move(page.viewportSize().width / 2, page.viewportSize().height / 2);
+  await page.mouse.wheel(0, 120);
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(beforeScroll + 100);
+  const afterProgress = await page.evaluate(range => (scrollY - range.start) / range.travel, range);
+  await settle(afterProgress);
+  const afterX = await locator.evaluate(element => element.getBoundingClientRect().left);
+  return Math.abs(afterX - beforeX);
+}
+
 test.describe('code-built character introduction, reduced motion and scope', () => {
   test.use({ reducedMotion: 'reduce' });
   for (const alternative of alternatives) {
@@ -164,6 +179,43 @@ test.describe('code-built character introduction, reduced motion and scope', () 
 
 test.describe('code-built character introduction, eased scroll', () => {
   test.use({ reducedMotion: 'no-preference' });
+  for (const width of [1440, 390]) {
+    test(`${width}px: native pose and chapter wheel pacing stays as calm as H`, async ({ page }) => {
+      test.setTimeout(90_000);
+      await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
+      const errors = captureErrors(page);
+      await open(page, 'H');
+      const referenceStage = page.locator('[data-character-stage]');
+      const referenceTrack = page.locator('[data-character-track]');
+      const referenceRange = await referenceStage.evaluate(element => ({
+        start: element.parentElement.getBoundingClientRect().top + scrollY,
+        travel: parseFloat(getComputedStyle(element.parentElement).paddingBottom),
+        width: element.clientWidth,
+      }));
+      const settleReference = progress => expect.poll(() => referenceTrack.evaluate((element, expected) => Math.abs(element.getBoundingClientRect().left - expected), -2 * referenceRange.width * progress), { timeout: 10000 }).toBeLessThan(.75);
+      const referenceTravel = await wheelTravel(page, referenceTrack, referenceRange, .3, settleReference);
+      expect(referenceTravel).toBeGreaterThan(width * .03);
+      for (const alternative of alternatives) {
+        await open(page, alternative);
+        await completeNativeCopy(page);
+        const section = page.locator('[data-character-native]');
+        const range = await pinRange(page);
+        const probes = JSON.parse(await section.getAttribute('data-native-motion-probes'));
+        expect(Object.keys(probes)).toEqual(['pan', 'transition']);
+        const settle = progress => expect.poll(() => section.evaluate((element, expected) => Math.abs(Number(element.dataset.nativeProgress) - expected), progress), { timeout: 10000 }).toBeLessThan(.0002);
+        const first = section.locator('[data-native-character="aksa"]');
+        for (const [phase, element] of [['pan', first.locator('[data-native-figure="2"]')], ['transition', first]]) {
+          expect(probes[phase]).toBeGreaterThan(0);
+          expect(probes[phase]).toBeLessThan(1);
+          const movement = await wheelTravel(page, element, range, probes[phase], settle);
+          expect(movement, `${alternative} ${phase} must actually be moving at its pacing probe`).toBeGreaterThan(referenceTravel * .2);
+          expect(movement, `${alternative} ${phase} must not rush farther than 1.5x H for the same 120px wheel input`).toBeLessThanOrEqual(referenceTravel * 1.5 + 1);
+        }
+        await noOverflow(page);
+      }
+      expect(errors).toEqual([]);
+    });
+  }
   for (const alternative of alternatives) {
     for (const width of [1440, 390]) {
       test(`${alternative} ${width}px: figures interpolate smoothly, reverse through characters, and clean up on navigation`, async ({ page }) => {
@@ -173,6 +225,9 @@ test.describe('code-built character introduction, eased scroll', () => {
         page.on('request', request => { if (oldCharacterFilm.test(request.url())) requests.push(request.url()); });
         await open(page, alternative);
         await completeNativeCopy(page);
+        // ScrollTrigger intentionally bypasses numeric scrub during its first
+        // 500ms startup window. Measure eased input after that source-defined phase.
+        await page.waitForTimeout(600);
         const section = page.locator('[data-character-native]');
         const range = await pinRange(page);
         const stops = await stopsFor(page);

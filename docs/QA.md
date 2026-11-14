@@ -1,3 +1,17 @@
+# H-referenced character pacing — 14 November 2026
+
+Release build: **passed** (24 modules, Vite 8.3.6). Full Chromium suite: **173 / 173 passed** (1.6 minutes) from the isolated staged-source export.
+
+- User direction: make the A/B/F/G character introduction feel as calm as H. The implementation matches H's lateral distance per panel and 0.65-second scrub catch-up, adds separate sine-eased pose pans, then reveals the copy with a full-opacity reading hold before the next character.
+- Two new browser tests compare real 120px wheel input against H at 1440×1000 and 390×844. All four alternatives pass for both the foreground pose pan and the chapter crossing, with actual movement required and a maximum 1.5× reference displacement.
+- Independent forward/reverse measurements cover all eight alternative/viewport combinations. Desktop H moves 108px; native panels move approximately 107.6–107.9px and the foreground pose 108.25px. Mobile H moves 34.67px; native panels move approximately 34.58–34.60px and the foreground pose 46.3px. Reverse return error stays below 0.25px.
+- The complete sequence spans 12,736px on desktop and 10,749px on mobile. Copy is fully opaque at each detail stop. Reduced motion, touch height-only resizing, orientation/width changes, short landscape, route cleanup, EN/ID, source poses, prior hero pacing, all eight alternatives and onward journeys remain covered.
+- The original large-jump interpolation assertion remains intact. Its setup now waits beyond ScrollTrigger's source-defined 500ms startup phase: six immediate samples reproduced startup snapping, while six post-startup samples showed intermediate eased positions. No production workaround or weakened assertion was introduced.
+
+Evidence is stored in project `tmp/intro-pacing-v02/`. The reproducible public pacing check is `node scripts/verify-intro-pacing.mjs`; `ARB_PREVIEW_URL` can target a local release. No new copy, artwork, media or dependencies were introduced. Physical touch devices, Safari/Firefox and hardware FPS remain unverified; visual acceptance remains a client review decision. No PDF was generated, replaced or archived.
+
+---
+
 # Calmer F/G/H hero scroll — 13 November 2026
 
 Release build: **passed** (24 modules, Vite 8.3.6). Full Chromium suite: **171 / 171 passed** (1.8 minutes) from the isolated staged-source export.

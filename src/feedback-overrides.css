@@ -32,12 +32,12 @@
 .variant-tile:last-child{grid-column:span 3;max-width:none;margin:0}
 .variant-gallery{grid-template-columns:repeat(6,minmax(0,1fr))}
 .variant-tile{grid-column:span 3}
-.variant-tile:nth-child(-n+3){grid-column:span 2}
-.variant-tile:nth-child(-n+3) .variant-thumbnail{padding:0;background:var(--ink)}
-.variant-tile:nth-child(-n+3) .tile-title h2{font-size:27px}
-.variant-tile:nth-child(-n+3) .tile-title{gap:12px}
-.variant-tile:nth-child(-n+3) .tile-actions{gap:12px}
-.variant-tile:nth-child(-n+3) .tile-actions .text-link{min-width:88px}
+.variant-tile:has(.motion-mini){grid-column:span 2}
+.variant-tile:has(.motion-mini) .variant-thumbnail{padding:0;background:var(--ink)}
+.variant-tile:has(.motion-mini) .tile-title h2{font-size:27px}
+.variant-tile:has(.motion-mini) .tile-title{gap:12px}
+.variant-tile:has(.motion-mini) .tile-actions{gap:12px}
+.variant-tile:has(.motion-mini) .tile-actions .text-link{min-width:88px}
 .motion-mini{position:relative;isolation:isolate;width:100%;height:100%;background:#241b13;color:#fff7e7;display:flex;align-items:end;padding:24px;overflow:hidden}
 .motion-mini>img{position:absolute!important;inset:0;width:100%;height:100%;object-fit:cover;opacity:.7;z-index:-2}
 .motion-mini:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,#1e150fe6,transparent 75%);z-index:-1}
@@ -47,11 +47,11 @@
 .review-options a{min-height:80px}
 @media(min-width:768px) and (max-width:1000px){
   .variant-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .variant-tile,.variant-tile:last-child,.variant-tile:nth-child(-n+3){grid-column:auto}
+  .variant-tile,.variant-tile:last-child,.variant-tile:has(.motion-mini){grid-column:auto}
 }
 @media(max-width:767px){
   .variant-gallery{grid-template-columns:1fr}
-  .variant-tile,.variant-tile:last-child,.variant-tile:nth-child(-n+3){grid-column:1}
+  .variant-tile,.variant-tile:last-child,.variant-tile:has(.motion-mini){grid-column:1}
   .site-footer .footer-grid{grid-template-columns:1fr 1fr}
   .book-stage{min-height:460px;overflow:hidden}
   .book-object{scale:.92}

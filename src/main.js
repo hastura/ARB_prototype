@@ -5,6 +5,8 @@ import { miniPreview } from './mini-preview';
 import { renderFeedbackHome, mountFeedbackMotion } from './feedback-designs';
 import { mountCharacterCinema } from './character-cinema';
 import { renderCharacterNative, mountCharacterNative } from './character-native';
+import { clientHero, clientDialogue, bindClientHero } from './client-hero.js';
+import { featuredBookId, sampleBooks, reflectionBook, reflectionLink, reflectionIndex, bookReflectionSection, reflectionForm, mountReflection } from './client-reflection';
 import './mini-preview.css';
 import './style.css';
 import './feedback-overrides.css';
@@ -12,6 +14,7 @@ import './feedback-designs.css';
 import './character-cinema.css';
 import './character-native.css';
 import './fullbleed-cinema.css';
+import './client-feedback.css';
 
 gsap.registerPlugin(ScrollTrigger);
 const app = document.querySelector('#app');
@@ -19,9 +22,11 @@ const overlays = document.querySelector('#overlays');
 const embedded = new URLSearchParams(location.search).has('embed');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 const mediaFine = matchMedia('(hover: hover) and (pointer: fine)');
-const names = { A: 'Potret Editorial', B: 'Ruang Percakapan', C: 'Langkah Bersama', D: 'Halaman Pembuka', E: 'Lapisan Kisah', F: 'Ruang Bersama', G: 'Sinema Amber', H: 'Kolase Amber' };
-const reviewEntries = () => ['F', 'G', 'H', 'A', 'B', 'C', 'D', 'E'].map(key => [key, names[key]]);
-const descriptions = { A: 'Dekat. Personal. Tiga sahabat dalam satu bingkai.', B: 'Sebuah ruang untuk duduk, mendengar, dan berbagi.', C: 'Lanskap terbuka. Langkah yang membawa cerita.', D: 'Seperti membuka halaman pertama sebuah buku.', E: 'Foto, bentuk, dan ruang yang bergerak perlahan.', F: 'Kolase ruang hangat, ritme editorial, dan buku yang melayang.', G: 'Cahaya amber, film sinematik, dan komposisi yang luas.', H: 'Lapisan potret, bidang diagonal, dan perjalanan scroll yang menyatu.' };
+const names = { A: 'Potret Editorial', B: 'Ruang Percakapan', C: 'Langkah Bersama', D: 'Halaman Pembuka', E: 'Lapisan Kisah', F: 'Ruang Bersama', G: 'Sinema Amber', H: 'Kolase Amber', I: 'Dialog Sinematik', J: 'Hero Paralaks', K: 'Suasana Bergerak', L: 'Ruang Paralaks' };
+const clientVariants = ['I', 'J', 'K', 'L'];
+const isClientVariant = key => clientVariants.includes(key);
+const reviewEntries = () => [...clientVariants, 'F', 'G', 'H', 'A', 'B', 'C', 'D', 'E'].map(key => [key, names[key]]);
+const descriptions = { A: 'Dekat. Personal. Tiga sahabat dalam satu bingkai.', B: 'Sebuah ruang untuk duduk, mendengar, dan berbagi.', C: 'Lanskap terbuka. Langkah yang membawa cerita.', D: 'Seperti membuka halaman pertama sebuah buku.', E: 'Foto, bentuk, dan ruang yang bergerak perlahan.', F: 'Kolase ruang hangat, ritme editorial, dan buku yang melayang.', G: 'Cahaya amber, film sinematik, dan komposisi yang luas.', H: 'Lapisan potret, bidang diagonal, dan perjalanan scroll yang menyatu.', I: 'Enam panel dialog membuka cerita secara berurutan.', J: 'Bidang warna bergerak perlahan di atas latar kertas, dengan paralaks berlapis saat digulir.', K: 'Gerak lingkungan yang berulang di dalam hero.', L: 'Potret di ruang hangat, dengan paralaks saat digulir dan gerak tirai serta dedaunan.' };
 let variant = sessionStorage.getItem('arb-variant') || 'E';
 let motion = null;
 let routeController = null;
@@ -45,16 +50,25 @@ function languageSwitch() {
 }
 
 function navLinks() {
-  return [['/tentang-bantuan', c('nav.help')], ['/ebook', c('nav.ebook')], ['/renungan', c('nav.reflections')]].map(([path, label]) => `<a ${activeRoute === path ? 'aria-current="page"' : ''} href="${href(path)}">${label}</a>`).join('');
+  return navigation().map(([path, label]) => {
+    const active = activeRoute === path || (path === '/renungan' && activeRoute.startsWith('/renungan/'));
+    return `<a ${active ? 'aria-current="page"' : ''} href="${href(path)}">${label}</a>`;
+  }).join('');
+}
+function navigation() {
+  const ebook = ['/ebook', c('nav.ebook')];
+  const reflection = ['/renungan', c('nav.reflections')];
+  if (isClientVariant(variant)) return [ebook, reflection];
+  return [['/tentang-bantuan', c('nav.help')], ebook, reflection];
 }
 function header() {
   return `<header class="site-header"><div class="shell header-inner">${brand()}<nav aria-label="${t('Navigasi utama')}">${navLinks()}</nav><div class="header-tools">${languageSwitch()}<button class="menu-toggle icon-button" aria-label="${c('nav.open')}" aria-haspopup="dialog"><span></span><span></span></button></div></div><div class="scroll-meter" aria-hidden="true"></div></header>`;
 }
 function footer() {
-  return `<footer class="site-footer"><div class="shell footer-grid"><div>${brand()}</div><div><span class="eyebrow">${t('JELAJAHI')}</span>${link('/tentang-bantuan', c('nav.help'), 'footer-link')}${link('/ebook', c('nav.ebook'), 'footer-link')}${link('/renungan', c('nav.reflections'), 'footer-link')}</div><div><span class="eyebrow">${t('INFORMASI')}</span>${[['instagram','Instagram'],['youtube','YouTube'],['spotify','Spotify'],['tiktok','TikTok']].map(([key,label])=>`<button class="footer-link social-link" data-social="${key}" aria-haspopup="dialog">${label}${arrow}</button>`).join('')}</div></div><div class="shell footer-bottom"><span>AKSA · RASA · BUMI</span>${link('/preview', 'Lihat semua alternatif', 'footer-review-link')}<button class="text-button" data-top>${t('Kembali ke atas ↑')}</button></div></footer>`;
+  return `<footer class="site-footer"><div class="shell footer-grid"><div>${brand()}</div><div><span class="eyebrow">${t('JELAJAHI')}</span>${navigation().map(([path, label]) => link(path, label, 'footer-link')).join('')}</div><div><span class="eyebrow">${t('INFORMASI')}</span>${[['instagram','Instagram'],['youtube','YouTube'],['spotify','Spotify'],['tiktok','TikTok']].map(([key,label])=>`<button class="footer-link social-link" data-social="${key}" aria-haspopup="dialog">${label}${arrow}</button>`).join('')}</div></div><div class="shell footer-bottom"><span>AKSA · RASA · BUMI</span>${link('/preview', 'Lihat semua alternatif', 'footer-review-link')}<button class="text-button" data-top>${t('Kembali ke atas ↑')}</button></div></footer>`;
 }
 function dock() {
-  return embedded ? '' : `<aside class="review-dock" aria-label="${t("Kontrol review prototype")}"><span class="status-dot" aria-hidden="true"></span><button data-review aria-haspopup="dialog"><span class="dock-label">Preview</span> ${variant} <span aria-hidden="true">·</span> <span class="dock-label">${t(names[variant])}</span> <span aria-hidden="true">⌘</span></button><a href="${href('/preview')}" aria-label="${t("Buka hub review semua alternatif")}">A–H ↗</a></aside>`;
+  return embedded ? '' : `<aside class="review-dock" aria-label="${t("Kontrol review prototype")}"><span class="status-dot" aria-hidden="true"></span><button data-review aria-haspopup="dialog"><span class="dock-label">Preview</span> ${variant} <span aria-hidden="true">·</span> <span class="dock-label">${t(names[variant])}</span> <span aria-hidden="true">⌘</span></button><a href="${href('/preview')}" aria-label="${t("Buka hub review semua alternatif")}">A–L ↗</a></aside>`;
 }
 function heroCopy() {
   return `<div class="hero-copy"><span class="eyebrow hero-enter">${text('home.eyebrow')}</span><h1>${c('home.title').split('\n').map(line => `<span class="line"><span>${esc(line)}</span></span>`).join(' ')}</h1><p class="hero-enter">${text('home.body')}</p><div class="actions hero-enter">${link(`${homePath()}?section=karakter`, c('home.cta.characters'))}${link('/ebook', c('home.cta.ebook'), 'button secondary')}</div></div>`;
@@ -93,7 +107,16 @@ function mediaCard(type) {
 }
 function home() {
   if ('FGH'.includes(variant)) return renderFeedbackHome({ variant, language, c, t, href, link, img, book });
-  return `${hero()}<section class="shell intro section" id="pengantar"><div class="intro-grid" data-reveal><h2>${text('intro.title')}</h2><p>${text('intro.body')}</p></div></section>${characterSection()}${storyBand()}<section class="shell section reflection-feature"><div class="section-heading" data-reveal><span class="eyebrow">${t('RUANG UNTUK BERHENTI SEJENAK')}</span><h2>${text('home.reflections.title')}</h2></div>${mediaCard('reflections')}</section><section class="shell question section" data-reveal><span class="eyebrow">${t('PERTANYAAN UNTUK DIBAWA PULANG')}</span><p>${text('intro.question')}</p></section>`;
+  if (isClientVariant(variant)) {
+    const locale = language;
+    const intro = c('intro.body');
+    return `${clientHero(variant, { locale })}${variant === 'I' ? '' : clientDialogue({ locale })}${renderCharacterNative({ language, c, intro, updatedPoses: true })}${storyBand()}${closingQuestion()}`;
+  }
+  return `${hero()}<section class="shell intro section" id="pengantar"><div class="intro-grid" data-reveal><h2>${text('intro.title')}</h2><p>${text('intro.body')}</p></div></section>${characterSection()}${storyBand()}<section class="shell section reflection-feature"><div class="section-heading" data-reveal><span class="eyebrow">${t('RUANG UNTUK BERHENTI SEJENAK')}</span><h2>${text('home.reflections.title')}</h2></div>${mediaCard('reflections')}</section>${closingQuestion()}`;
+}
+
+function closingQuestion() {
+  return `<section class="shell question section" data-reveal><span class="eyebrow">${t('PERTANYAAN UNTUK DIBAWA PULANG')}</span><p>${text('intro.question')}</p></section>`;
 }
 function pageHead(title, body, label = 'DUNIA AKSA RASA BUMI') {
   return `<div class="page-heading shell" data-reveal><span class="eyebrow">${t(label)}</span><h1>${t(title)}</h1><p>${t(body)}</p></div>`;
@@ -101,14 +124,28 @@ function pageHead(title, body, label = 'DUNIA AKSA RASA BUMI') {
 function helpBand() {
   return `<div class="help-band" data-reveal><div><h3>${text('catalog.help.title')}</h3><p>${text('catalog.help.body')}</p></div>${link('/tentang-bantuan?section=bantuan', c('catalog.help.cta'), 'button secondary')}</div>`;
 }
+function catalogCollection() {
+  const title = `<h2 id="catalog-collection-title">${text('catalog.collection.title')}</h2>`;
+  if (!isClientVariant(variant)) return `${title}<p class="empty-line">${text('catalog.collection.empty')}</p>`;
+  return `${title}<p class="client-book-note">${t('Judul dan sampul contoh untuk preview katalog.')}</p><div class="client-book-grid">${sampleBooks.map(({ id, artwork }) => {
+    const book = reflectionBook(id);
+    return `<article class="client-book" data-reveal><div class="client-book-cover" aria-hidden="true"><strong>${esc(book.title)}</strong><span class="client-book-mark client-book-mark--${artwork}"></span></div><h3 id="title-ebook-${id}" data-reflection-title tabindex="-1">${esc(book.title)}</h3>${reflectionLink(book, variant, 'ebook')}</article>`;
+  }).join('')}</div>`;
+}
+function featuredReflection(origin) {
+  return isClientVariant(variant) ? reflectionLink(reflectionBook(featuredBookId), variant, origin) : '';
+}
+function featuredTitleAnchor(origin) {
+  return isClientVariant(variant) ? `id="title-${origin}-${featuredBookId}" data-reflection-title tabindex="-1"` : '';
+}
 function catalog() {
-  return `${pageHead(text('catalog.title'), text('catalog.body'))}<section class="shell section catalog-feature" data-reveal>${book()}<div class="catalog-copy"><span class="eyebrow">${text('catalog.featured')}</span><h2>The Art of <br><i>Reflecting</i></h2><p>${text('story.summary')}</p><div class="pending-tag"><span aria-hidden="true">◌</span> ${text('story.availability')}</div>${link('/ebook/the-art-of-reflecting', c('story.cta'))}<small>${t("Judul kisah; identitas produk ebook masih menunggu konfirmasi.")}</small></div></section><section class="shell section"><h2>${text('catalog.collection.title')}</h2><p class="empty-line">${text('catalog.collection.empty')}</p></section><section class="shell section">${helpBand()}</section>`;
+  return `${pageHead(text('catalog.title'), text('catalog.body'))}<section class="shell section catalog-feature" data-reveal>${book()}<div class="catalog-copy"><span class="eyebrow">${text('catalog.featured')}</span><h2 ${featuredTitleAnchor('ebook')}>The Art of <br><i>Reflecting</i></h2>${featuredReflection('ebook')}<p>${text('story.summary')}</p><div class="pending-tag"><span aria-hidden="true">◌</span> ${text('story.availability')}</div>${link('/ebook/the-art-of-reflecting', c('story.cta'))}<small>${t("Judul kisah; identitas produk ebook masih menunggu konfirmasi.")}</small></div></section><section class="shell section catalog-collection" aria-labelledby="catalog-collection-title">${catalogCollection()}</section><section class="shell section">${helpBand()}</section>`;
 }
 function faq(key) {
   return `<details class="faq"><summary>${text(`faq.${key}.title`)}<span aria-hidden="true">+</span></summary><div class="faq-answer"><p>${text(`faq.${key}.body`)}</p></div></details>`;
 }
 function detail() {
-  return `<div class="shell breadcrumb">${link('/ebook', '← Kembali ke Ebook', 'back-link')}<span>The Art of Reflecting</span></div><section class="shell section catalog-feature detail-feature" data-reveal>${book()}<div class="catalog-copy"><span class="eyebrow">${text('story.label')}</span><h1>The Art of <br><i>Reflecting</i></h1><p>${text('story.short')}</p><div class="pending-tag">${text('story.availability')}</div>${link('/ebook/the-art-of-reflecting?section=tentang-kisah', c('story.cta'))}<button class="text-button" data-state="purchase">${t("Lihat alur pembelian")} ${arrow}</button></div></section><section id="tentang-kisah" class="shell section editorial-grid" data-reveal><h2>${text('detail.about.title')}</h2><div class="prose"><p>${text('detail.about.body')}</p><small>${t("Pengantar editorial website, bukan kutipan naskah atau sinopsis resmi.")}</small></div></section><section class="shell section"><h2 data-reveal>${text('detail.highlights.title')}</h2><div class="three-grid perspective-grid">${characters.map((key, i) => {const [title, body] = c(`detail.highlight.${key}`).split('\n');return `<article data-reveal><span class="eyebrow">0${i + 1} / ${key.toUpperCase()}</span><h3>${esc(title)}</h3><p>${esc(body)}</p></article>`;}).join('')}</div></section><section class="shell section" data-reveal><div class="excerpt-panel"><span class="eyebrow">${text('excerpt.label')}</span><h3>${text('excerpt.empty.title')}</h3><p>${text('excerpt.empty.body')}</p><button class="text-link" data-state="excerpt">${t("Lihat status cuplikan")} ${arrow}</button></div></section><section class="shell section editorial-grid" data-reveal><h2>${text('purchase.info.title')}</h2><div>${faq('format')}${faq('access')}</div></section><section class="shell section"><div class="help-band" data-reveal><div><h3>${text('purchase.pending.title')}</h3><p>${text('purchase.pending.body')}</p></div>${link('/tentang-bantuan?section=bantuan', 'Lihat Bantuan Ebook', 'button secondary')}</div></section>`;
+  return `<div class="shell breadcrumb">${link('/ebook', '← Kembali ke Ebook', 'back-link')}<span>The Art of Reflecting</span></div><section class="shell section catalog-feature detail-feature" data-reveal>${book()}<div class="catalog-copy"><span class="eyebrow">${text('story.label')}</span><h1 ${featuredTitleAnchor('ebook-detail')}>The Art of <br><i>Reflecting</i></h1>${featuredReflection('ebook-detail')}<p>${text('story.short')}</p><div class="pending-tag">${text('story.availability')}</div>${link('/ebook/the-art-of-reflecting?section=tentang-kisah', c('story.cta'))}<button class="text-button" data-state="purchase">${t("Lihat alur pembelian")} ${arrow}</button></div></section><section id="tentang-kisah" class="shell section editorial-grid" data-reveal><h2>${text('detail.about.title')}</h2><div class="prose"><p>${text('detail.about.body')}</p><small>${t("Pengantar editorial website, bukan kutipan naskah atau sinopsis resmi.")}</small></div></section><section class="shell section"><h2 data-reveal>${text('detail.highlights.title')}</h2><div class="three-grid perspective-grid">${characters.map((key, i) => {const [title, body] = c(`detail.highlight.${key}`).split('\n');return `<article data-reveal><span class="eyebrow">0${i + 1} / ${key.toUpperCase()}</span><h3>${esc(title)}</h3><p>${esc(body)}</p></article>`;}).join('')}</div></section><section class="shell section" data-reveal><div class="excerpt-panel"><span class="eyebrow">${text('excerpt.label')}</span><h3>${text('excerpt.empty.title')}</h3><p>${text('excerpt.empty.body')}</p><button class="text-link" data-state="excerpt">${t("Lihat status cuplikan")} ${arrow}</button></div></section>${isClientVariant(variant) ? bookReflectionSection(variant) : ''}<section class="shell section editorial-grid" data-reveal><h2>${text('purchase.info.title')}</h2><div>${faq('format')}${faq('access')}</div></section><section class="shell section"><div class="help-band" data-reveal><div><h3>${text('purchase.pending.title')}</h3><p>${text('purchase.pending.body')}</p></div>${link('/tentang-bantuan?section=bantuan', 'Lihat Bantuan Ebook', 'button secondary')}</div></section>`;
 }
 function mediaPage(type) {
   const reflection = type === 'reflections';
@@ -118,6 +155,10 @@ function aboutCrossCard() {
   return `<article class="media-card" data-reveal><span class="eyebrow">AKSA · RASA · BUMI</span><h3>${text('about.page.title')}</h3><p>${text('about.page.body')}</p>${link('/tentang-bantuan', c('nav.help'), 'text-link')}</article>`;
 }
 function reviewThumbnail(key) {
+  if (isClientVariant(key)) {
+    const file = key === 'J' ? 'preview-j-v02.webp' : `preview-${key.toLowerCase()}.webp`;
+    return `<div class="client-review-thumb" aria-hidden="true">${img(`client-hero-ijk/${file}`)}</div>`;
+  }
   if (!'FGH'.includes(key)) return miniPreview(key, c, asset);
   const media = { F: 'living-room', G: 'amber-cinematic', H: 'amber-collage' }[key];
   return `<div class="motion-mini" aria-hidden="true">${img(`feedback-v02/${media}-poster.webp`)}<span><small>GSAP / SCROLL</small>${esc(c('home.title')).replace(/\n/g, ' ')}</span></div>`;
@@ -126,7 +167,23 @@ function about() {
   return `${pageHead(text('about.page.title'), text('about.page.body'))}<div class="shell anchor-nav"><a href="${href('/tentang-bantuan?section=tentang')}">${t("Tentang ARB ↓")}</a><a href="${href('/tentang-bantuan?section=bantuan')}">${t("Bantuan Ebook ↓")}</a><a href="${href('/tentang-bantuan?section=kontak')}">${t("Kanal Bantuan ↓")}</a></div><section class="shell section about-image" data-reveal>${img('hero-a.webp', 'Eksplorasi potret Aksa, Rasa, dan Bumi')}</section><section id="tentang" class="shell section editorial-grid" data-reveal><h2>${text('about.title')}</h2><div class="prose"><p>${text('about.body')}</p></div></section><section id="bantuan" class="shell section editorial-grid" data-reveal><div><span class="eyebrow">${t("INFORMASI UNTUKMU")}</span><h2>${text('help.title')}</h2><p>${text('help.body')}</p></div><div>${faq('purchase')}${faq('format')}${faq('access')}</div></section><section class="shell section" id="kontak" data-reveal><div class="help-band"><div><h3>${text('help.contact.title')}</h3><p>${text('help.contact.pending')}</p></div>${link('/ebook', c('purchase.pending.cta'), 'button secondary')}</div></section>`;
 }
 function reviewHub() {
-  return `${pageHead('Delapan cara membuka kisah.', 'Satu dunia, delapan arah visual. Pilih alternatif, lalu jelajahi setiap halaman dalam ukuran layar yang kamu inginkan.', 'RUANG REVIEW / PROTOTYPE 01')}<section class="shell review-notice"><span class="status-dot" aria-hidden="true"></span><p>${t("Draft untuk review client. Buku adalah mockup berbasis kode. Data pembelian, cuplikan, dan media menunggu materi resmi.")}</p></section><section class="shell section"><div class="variant-gallery">${reviewEntries().map(([key, name]) => `<article class="variant-tile" data-reveal><a href="${href(`/home/${key}`)}" class="variant-thumbnail" aria-label="${t("Jelajahi alternatif")} ${key} — ${t(name)}">${reviewThumbnail(key)}<span class="tile-enter" aria-hidden="true">↗</span></a><div class="tile-title"><span class="variant-letter">${key}</span><h2>${t(name)}</h2></div><p>${t(descriptions[key])}</p><div class="tile-actions">${link(`/home/${key}`, 'Jelajahi', 'text-link')}<button data-sandbox="${key}">${t("Preview mobile ↗")}</button></div></article>`).join('')}</div></section><section class="sandbox-section section" id="sandbox"><div class="shell"><div class="section-heading"><span class="eyebrow">${t("SEMUA LAYAR, SATU PERJALANAN")}</span><h2>${t("Coba prototype-nya.")}</h2><p>${t("Berinteraksi langsung di dalam layar. Gunakan menu untuk melanjutkan journey.")}</p></div><div class="sandbox-toolbar"><label>${t("Alternatif")}<select id="variant-select" aria-label="${t("Alternatif")}">${Object.entries(names).map(([k,n])=>`<option value="${k}" ${variant===k?'selected':''}>${k} / ${t(n)}</option>`).join('')}</select></label><label>${t("Halaman")}<select id="page-select" aria-label="${t("Halaman")}"><option value="/home/">${t("Beranda")}</option><option value="/ebook">${t("Ebook")}</option><option value="/ebook/the-art-of-reflecting">${t("Detail kisah")}</option><option value="/renungan">${t("Renungan")}</option><option value="/tentang-bantuan">${t("Tentang kami")}</option><option value="/404">${t("404 / Pemulihan")}</option></select></label><div class="device-switch" role="group" aria-label="${t("Ukuran layar")}"><button data-width="1440" aria-pressed="true">Desktop</button><button data-width="768" aria-pressed="false">Tablet</button><button data-width="390" aria-pressed="false">Mobile</button></div></div><div class="sandbox-meta"><span id="device-size">1440 × 900</span><a id="sandbox-open" target="_blank" rel="noopener" href="${href(homePath())}">${t("Buka layar penuh ↗")}</a></div></div><div class="sandbox-stage"><div class="sandbox-device"><iframe title="${t("Preview interaktif")}" loading="lazy" src="${location.pathname}?embed=1#${localizedPath(`/home/${variant}`, variant)}"></iframe></div></div></section><section class="shell section journey-section"><span class="eyebrow">${t("PETA JOURNEY")}</span><h2>${t("Mulai mengenal, lalu menjelajah.")}</h2><div class="journey-flow">${[['01','Beranda',homePath()],['02','Tentang kami','/tentang-bantuan'],['03','Ebook','/ebook'],['04','Detail kisah','/ebook/the-art-of-reflecting'],['05','Renungan','/renungan']].map(([num,label,path])=>`<a href="${href(path)}"><span>${num}</span><strong>${t(label)}</strong>${arrow}</a>`).join('')}</div><p>${t("Navigasi saat ini berfokus pada Tentang kami, Ebook, dan Renungan. Pembelian, cuplikan, serta media tetap menunggu materi resmi.")}</p></section>`;
+  const client = isClientVariant(variant);
+  const journey = [['Beranda', homePath()]];
+  if (!client) journey.push(['Tentang kami', '/tentang-bantuan']);
+  journey.push(['Ebook', '/ebook'], ['Detail kisah', '/ebook/the-art-of-reflecting'], ['Renungan', '/renungan']);
+  const legacyPage = client ? 'hidden disabled' : '';
+  return `${pageHead('Dua belas cara membuka kisah.', 'Pilih alternatif dan coba di desktop, tablet, atau mobile.', 'RUANG REVIEW / PROTOTYPE 01')}
+    <section class="shell review-notice"><span class="status-dot" aria-hidden="true"></span><p>${t('Draft untuk review client. Buku adalah mockup berbasis kode. Data pembelian, cuplikan, dan media menunggu materi resmi.')}</p></section>
+    <section class="shell section"><div class="variant-gallery">${reviewEntries().map(([key, name]) => `<article class="variant-tile" data-reveal><a href="${href(`/home/${key}`)}" class="variant-thumbnail" aria-label="${t('Jelajahi alternatif')} ${key} — ${t(name)}">${reviewThumbnail(key)}<span class="tile-enter" aria-hidden="true">↗</span></a><div class="tile-title"><span class="variant-letter">${key}</span><h2>${t(name)}</h2></div><p>${t(descriptions[key])}</p><div class="tile-actions">${link(`/home/${key}`, 'Jelajahi', 'text-link')}<button data-sandbox="${key}">${t('Preview mobile ↗')}</button></div></article>`).join('')}</div></section>
+    <section class="sandbox-section section" id="sandbox">
+      <div class="shell"><div class="section-heading"><span class="eyebrow">${t('SEMUA LAYAR, SATU PERJALANAN')}</span><h2>${t('Coba prototype-nya.')}</h2><p>${t('Berinteraksi langsung di dalam layar. Gunakan menu untuk melanjutkan journey.')}</p></div>
+      <div class="sandbox-toolbar"><label>${t('Alternatif')}<select id="variant-select" aria-label="${t('Alternatif')}">${Object.entries(names).map(([key,name]) => `<option value="${key}" ${variant === key ? 'selected' : ''}>${key} / ${t(name)}</option>`).join('')}</select></label>
+      <label>${t('Halaman')}<select id="page-select" aria-label="${t('Halaman')}"><option value="/home/">${t('Beranda')}</option><option value="/ebook">${t('Ebook')}</option><option value="/ebook/the-art-of-reflecting">${t('Detail kisah')}</option><option value="/renungan">${t('Renungan')}</option><option value="/tentang-bantuan" ${legacyPage}>${t('Tentang kami')}</option><option value="/404">${t('404 / Pemulihan')}</option></select></label>
+      <div class="device-switch" role="group" aria-label="${t('Ukuran layar')}"><button data-width="1440" aria-pressed="true">Desktop</button><button data-width="768" aria-pressed="false">Tablet</button><button data-width="390" aria-pressed="false">Mobile</button></div></div>
+      <div class="sandbox-meta"><span id="device-size">1440 × 900</span><a id="sandbox-open" target="_blank" rel="noopener" href="${href(homePath())}">${t('Buka layar penuh ↗')}</a></div></div>
+      <div class="sandbox-stage"><div class="sandbox-device"><iframe title="${t('Preview interaktif')}" loading="lazy" src="${location.pathname}?embed=1#${localizedPath(homePath(), variant)}"></iframe></div></div>
+    </section>
+    <section class="shell section journey-section"><span class="eyebrow">${t('PETA JOURNEY')}</span><h2>${t('Mulai mengenal, lalu menjelajah.')}</h2><div class="journey-flow">${journey.map(([label,path], i) => `<a href="${href(path)}"><span>0${i + 1}</span><strong>${t(label)}</strong>${arrow}</a>`).join('')}</div>${client ? '' : `<p>${t('Navigasi saat ini berfokus pada Tentang kami, Ebook, dan Renungan. Pembelian, cuplikan, serta media tetap menunggu materi resmi.')}</p>`}</section>`;
 }
 function notFound() {
   return `<section class="shell not-found"><span class="eyebrow">${t("404 / HALAMAN TIDAK DITEMUKAN")}</span><h1>${t("Sepertinya kita")}<br>${t("perlu kembali.")}</h1><p>${t("Halaman yang kamu cari belum ada di ruang ini.")}</p><div class="actions">${link(homePath(), 'Kembali ke Beranda')}${link('/preview', 'Lihat semua alternatif', 'button secondary')}</div></section>`;
@@ -156,7 +213,7 @@ function menu() {
   dialog(`<div class="menu-head">${brand()}<button class="icon-button" data-close aria-label="${t("Tutup menu")}">✕</button></div><nav aria-label="${t("Navigasi mobile")}">${navLinks()}</nav><span class="eyebrow">AKSA · RASA · BUMI</span>`, 'menu-modal', 'Menu navigasi');
 }
 function reviewDialog() {
-  dialog(`<div class="modal-head"><span class="eyebrow">${t("RUANG REVIEW")}</span><button class="icon-button" data-close aria-label="${t("Tutup review")}">✕</button></div><h2>${t("Temukan arah")}<br>${t("yang terasa dekat.")}</h2><p>${t("Kedelapan alternatif berbagi journey yang sama. Pilihan ini hanya mengubah preview yang kamu lihat.")}</p><div class="review-options">${Object.entries(names).map(([k,n])=>`<a href="${href(`/home/${k}`)}" class="${variant===k?'selected':''}"><span>${k}</span><div><strong>${t(n)}</strong><small>${t(descriptions[k])}</small></div>${arrow}</a>`).join('')}</div>${link('/preview','Bandingkan desktop & mobile','button')}<small>${t("Draft visual dan copy belum menjadi approval final.")}</small>`, 'review-modal', 'Pilihan alternatif preview');
+  dialog(`<div class="modal-head"><span class="eyebrow">${t("RUANG REVIEW")}</span><button class="icon-button" data-close aria-label="${t("Tutup review")}">✕</button></div><h2>${t("Temukan arah")}<br>${t("yang terasa dekat.")}</h2><div class="review-options">${reviewEntries().map(([k,n])=>`<a href="${href(`/home/${k}`)}" class="${variant===k?'selected':''}"><span>${k}</span><div><strong>${t(n)}</strong><small>${t(descriptions[k])}</small></div>${arrow}</a>`).join('')}</div>${link('/preview','Bandingkan desktop & mobile','button')}<small>${t("Draft visual dan copy belum menjadi approval final.")}</small>`, 'review-modal', 'Pilihan alternatif preview');
 }
 function pendingDialog(type) {
   const states = {
@@ -181,6 +238,7 @@ function setupSandbox(signal, saved) {
   const device = stage.querySelector('.sandbox-device');
   const alt = document.querySelector('#variant-select');
   const page = document.querySelector('#page-select');
+  const aboutPage = page.querySelector('[value="/tentang-bantuan"]');
   let width = saved?.width || 1440;
   if (saved?.alternative) alt.value = saved.alternative;
   if (saved?.page) page.value = saved.page;
@@ -193,6 +251,9 @@ function setupSandbox(signal, saved) {
     document.querySelector('#device-size').textContent = `${width} × ${width === 390 ? 844 : 900}`;
   };
   const update = (savedHash) => {
+    const client = isClientVariant(alt.value);
+    aboutPage.hidden = aboutPage.disabled = client;
+    if (client && page.value === aboutPage.value) page.value = '/home/';
     const path = typeof savedHash === 'string' && savedHash.startsWith('#/') ? savedHash.slice(1) : page.value === '/home/' ? `/home/${alt.value}` : page.value;
     const localized = localizedPath(path, alt.value);
     frame.src = `${location.pathname}?embed=1#${localized}`;
@@ -222,6 +283,7 @@ function setupSandbox(signal, saved) {
 function setupEvents(savedSandbox) {
   routeController = new AbortController();
   const { signal } = routeController;
+  mountReflection(signal);
   document.querySelectorAll('[data-language]').forEach(button => button.addEventListener('click', () => changeLanguage(button.dataset.language), { signal }));
   document.querySelector('.menu-toggle')?.addEventListener('click', menu, { signal });
   document.querySelector('[data-review]')?.addEventListener('click', reviewDialog, { signal });
@@ -277,9 +339,11 @@ function animate() {
   motion.add({ motionOK:'(prefers-reduced-motion: no-preference)', desktop:'(min-width: 768px)' }, context => {
     if (!context.conditions.motionOK) return;
     const magneticCleanup = [];
-    gsap.from('.hero .line > span', { yPercent:105, duration:1.05, stagger:.12, ease:'power4.out', clearProps:'transform' });
-    gsap.from('.hero-enter', { y:18, opacity:0, duration:.8, stagger:.1, delay:.25, clearProps:'all' });
-    gsap.from('.hero-art', { opacity:0, duration:1.1, ease:'power2.out' });
+    if (document.querySelector('.hero')) {
+      gsap.from('.hero .line > span', { yPercent:105, duration:1.05, stagger:.12, ease:'power4.out', clearProps:'transform' });
+      gsap.from('.hero-enter', { y:18, opacity:0, duration:.8, stagger:.1, delay:.25, clearProps:'all' });
+      gsap.from('.hero-art', { opacity:0, duration:1.1, ease:'power2.out' });
+    }
     gsap.utils.toArray('[data-reveal]').forEach(el => {
       // Only hide a section when it is about to enter, preserving readable distant content.
       gsap.from(el, { y:32, opacity:0, duration:.85, ease:'power3.out', clearProps:'all', scrollTrigger:{ trigger:el,start:'top 96%',once:true } });
@@ -304,6 +368,12 @@ function animate() {
     return () => magneticCleanup.forEach(cleanup => cleanup());
   });
 }
+function scrollToSection(section, behavior) {
+  const target = document.getElementById(section);
+  target?.scrollIntoView({ behavior });
+  if (target?.hasAttribute('data-reflection-title')) target.focus({ preventScroll: true });
+}
+
 async function render(initial = false, options = {}) {
   const token = ++renderToken;
   const [rawPath, query = ''] = location.hash.slice(1).split('?');
@@ -312,7 +382,7 @@ async function render(initial = false, options = {}) {
   const previousLanguage = language;
   setLanguage(resolveLanguage(params.get('lang')));
   const languageChanged = previousLanguage !== language;
-  const match = path.match(/^\/home\/([A-H])$/);
+  const match = path.match(/^\/home\/([A-L])$/);
   const nextVariant = match?.[1] || params.get('v');
   if (names[nextVariant]) variant = nextVariant;
   sessionStorage.setItem('arb-variant', variant);
@@ -321,7 +391,7 @@ async function render(initial = false, options = {}) {
     gsap.killTweensOf('.route-veil');
     gsap.set('.route-veil', { scaleY: 0 });
     document.querySelectorAll('dialog').forEach(d=>d.close());
-    document.getElementById(section)?.scrollIntoView({behavior:reduced.matches?'instant':'smooth'});
+    scrollToSection(section, reduced.matches ? 'instant' : 'smooth');
     return;
   }
   document.querySelectorAll('dialog').forEach(d=>d.close());
@@ -329,20 +399,28 @@ async function render(initial = false, options = {}) {
   if (token !== renderToken) return;
   motion?.revert();routeController?.abort();routeCleanup.forEach(fn=>fn());routeCleanup=[];
   activeRoute = path;
+  const client = isClientVariant(variant);
+  const reflection = client && path.startsWith('/renungan/') && reflectionBook(path.slice('/renungan/'.length));
   let content, title;
   if (match || path === '/') { content=home(); title=`${variant} · ${t(names[variant])}`; }
   else if (path === '/ebook') {content=catalog();title='Ebook';}
   else if (path === '/ebook/the-art-of-reflecting') {content=detail();title='The Art of Reflecting';}
-  else if (path === '/renungan') {content=mediaPage('reflections');title='Renungan';}
+  else if (path === '/renungan') {
+    content = client ? pageHead(text('reflections.title'), text('reflections.body'), 'RUANG UNTUK MEMPERHATIKAN') + reflectionIndex(variant) : mediaPage('reflections');
+    title = 'Renungan';
+  }
+  else if (reflection) {content=reflectionForm(reflection, variant, params.get('from'));title=reflection.title;}
   else if (path === '/ngobrol') {content=mediaPage('conversations');title='Ngobrol';}
   else if (path === '/tentang-bantuan') {content=about();title=c('about.page.title');}
-  else if (path === '/preview') {content=reviewHub();title='Ruang review · A–H';}
+  else if (path === '/preview') {content=reviewHub();title='Ruang review · A–L';}
   else {content=notFound();title='404';}
   document.title = `${t(title)} — Aksa Rasa Bumi`;
   document.querySelector('.skip-link').textContent = t('Lewati ke konten');
-  document.querySelector('meta[name="description"]').content = t('Prototype interaktif Aksa Rasa Bumi. Delapan arah visual, satu perjalanan kisah. Draft untuk review client.');
+  document.querySelector('meta[name="description"]').content = t('Prototype interaktif Aksa Rasa Bumi. Draft untuk review client.');
   document.body.dataset.variant=variant;
   document.body.classList.toggle('feedback-landing', 'FGH'.includes(variant) && Boolean(match || path === '/'));
+  document.body.classList.toggle('client-feedback', isClientVariant(variant));
+  document.body.classList.toggle('client-landing', isClientVariant(variant) && Boolean(match || path === '/'));
   document.body.classList.remove('film-in-view');
   document.body.classList.toggle('embedded',embedded);
   app.innerHTML=`${header()}<main id="main" tabindex="-1">${content}</main>${footer()}${dock()}`;
@@ -351,6 +429,10 @@ async function render(initial = false, options = {}) {
   if ('FGH'.includes(variant) && (match || path === '/')) {
     routeCleanup.push(mountFeedbackMotion({ variant, gsap, ScrollTrigger, reduced, signal: routeController.signal }));
     routeCleanup.push(mountCharacterCinema({ gsap, ScrollTrigger, reduced, signal: routeController.signal }));
+  }
+  if (isClientVariant(variant) && (match || path === '/')) {
+    const cleanup = bindClientHero(document.querySelector('#main'));
+    if (typeof cleanup === 'function') routeCleanup.push(cleanup);
   }
   if (match || path === '/') routeCleanup.push(mountCharacterNative({ gsap, ScrollTrigger, reduced, signal: routeController.signal }));
   if (!initial) {
@@ -362,7 +444,7 @@ async function render(initial = false, options = {}) {
     ScrollTrigger.refresh();
     window.scrollTo(0, options.preserveScroll);
     document.querySelector(`[data-language="${language}"]`)?.focus({ preventScroll: true });
-  } else if(section) requestAnimationFrame(()=>document.getElementById(section)?.scrollIntoView({behavior:'instant'}));
+  } else if(section) requestAnimationFrame(()=>scrollToSection(section, 'instant'));
 }
 
 async function changeLanguage(next) {
@@ -382,7 +464,7 @@ async function changeLanguage(next) {
   if (embedded && language === next) parent.postMessage({ type: 'arb-language', language: next }, location.origin);
 }
 function welcome() {
-  if (document.body.classList.contains('feedback-landing') || embedded || reduced.matches || sessionStorage.getItem('arb-welcome') === 'seen' || activeRoute === '/preview') return;
+  if (document.body.matches('.feedback-landing, .client-feedback') || embedded || reduced.matches || sessionStorage.getItem('arb-welcome') === 'seen' || activeRoute === '/preview') return;
   sessionStorage.setItem('arb-welcome','seen');
   const el = document.createElement('div');
   el.className='welcome';el.setAttribute('role','dialog');el.setAttribute('aria-label',t('Pembuka prototype'));el.setAttribute('aria-modal','true');
@@ -403,7 +485,7 @@ window.addEventListener('message', event => {
 });
 document.addEventListener('click',e=>{
   const anchor=e.target.closest('a');
-  if(anchor?.getAttribute('href')===location.hash){document.querySelectorAll('dialog').forEach(d=>d.close());const q=location.hash.split('?')[1];const section=new URLSearchParams(q).get('section');if(section)document.getElementById(section)?.scrollIntoView({behavior:reduced.matches?'instant':'smooth'});}
+  if(anchor?.getAttribute('href')===location.hash){document.querySelectorAll('dialog').forEach(d=>d.close());const q=location.hash.split('?')[1];const section=new URLSearchParams(q).get('section');if(section)scrollToSection(section,reduced.matches?'instant':'smooth');}
   if(anchor?.getAttribute('href')==='#main'){e.preventDefault();document.querySelector('main').focus();document.querySelector('main').scrollIntoView();}
 });
 await render(true);

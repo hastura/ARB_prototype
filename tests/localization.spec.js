@@ -196,11 +196,12 @@ test.describe('locale journeys and controls', () => {
     expect(errors).toEqual([]);
   });
 
-  test('all eight gallery thumbnails use live localized preview text in both languages', async ({ page }) => {
+  test('legacy gallery thumbnails use live localized preview text in both languages', async ({ page }) => {
     await openEnglish(page, '/preview');
-    const thumbnails = page.locator('.variant-thumbnail');
+    const thumbnails = page.locator('.variant-thumbnail:not(:has(.client-review-thumb))');
     await expect(thumbnails).toHaveCount(8);
     await expect(thumbnails.locator('img[src*="preview-"]')).toHaveCount(0);
+    await expect(page.locator('.client-review-thumb')).toHaveCount(4);
     for (const thumbnail of await thumbnails.all()) {
       await expect(thumbnail).toContainText(/Meet them\.\s*Discover their story\./);
       await expect(thumbnail).not.toContainText(/Kenali mereka\.|Temukan kisahnya\./);

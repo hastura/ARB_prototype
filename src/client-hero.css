@@ -1,0 +1,438 @@
+.client-dialog-hero,
+.client-scene-hero {
+  --hero-paper: #ece5d8;
+  position: relative;
+  isolation: isolate;
+  color: #2b2018;
+}
+
+.client-hero-title h1 {
+  margin: 0;
+  font: italic 400 clamp(32px, 3.6vw, 68px) / 1.12 Georgia, serif;
+  letter-spacing: -.025em;
+}
+
+.client-title-line {
+  display: block;
+  overflow: clip;
+  padding: .06em .12em .11em 0;
+  margin: -.06em -.12em -.11em 0;
+}
+
+.client-title-line > span {
+  display: block;
+}
+
+.client-title-rule {
+  display: block;
+  width: clamp(42px, 6.25vw, 104px);
+  height: 2px;
+  margin-top: clamp(14px, 1.9vw, 32px);
+  background: currentColor;
+  transform-origin: left center;
+}
+
+.client-dialog-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 56.5fr) minmax(0, 43.5fr);
+  grid-template-rows: minmax(0, 1fr);
+  height: 100vh;
+  height: 100dvh;
+}
+
+.client-dialog-hero .client-hero-title {
+  grid-area: 1 / 2;
+  align-self: center;
+  padding: 32px 6%;
+  margin-inline: 7%;
+}
+
+.client-dialog-hero .client-panels {
+  grid-area: 1 / 1;
+  grid-auto-rows: minmax(0, 1fr);
+  min-height: 0;
+}
+
+.client-dialog-hero .client-panel {
+  height: auto;
+  min-height: 0;
+}
+
+.client-scene::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 88px;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, #ece5d8c7, #ece5d800);
+}
+
+.client-panels {
+  display: grid;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.client-panel {
+  position: relative;
+  min-width: 0;
+  height: clamp(94px, 10.4167vw, 210px);
+  overflow: hidden;
+  container-type: inline-size;
+}
+
+.client-dialog-band .client-panel {
+  height: clamp(115px, 12vw, 212px);
+}
+
+.client-panel + .client-panel .client-panel-visual {
+  box-shadow: inset 0 1px #ffffff32;
+}
+
+.client-panel img,
+.client-panel-visual,
+.client-panel-shot,
+.client-panel-track {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.client-panel-visual {
+  display: flex;
+  align-items: center;
+  isolation: isolate;
+}
+
+.client-panel-shot {
+  overflow: hidden;
+  z-index: -1;
+}
+
+.client-panels.has-panel-parallax .client-panel-track {
+  top: calc(-1 * var(--panel-overscan));
+  bottom: auto;
+  height: calc(100% + 2 * var(--panel-overscan));
+}
+
+.client-panels.has-panel-parallax {
+  --panel-overscan: 26%;
+}
+
+.client-panels.has-extended-panel-parallax {
+  --panel-overscan: 44%;
+}
+
+@container (max-width: 519px) {
+  .client-panels.has-panel-parallax .client-panel-track {
+    --panel-overscan: 22%;
+  }
+
+  .client-panels.has-extended-panel-parallax .client-panel-track {
+    --panel-overscan: 32%;
+  }
+}
+
+.client-panel img {
+  object-fit: cover;
+  transform-origin: 38% 48%;
+}
+
+.client-panel:nth-child(even) img {
+  transform-origin: 64% 47%;
+}
+
+.client-panel-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 77% 53%, #22170e8c 0, transparent 56%);
+}
+
+.client-dialog-hero .client-panel:first-child .client-panel-visual::after {
+  background: linear-gradient(180deg, #ece5d8b0, transparent 64%),
+    radial-gradient(ellipse at 77% 53%, #22170e8c 0, transparent 56%);
+}
+
+.client-panel:nth-child(even) .client-panel-visual::after {
+  background: radial-gradient(ellipse at 15% 57%, #22170ebf 0, transparent 57%);
+}
+
+.client-panel:nth-child(2) .client-panel-visual::after {
+  background: radial-gradient(ellipse at 37% 53%, #22170e80 0, transparent 51%);
+}
+
+.client-panel:nth-child(5) .client-panel-visual::after {
+  content: none;
+}
+
+.client-panel p {
+  position: relative;
+  z-index: 2;
+  max-width: min(45%, 32rem);
+  margin: 0 0 0 6%;
+  color: #fffdf7;
+  text-shadow: 0 1px 3px #21160d, 0 1px 12px #21160de6;
+  font: 600 clamp(12px, 1.26vw, 21px) / 1.25 var(--sans);
+  text-wrap: pretty;
+}
+
+.client-panel:nth-child(odd) p {
+  margin-left: 54%;
+  max-width: 42%;
+}
+
+.client-panel:nth-child(2) p {
+  margin-left: 37%;
+}
+
+.client-dialog-band .client-panel p {
+  font-size: clamp(14px, 1.38vw, 23px);
+}
+
+.client-scene-hero {
+  --scene-position: center;
+  background: var(--hero-paper);
+}
+
+.client-scene-hero:is([data-client-hero='K'], [data-client-hero='L']) {
+  --scene-position: right center;
+}
+
+.client-scene-stage {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-items: end;
+  justify-items: start;
+  height: min(100svh, 62.5vw);
+  min-height: 460px;
+  width: 100%;
+  overflow: clip;
+}
+
+.client-scene-hero[data-client-hero='K'] .client-scene-stage {
+  align-items: start;
+}
+
+.client-scene-hero:is([data-client-hero='J'], [data-client-hero='L']) .client-scene-stage {
+  height: min(100svh, 56.25vw);
+  min-height: 0;
+}
+
+.client-scene-hero[data-client-hero='L'] .client-scene-stage { align-items: center; }
+
+.client-scene,
+.client-scene-content,
+.client-scene-reel,
+.client-scene-layers,
+.client-j-shapes-rear,
+.client-j-shapes-front,
+.client-l-environment,
+.client-scene img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.client-scene-hero[data-client-hero='L'] .client-scene-reel {
+  top: -1.8%;
+  bottom: auto;
+  height: 103.6%;
+}
+
+.client-scene-hero[data-client-hero='J'] .client-scene-reel {
+  top: -2.8%;
+  bottom: auto;
+  height: 105.6%;
+}
+
+.client-scene {
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.client-scene img {
+  object-fit: cover;
+  object-position: var(--scene-position);
+}
+
+.client-scene-hero:is([data-client-hero='J'], [data-client-hero='L']) .client-scene-layers {
+  opacity: 0;
+}
+
+.client-j-paper,
+.client-j-shapes-rear,
+.client-j-shapes-front,
+.client-j-cast,
+.client-j-foreground,
+.client-l-environment,
+.client-l-characters,
+.client-l-foreground {
+  transform: translateY(calc(var(--plane-travel) * var(--scene-depth-progress, 0)));
+}
+
+.client-j-paper { --plane-travel: 1.1%; }
+.client-j-shapes-rear { --plane-travel: 1.85%; }
+.client-j-shapes-front { --plane-travel: -1.85%; }
+.client-j-cast { --plane-travel: -.55%; }
+.client-j-foreground { --plane-travel: -1.05%; }
+.client-l-environment { --plane-travel: 1.5%; }
+.client-l-characters { --plane-travel: -.7%; }
+.client-l-foreground { --plane-travel: .18%; }
+
+.client-scene-hero .client-hero-title {
+  z-index: 2;
+  margin: 0 var(--gutter) clamp(38px, 6vw, 104px);
+  color: #59402a;
+  text-shadow: 0 1px 3px #f0dfc180;
+}
+
+.client-scene-hero[data-client-hero='K'] .client-hero-title {
+  margin-top: max(84px, 6.7vw);
+  margin-bottom: 0;
+}
+
+.client-scene-hero[data-client-hero='J'] .client-hero-title {
+  margin-bottom: clamp(27px, 4.75vw, 76px);
+}
+
+.client-scene-hero[data-client-hero='J'] h1 {
+  font-size: clamp(25px, 3.6vw, 68px);
+}
+
+.client-scene-hero[data-client-hero='L'] .client-hero-title {
+  max-width: 31vw;
+  margin-block: 0;
+  color: #433227;
+  text-shadow: none;
+}
+
+.client-scene-hero[data-client-hero='L'] h1 {
+  font-size: clamp(22px, 2.9vw, 64px);
+  text-wrap: balance;
+}
+
+.client-scene-pause {
+  position: absolute;
+  right: var(--gutter);
+  bottom: 24px;
+  z-index: 3;
+  min-height: 44px;
+  padding-inline: 15px;
+  border: 1px solid #fffaed91;
+  border-radius: 30px;
+  background: #292019d9;
+  color: #fffaf1;
+  font-size: 13px;
+}
+
+.client-scene-pause:hover {
+  background: #292019;
+}
+
+@media (min-width: 651px) and (min-aspect-ratio: 19 / 10) {
+  .client-scene-hero[data-client-hero='J'] { --scene-position: center 74%; }
+  .client-scene-hero[data-client-hero='L'] { --scene-position: right 88%; }
+}
+
+@media (max-width: 900px) {
+  .client-scene-stage { min-height: 0; }
+}
+
+@media (max-width: 650px) {
+  .client-scene::after { display: none; }
+
+  .client-dialog-hero .client-panel:first-child .client-panel-visual::after {
+    background: radial-gradient(ellipse at 77% 53%, #22170e8c 0, transparent 56%);
+  }
+
+  .client-panel,
+  .client-dialog-band .client-panel { height: clamp(124px, 30vw, 150px); }
+  .client-panel p,
+  .client-dialog-band .client-panel p { font-size: clamp(13px, 3.25vw, 17px); }
+  .client-panel:nth-child(odd) p { margin-left: 53%; max-width: 43%; }
+  .client-panel:nth-child(2) p { margin-left: 28%; }
+
+  .client-scene-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    padding-top: 74px;
+  }
+
+  .client-scene {
+    position: relative;
+    height: auto;
+    aspect-ratio: 16 / 10;
+  }
+
+  .client-scene-hero:is([data-client-hero='J'], [data-client-hero='L']) .client-scene-stage {
+    align-items: stretch;
+    height: auto;
+  }
+
+  .client-scene-hero:is([data-client-hero='J'], [data-client-hero='L']) .client-scene { aspect-ratio: 16 / 9; }
+
+  .client-scene-hero[data-client-hero='K'] .client-scene-stage { align-items: stretch; }
+
+  .client-scene-hero .client-hero-title,
+  .client-scene-hero:is([data-client-hero='J'], [data-client-hero='K'], [data-client-hero='L']) .client-hero-title {
+    margin: 0;
+    padding: 26px var(--gutter) 30px;
+  }
+
+  .client-scene-hero[data-client-hero='L'] .client-hero-title { max-width: none; }
+  .client-scene-hero:is([data-client-hero='J'], [data-client-hero='L']) h1 { font-size: clamp(32px, 3.6vw, 68px); }
+
+  .client-scene-pause { right: 12px; bottom: 12px; }
+}
+
+@media (max-width: 650px) and (orientation: portrait) {
+  .client-dialog-hero {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .client-dialog-hero .client-hero-title {
+    grid-area: 1 / 1;
+    padding: clamp(80px, 13dvh, 95px) 0 clamp(12px, 3dvh, 24px);
+    margin: 0 var(--gutter);
+  }
+
+  .client-dialog-hero .client-panels { grid-area: 2 / 1; }
+}
+
+@media (max-height: 620px) {
+  .client-dialog-hero .client-panel p {
+    max-width: 52%;
+    line-height: 1.2;
+  }
+
+  .client-dialog-hero .client-panel:nth-child(odd) p {
+    margin-left: 46%;
+    max-width: 51%;
+  }
+}
+
+@media (max-height: 460px) and (orientation: landscape) {
+  .client-dialog-hero .client-panel p { font-size: clamp(12px, 3.3dvh, 14px); }
+  .client-dialog-hero .client-panel:nth-child(even) p { max-width: 60%; }
+  .client-dialog-hero .client-hero-title h1 { font-size: clamp(24px, 4vw, 42px); }
+}
+
+@media (min-aspect-ratio: 2 / 1) {
+  .client-dialog-hero .client-panel img { object-position: center 42%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .client-scene-pause,
+  .client-scene-layers { display: none; }
+}

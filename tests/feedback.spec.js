@@ -105,6 +105,110 @@ test.describe('client feedback is applied to the existing prototype', () => {
     }
   });
 
+  test('client previews list five paper covers and hide About us from desktop and mobile menus', async ({ page }) => {
+    await openHome(page, 'I');
+    await expect(page.locator('.site-header nav a')).toHaveText(['Ebook', 'Reflection']);
+    await expect(page.locator('footer .footer-link[href*="tentang-bantuan"]')).toHaveCount(0);
+    await page.locator('.site-header nav').getByRole('link', { name: 'Ebook' }).click();
+    await expect(page.locator('main h1')).toHaveText('Ebook');
+    await expect(page.locator('.client-book h3')).toHaveText([
+      'A Quiet Space', 'The Way Home', 'Growing Slowly', 'Between Seasons', 'Time to Breathe',
+    ]);
+    await expect(page.locator('.client-book-cover').first()).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+    await expect(page.locator('.help-band a')).toHaveAttribute('href', /tentang-bantuan\?section=bantuan/);
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('./#/ebook?v=L&lang=id');
+    await expect(page.locator('.client-book h3')).toHaveText([
+      'Ruang Sunyi', 'Jalan Pulang', 'Pelan-Pelan Tumbuh', 'Di Antara Musim', 'Waktu untuk Bernapas',
+    ]);
+    await page.getByRole('button', { name: 'Buka menu', exact: true }).click();
+    await expect(page.getByRole('dialog').locator('nav a')).toHaveText(['Ebook', 'Renungan']);
+    await page.keyboard.press('Escape');
+    await noOverflow(page);
+  });
+
+  test('the review hub hides About us only for the current client previews', async ({ page }) => {
+    await page.goto('./#/preview?v=J&lang=en');
+    await expect(page.locator('.journey-flow')).not.toContainText('About us');
+    const aboutPage = page.locator('#page-select option[value="/tentang-bantuan"]');
+    await expect(aboutPage).toBeDisabled();
+    await page.locator('#page-select').selectOption('/renungan');
+    await expect(page.frameLocator('.sandbox-device iframe').locator('main h1')).toHaveText('Reflection');
+    await page.locator('#variant-select').selectOption('E');
+    await expect(aboutPage).toBeEnabled();
+    await page.locator('#page-select').selectOption('/tentang-bantuan');
+    await page.locator('#variant-select').selectOption('L');
+    await expect(aboutPage).toBeDisabled();
+    await expect(page.locator('#page-select')).toHaveValue('/home/');
+  });
+
+  test('desktop Reflection and Ebook share a per-title form and return focus to the entry title', async ({ page }) => {
+    await openHome(page, 'I');
+    const nav = page.locator('.site-header nav');
+    await nav.getByRole('link', { name: 'Reflection', exact: true }).click();
+    await expect(page.locator('main h1')).toHaveText('Reflection');
+    await expect(page.locator('.reflection-titles h3')).toHaveCount(6);
+    const reflectionLink = page.getByRole('link', { name: 'Write a reflection for A Quiet Space' });
+    await reflectionLink.click();
+    await expect(page.locator('main h1')).toHaveText('A Quiet Space');
+    const field = page.getByRole('textbox', { name: 'Your reflection' });
+    await field.fill('I want to write this down.');
+    await page.getByRole('button', { name: 'Save reflection' }).click();
+    await expect(page.getByRole('status').filter({ hasText: 'Reflection saved.' })).toBeVisible();
+    await page.getByRole('link', { name: 'Back to Reflection' }).click();
+    await expect(page).toHaveURL(/#\/renungan\?section=title-reflection-ruang-sunyi/);
+    await expect(page.getByRole('heading', { name: 'A Quiet Space' })).toBeFocused();
+
+    await nav.getByRole('link', { name: 'Ebook', exact: true }).click();
+    await reflectionLink.click();
+    await expect(field).toHaveValue('I want to write this down.');
+    await page.getByRole('link', { name: 'Back to ebooks', exact: true }).click();
+    await expect(page).toHaveURL(/#\/ebook\?section=title-ebook-ruang-sunyi/);
+    await expect(page.getByRole('heading', { name: 'A Quiet Space' })).toBeFocused();
+
+    await reflectionLink.click();
+    await expect(field).toBeVisible();
+    await page.goBack();
+    await expect(page.getByRole('heading', { name: 'A Quiet Space' })).toBeFocused();
+    await expect(page.locator('main h1')).toHaveText('Ebook');
+  });
+
+  test('mobile Renungan offers the title list, form, and originating title return in Indonesian', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await openHome(page, 'L', 'id');
+    await page.getByRole('button', { name: 'Buka menu' }).click();
+    await page.getByRole('dialog').getByRole('link', { name: 'Renungan', exact: true }).click();
+    await expect(page.locator('main h1')).toHaveText('Renungan');
+    await page.getByRole('link', { name: 'Tulis renungan untuk Jalan Pulang' }).click();
+    await expect(page.getByRole('heading', { name: 'Jalan Pulang', level: 1 })).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'Renunganmu' })).toBeVisible();
+    await noOverflow(page);
+    await page.getByRole('link', { name: 'Kembali ke Renungan' }).click();
+    await expect(page.getByRole('heading', { name: 'Jalan Pulang' })).toBeFocused();
+  });
+
+  test('featured Ebook detail offers Reflection in both places and returns to its title', async ({ page }) => {
+    await page.goto('./#/ebook/the-art-of-reflecting?v=I&lang=en');
+    const reflection = page.locator('#renungan-buku');
+    await expect(reflection.getByRole('heading', { name: 'Reflection', exact: true })).toBeVisible();
+
+    for (const entry of [page.locator('.detail-feature'), reflection]) {
+      await entry.getByRole('link', { name: 'Write a reflection for The Art of Reflecting' }).click();
+      await expect(page.getByRole('textbox', { name: 'Your reflection' })).toBeVisible();
+      await page.getByRole('link', { name: 'Back to ebooks', exact: true }).click();
+      await expect(page).toHaveURL(/#\/ebook\/the-art-of-reflecting\?section=title-ebook-detail-the-art-of-reflecting/);
+      await expect(page.getByRole('heading', { name: 'The Art of Reflecting' })).toBeFocused();
+    }
+  });
+
+  test('direct Reflection forms fall back to the title on the Reflection page', async ({ page }) => {
+    await page.goto('./#/renungan/the-art-of-reflecting?v=J&lang=en');
+    await page.getByRole('link', { name: 'Back to Reflection' }).click();
+    await expect(page).toHaveURL(/#\/renungan\?section=title-reflection-the-art-of-reflecting/);
+    await expect(page.getByRole('heading', { name: 'The Art of Reflecting' })).toBeFocused();
+  });
+
   for (const language of ['en', 'id']) {
     test(`${language}: opening the temporary book exposes an honest pending excerpt and closing restores rotation`, async ({ page }) => {
       await page.goto(`./#/ebook?lang=${language}`);
@@ -132,28 +236,31 @@ test.describe('client feedback is applied to the existing prototype', () => {
     });
   }
 
-  test('review hub exposes all eight alternatives and directly opens each new one', async ({ page }) => {
+  test('review hub exposes all twelve alternatives and directly opens F, G, H, and L', async ({ page }) => {
     await page.goto('./#/preview?lang=en');
-    await expect(page.locator('.variant-tile')).toHaveCount(8);
-    await expect(page.locator('#variant-select option')).toHaveCount(8);
+    await expect(page.locator('main h1')).toHaveText('Twelve ways to open a story.');
+    await expect(page.locator('.variant-tile')).toHaveCount(12);
+    await expect(page.locator('#variant-select option')).toHaveCount(12);
+    await expect(page.locator('#variant-select option[value="L"]')).toHaveText('L / Room Parallax');
     for (const width of [1440, 768, 390]) {
       await page.setViewportSize({ width, height: 1000 });
       const cardWidths = await page.locator('.variant-tile').evaluateAll(cards => ({
-        reference: cards[3].getBoundingClientRect().width,
+        reference: cards.find(card => card.querySelector('.variant-letter').textContent === 'A').getBoundingClientRect().width,
         last: cards.at(-1).getBoundingClientRect().width,
       }));
       expect(Math.abs(cardWidths.last - cardWidths.reference), `The final legacy alternative should remain comparable in size at ${width}px`).toBeLessThanOrEqual(1);
       await noOverflow(page);
     }
     await page.setViewportSize({ width: 1440, height: 1000 });
-    for (const variant of ['F', 'G', 'H']) {
+    for (const variant of ['F', 'G', 'H', 'L']) {
       const thumbnail = page.locator(`.variant-thumbnail[href*="/home/${variant}"]`);
       await expect(thumbnail).toHaveCount(1);
       await thumbnail.click();
       await expect(page).toHaveURL(new RegExp(`#/home/${variant}\\?`));
-      await expect(page.locator('.feedback-hero video[data-scroll-video]')).toHaveCount(1);
+      if (variant === 'L') await expect(page.locator('[data-client-hero="L"]')).toBeVisible();
+      else await expect(page.locator('.feedback-hero video[data-scroll-video]')).toHaveCount(1);
       await page.goBack();
-      await expect(page.locator('.variant-tile')).toHaveCount(8);
+      await expect(page.locator('.variant-tile')).toHaveCount(12);
     }
   });
 });

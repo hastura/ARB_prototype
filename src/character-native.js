@@ -7,22 +7,39 @@ const dimensions = {
   rasa: [[244, 863], [234, 863], [184, 863], [235, 863]],
   bumi: [[305, 907], [270, 907], [201, 907], [299, 907]],
 };
+const updatedDimensions = {
+  aksa: [[255, 828], [254, 905], [164, 904], [395, 906]],
+  rasa: [[394, 1200], [225, 859], [175, 851], [300, 824]],
+  bumi: [[463, 1360], [453, 1360], [364, 1700], [345, 1360]],
+};
+const updatedPoseRevisions = { rasa: '-v03', bumi: '-v03' };
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
 
 /** Rebuild the supplied film's pose rail as responsive, localized DOM layers. */
-export function renderCharacterNative({ language, c }) {
+export function renderCharacterNative({ language, c, intro, updatedPoses = false }) {
   const content = key => escapeHTML(c(key));
   const pick = (id, en) => language === 'id' ? id : en;
-  const asset = (key, pose) => `${import.meta.env.BASE_URL}assets/character-native-v01/${key}-pose-${pose}.webp`;
-  const figure = (key, pose) => `<div class="native-figure" data-native-figure="${pose}" data-native-ratio="${dimensions[key][pose][0] / dimensions[key][pose][1]}"><img src="${asset(key, pose)}" alt="" width="${dimensions[key][pose][0]}" height="${dimensions[key][pose][1]}" loading="lazy" decoding="async"></div>`;
+  const poseDirectory = updatedPoses ? 'client-hero-ijk/poses' : 'character-native-v01';
+  const poseDimensions = updatedPoses ? updatedDimensions : dimensions;
+  const poseImage = (key, pose) => {
+    const [width, height] = poseDimensions[key][pose];
+    const revision = updatedPoses ? updatedPoseRevisions[key] ?? '' : '';
+    const src = `${import.meta.env.BASE_URL}assets/${poseDirectory}/${key}-pose-${pose}${revision}.webp`;
+    return `<img src="${src}" alt="" width="${width}" height="${height}" loading="lazy" decoding="async">`;
+  };
+  const figure = (key, pose) => {
+    const [width, height] = poseDimensions[key][pose];
+    return `<div class="native-figure" data-native-figure="${pose}" data-native-ratio="${width / height}">${poseImage(key, pose)}</div>`;
+  };
+  const caption = intro === undefined ? content('characters.caption') : escapeHTML(intro);
   return `<section class="character-native" id="karakter" data-character-native data-native-stops='${JSON.stringify(stops)}' data-native-motion-probes='${JSON.stringify(motionProbes)}' aria-labelledby="native-character-title">
-    <div class="native-heading"><span class="eyebrow">${pick('TIGA PERSPEKTIF', 'THREE PERSPECTIVES')}</span><h2 id="native-character-title">${content('characters.title')}</h2><p>${content('characters.caption')}</p></div>
+    <div class="native-heading">${intro === undefined ? `<span class="eyebrow">${pick('TIGA PERSPEKTIF', 'THREE PERSPECTIVES')}</span>` : ''}<h2 id="native-character-title">${content('characters.title')}</h2><p>${caption}</p></div>
     <div class="native-stage" data-character-native-stage>
       <div class="native-track" data-character-native-track>${keys.map((key, index) => `<article class="native-chapter" data-native-character="${key}" aria-labelledby="native-${key}-title">
         <div class="native-art" aria-hidden="true">${figure(key, 0)}${figure(key, 3)}${figure(key, 1)}<div class="native-name">${content(`character.${key}.name`)}</div>${figure(key, 2)}</div>
         <div class="native-copy" data-native-copy><div class="native-identity"><span aria-hidden="true">0${index + 1} /</span><h3 id="native-${key}-title">${content(`character.${key}.name`)}</h3></div><h4>${content(`detail.highlight.${key}`).split('\n')[0]}</h4><p>${content(`character.${key}.body`)}</p></div>
       </article>`).join('')}</div>
-      <div class="native-ensemble" data-native-ensemble aria-hidden="true"><p class="native-ensemble-heading">${content('characters.title')}</p>${keys.map((key, index) => `<div class="native-ensemble-person" style="--person-index:${index}"><img src="${asset(key, 1)}" width="${dimensions[key][1][0]}" height="${dimensions[key][1][1]}" alt="" loading="lazy" decoding="async"><span>${content(`character.${key}.name`)}</span></div>`).join('')}<p class="native-ensemble-caption">${content('characters.caption')}</p></div>
+      <div class="native-ensemble" data-native-ensemble aria-hidden="true"><p class="native-ensemble-heading">${content('characters.title')}</p>${keys.map((key, index) => `<div class="native-ensemble-person" style="--person-index:${index}">${poseImage(key, 1)}<span>${content(`character.${key}.name`)}</span></div>`).join('')}<p class="native-ensemble-caption">${content('characters.caption')}</p></div>
       <div class="native-chapters" aria-hidden="true"><div class="native-chapter-strip">${keys.map((key, i) => `<span data-native-label="${key}"><small>0${i + 1}</small>${content(`character.${key}.name`)}</span>`).join('')}<i data-native-meter></i></div><span class="native-scroll-label">${pick('Gulir untuk menjelajahi', 'Scroll to explore')} ↓</span></div>
     </div>
   </section>`;

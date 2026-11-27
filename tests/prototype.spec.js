@@ -184,15 +184,17 @@ test.describe('complete journeys', () => {
       await expect.poll(() => frame.locator('html').evaluate(() => window.innerWidth)).toBe(width);
     }
     const alternatives = page.getByLabel('Alternatif', { exact: true });
-    await expect(alternatives.locator('option')).toHaveCount(8);
-    await alternatives.selectOption({ index: 1 });
+    await expect(alternatives.locator('option')).toHaveCount(12);
+    await alternatives.selectOption('L');
     await expect(frame.locator('main h1')).toBeVisible();
+    await expect(frame.locator('[data-client-hero="L"]')).toBeVisible();
     const pages = page.getByLabel('Halaman', { exact: true });
     await expect(pages).toBeVisible();
     const ebook = await pages.locator('option').evaluateAll((options) => options.find((option) => option.textContent.trim() === 'Ebook')?.value);
     expect(ebook, 'The review hub must offer Ebook as part of the full journey').toBeTruthy();
     await pages.selectOption(ebook);
     await expect(frame.locator('main h1')).toHaveText('Ebook');
+    await expect(frame.locator('.client-book-cover')).toHaveCount(5);
     expect(errors).toEqual([]);
   });
 

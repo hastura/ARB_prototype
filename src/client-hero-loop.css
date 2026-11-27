@@ -1,0 +1,14 @@
+.client-k-video,
+.client-l-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: var(--scene-position);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.client-l-video { opacity: 1; }

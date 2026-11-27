@@ -29,7 +29,7 @@ async function noOverflow(page) {
   expect(geometry.width, JSON.stringify(geometry)).toBeLessThanOrEqual(geometry.viewport + 1);
 }
 
-async function completeNativeCopy(page) {
+async function completeNativeCopy(page, poseDirectory = 'character-native-v01') {
   const section = page.locator('[data-character-native]');
   const articles = section.locator('article[data-native-character]');
   await expect(articles).toHaveCount(3);
@@ -40,7 +40,10 @@ async function completeNativeCopy(page) {
     await expect(article.locator('[data-native-figure]')).toHaveCount(4);
     const sources = await article.locator('[data-native-figure] img').evaluateAll(images => images.map(image => image.getAttribute('src')));
     expect(sources).toHaveLength(4);
-    for (let pose = 0; pose < 4; pose++) expect(sources.some(source => source.endsWith(`assets/character-native-v01/${key}-pose-${pose}.webp`))).toBe(true);
+    const revision = (key === 'rasa' || key === 'bumi') && poseDirectory === 'client-hero-ijk/poses' ? '-v03' : '';
+    for (let pose = 0; pose < 4; pose++) {
+      expect(sources.some(source => source.endsWith(`assets/${poseDirectory}/${key}-pose-${pose}${revision}.webp`))).toBe(true);
+    }
   }
   const broken = await articles.locator('img').evaluateAll(async images => {
     await Promise.all(images.map(async image => { image.loading = 'eager'; try { await image.decode(); } catch { /* Report below. */ } }));
@@ -49,6 +52,28 @@ async function completeNativeCopy(page) {
   expect(broken).toEqual([]);
   await expect(section.locator('video')).toHaveCount(0);
 }
+
+test('I through L use updated assets in the original layered character introduction', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  const errors = captureErrors(page);
+  for (const alternative of ['I', 'J', 'K', 'L']) {
+    await open(page, alternative);
+    await completeNativeCopy(page, 'client-hero-ijk/poses');
+    const section = page.locator('[data-character-native]');
+    const stage = await pinRange(page);
+    expect(stage.pinned).toBe(true);
+    await scrollToProgress(page, stage, .02);
+    const first = section.locator('[data-native-character="aksa"]');
+    await expect(first.locator('.native-name')).toBeVisible();
+    await expect(first.locator('[data-native-figure="0"]')).toBeInViewport();
+    const stops = await stopsFor(page);
+    await scrollToProgress(page, stage, stops.rasa);
+    await readableDetail(page, 'rasa');
+    await noOverflow(page);
+  }
+  expect(errors).toEqual([]);
+});
 
 async function pinRange(page) {
   return page.locator('[data-character-native-stage]').evaluate(stage => {

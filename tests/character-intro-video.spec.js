@@ -436,12 +436,14 @@ test.describe('code-built character introduction, eased scroll', () => {
     await scrollToProgress(page, range, stops.rasa);
     await page.setViewportSize({ width: 390, height: 844 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    expect(await page.locator('[data-character-native-stage]').evaluate(element => element.parentElement.classList.contains('pin-spacer'))).toBe(false);
+    const stage = page.locator('[data-character-native-stage]');
+    const isPinned = () => stage.evaluate(element => element.parentElement.classList.contains('pin-spacer'));
+    await expect.poll(isPinned).toBe(false);
     await completeNativeCopy(page);
     for (const key of keys) await expect(page.locator(`[data-native-character="${key}"] p`)).toContainText(new RegExp(key, 'i'));
     await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await expect.poll(isPinned).toBe(true);
     range = await pinRange(page); stops = await stopsFor(page);
-    expect(range.pinned).toBe(true);
     await scrollToProgress(page, range, stops.rasa);
     await expect(page.locator('[data-character-native]')).toHaveAttribute('data-native-active', 'rasa');
     await readableDetail(page, 'rasa');

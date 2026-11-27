@@ -133,8 +133,11 @@ test.describe('client feedback is applied to the existing prototype', () => {
     await expect(page.locator('.journey-flow')).not.toContainText('About us');
     const aboutPage = page.locator('#page-select option[value="/tentang-bantuan"]');
     await expect(aboutPage).toBeDisabled();
+    const frame = page.locator('.sandbox-device iframe');
+    await frame.scrollIntoViewIfNeeded();
+    await expect(frame.contentFrame().locator('body')).toHaveAttribute('data-variant', 'J');
     await page.locator('#page-select').selectOption('/renungan');
-    await expect(page.frameLocator('.sandbox-device iframe').locator('main h1')).toHaveText('Reflection');
+    await expect(frame.contentFrame().locator('main h1')).toHaveText('Reflection');
     await page.locator('#variant-select').selectOption('E');
     await expect(aboutPage).toBeEnabled();
     await page.locator('#page-select').selectOption('/tentang-bantuan');

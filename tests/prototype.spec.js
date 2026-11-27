@@ -273,6 +273,15 @@ test.describe('accessibility and motion', () => {
     await expect(page.locator('main h1')).toHaveText('Ebook');
     await expect(page.locator('main h1')).toHaveCSS('opacity', '1');
     await expectNoOverflow(page);
+
+    await openRoute(page, '/home/J');
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight * 0.6));
+    await page.getByRole('link', { name: 'Ebook', exact: true }).first().click();
+    await expect(page.locator('main h1')).toHaveText('Ebook');
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+    for (const section of await page.locator('[data-reveal]').all()) {
+      await expect(section).toHaveCSS('opacity', '1');
+    }
     expect(errors).toEqual([]);
   });
 

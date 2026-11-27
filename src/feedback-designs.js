@@ -1,5 +1,6 @@
 import { renderCharacterCinema } from './character-cinema';
 import { renderCharacterNative } from './character-native';
+import { revealElements } from './reveal';
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
 
 export const feedbackDesigns = {
@@ -118,7 +119,7 @@ export function mountFeedbackMotion({ gsap, ScrollTrigger, reduced, signal }) {
       syncHeader(); return;
     }
     context = gsap.context(() => {
-      home.querySelectorAll('.fb-reveal').forEach(element => gsap.from(element, { y: 32, opacity: 0, duration: .9, ease: 'power3.out', clearProps: 'all', scrollTrigger: { trigger: element, start: 'top 96%', once: true } }));
+      revealElements(gsap, home.querySelectorAll('.fb-reveal'), { duration: .9 });
       const filmMotion = gsap.to(playhead, { progress: 1, duration: 1, ease: 'none', paused: true, onUpdate: () => requestSeek(playhead.progress) });
       trigger = ScrollTrigger.create({
         trigger: home.querySelector('[data-hero-scroll]'), start: 'top top',

@@ -7,6 +7,7 @@ import { mountCharacterCinema } from './character-cinema';
 import { renderCharacterNative, mountCharacterNative } from './character-native';
 import { clientHero, clientDialogue, bindClientHero } from './client-hero.js';
 import { featuredBookId, sampleBooks, reflectionBook, reflectionLink, reflectionIndex, bookReflectionSection, reflectionForm, mountReflection } from './client-reflection';
+import { revealElements } from './reveal';
 import './mini-preview.css';
 import './style.css';
 import './feedback-overrides.css';
@@ -344,10 +345,7 @@ function animate() {
       gsap.from('.hero-enter', { y:18, opacity:0, duration:.8, stagger:.1, delay:.25, clearProps:'all' });
       gsap.from('.hero-art', { opacity:0, duration:1.1, ease:'power2.out' });
     }
-    gsap.utils.toArray('[data-reveal]').forEach(el => {
-      // Only hide a section when it is about to enter, preserving readable distant content.
-      gsap.from(el, { y:32, opacity:0, duration:.85, ease:'power3.out', clearProps:'all', scrollTrigger:{ trigger:el,start:'top 96%',once:true } });
-    });
+    revealElements(gsap, gsap.utils.toArray('[data-reveal]'));
     gsap.to('.scroll-meter', { scaleX:1,ease:'none',scrollTrigger:{start:0,end:'max',scrub:true} });
     if (context.conditions.desktop) gsap.utils.toArray('.portrait-background').forEach(el => {
       gsap.from(el, { scale:.92,rotate:-4,duration:1.4,ease:'power3.out',clearProps:'all',scrollTrigger:{trigger:el,start:'top 85%',once:true} });
@@ -444,7 +442,14 @@ async function render(initial = false, options = {}) {
     ScrollTrigger.refresh();
     window.scrollTo(0, options.preserveScroll);
     document.querySelector(`[data-language="${language}"]`)?.focus({ preventScroll: true });
-  } else if(section) requestAnimationFrame(()=>scrollToSection(section, 'instant'));
+  } else if (section) {
+    requestAnimationFrame(() => {
+      scrollToSection(section, 'instant');
+      ScrollTrigger.refresh();
+    });
+  } else {
+    ScrollTrigger.refresh();
+  }
 }
 
 async function changeLanguage(next) {

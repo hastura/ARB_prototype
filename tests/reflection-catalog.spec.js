@@ -9,12 +9,42 @@ async function expectOutline(link) {
   expect((await link.boundingBox()).height).toBeGreaterThanOrEqual(44);
 }
 
+async function expectPurchaseStatus(page, purchase, statusTitle, statusBody) {
+  await purchase.click();
+  const dialog = page.getByRole('dialog', { name: statusTitle, exact: true });
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toContainText(statusBody);
+  await expect(dialog).not.toContainText(/planned journey|journey yang direncanakan|checkout eksternal resmi|external checkout/i);
+  await expect(dialog.locator('a[href^="http"]')).toHaveCount(0);
+  await page.keyboard.press('Escape');
+  await expect(dialog).not.toBeVisible();
+  await expect(purchase).toBeFocused();
+}
+
+const ebookCopy = {
+  en: {
+    purchase: 'Purchase',
+    discover: 'Discover the story',
+    reflection: 'Write a reflection for The Art of Reflecting',
+    statusTitle: 'Purchase information is not available yet.',
+    statusBody: 'Format, price, and access details will be shown once confirmed.',
+  },
+  id: {
+    purchase: 'Beli',
+    discover: 'Kenali Kisahnya',
+    reflection: 'Tulis renungan untuk The Art of Reflecting',
+    statusTitle: 'Informasi pembelian belum tersedia.',
+    statusBody: 'Detail format, harga, dan cara mengakses ebook akan ditampilkan setelah dikonfirmasi.',
+  },
+};
+
 for (const { variants, width, height, language, listLabel } of [
   { variants: ['I', 'J'], width: 1440, height: 900, language: 'en', listLabel: 'List' },
   { variants: ['K', 'L'], width: 390, height: 844, language: 'id', listLabel: 'Daftar' },
 ]) {
-  test(`Reflection layout and outline actions on previews ${variants.join(' and ')}`, async ({ page }) => {
+  test(`Reflection layouts and Ebook actions on previews ${variants.join(' and ')}`, async ({ page }) => {
     await page.setViewportSize({ width, height });
+    const copy = ebookCopy[language];
     for (const variant of variants) {
       await page.goto(`./?embed=1#/renungan?v=${variant}&lang=${language}`);
       const catalog = page.locator('[data-reflection-catalog]');
@@ -42,9 +72,37 @@ for (const { variants, width, height, language, listLabel } of [
       await expect(titles).toHaveAttribute('data-view', 'list');
       await grid.click();
 
-      await page.goto(`./?embed=1#/ebook/the-art-of-reflecting?v=${variant}&lang=${language}`);
-      await expectOutline(page.locator('.detail-feature h1 + .reflection-entry'));
+      await page.goto(`./?embed=1#/ebook?v=${variant}&lang=${language}`);
+      const actions = page.locator('.featured-ebook-actions');
+      const purchase = actions.getByRole('button', { name: copy.purchase, exact: true });
+      const discover = actions.getByRole('link', { name: copy.discover, exact: true });
+      const reflection = actions.getByRole('link', { name: copy.reflection, exact: true });
+      await expect(purchase).toBeVisible();
+      await expect(purchase).not.toHaveClass(/\bsecondary\b/);
+      await expect(discover).toHaveClass(/\bsecondary\b/);
+      await expectOutline(reflection);
+      const purchaseBox = await purchase.boundingBox();
+      const discoverBox = await discover.boundingBox();
+      const reflectionBox = await reflection.boundingBox();
+      expect(purchaseBox.x + purchaseBox.width).toBeLessThan(discoverBox.x);
+      expect(purchaseBox.y).toBeCloseTo(discoverBox.y, 0);
+      expect(reflectionBox.y).toBeGreaterThan(purchaseBox.y + purchaseBox.height);
+      expect(reflectionBox.x).toBeCloseTo(purchaseBox.x, 0);
+      expect(reflectionBox.x + reflectionBox.width).toBeCloseTo(discoverBox.x + discoverBox.width, 0);
+      await expectPurchaseStatus(page, purchase, copy.statusTitle, copy.statusBody);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+
+      await discover.click();
+      await expect(page.locator('main h1')).toHaveText(/The Art of\s*Reflecting/);
+      await expect(page.locator('.detail-feature').getByText(/View the purchase journey|Lihat alur pembelian/i)).toHaveCount(0);
+      await expect(discover).toHaveCount(0);
+      await expectOutline(reflection);
+      const detailPurchaseBox = await purchase.boundingBox();
+      const detailReflectionBox = await reflection.boundingBox();
+      expect(detailReflectionBox.x).toBeCloseTo(detailPurchaseBox.x, 0);
+      expect(detailReflectionBox.y).toBeGreaterThan(detailPurchaseBox.y + detailPurchaseBox.height);
       await expectOutline(page.locator('.book-reflection .reflection-entry'));
+      await expectPurchaseStatus(page, purchase, copy.statusTitle, copy.statusBody);
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
     }
   });

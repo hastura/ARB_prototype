@@ -133,20 +133,30 @@ function catalogCollection() {
     return `<article class="client-book" data-reveal><div class="client-book-cover" aria-hidden="true"><strong>${esc(book.title)}</strong><span class="client-book-mark client-book-mark--${artwork}"></span></div><h3 id="title-ebook-${id}" data-reflection-title tabindex="-1">${esc(book.title)}</h3>${reflectionLink(book, variant, 'ebook')}</article>`;
   }).join('')}</div>`;
 }
-function featuredReflection(origin) {
-  return isClientVariant(variant) ? reflectionLink(reflectionBook(featuredBookId), variant, origin) : '';
+function featuredEbookActions(origin) {
+  const catalogPage = origin === 'ebook';
+  if (!isClientVariant(variant)) {
+    if (catalogPage) return link('/ebook/the-art-of-reflecting', c('story.cta'));
+    return `${link('/ebook/the-art-of-reflecting?section=tentang-kisah', c('story.cta'))}<button type="button" class="text-button" data-state="purchase">${t('Lihat alur pembelian')} ${arrow}</button>`;
+  }
+
+  return `<div class="featured-ebook-actions${catalogPage ? ' featured-ebook-actions--catalog' : ''}">
+    <button type="button" class="button" data-state="purchase" aria-haspopup="dialog">${t('Beli')}${arrow}</button>
+    ${catalogPage ? link('/ebook/the-art-of-reflecting', c('story.cta'), 'button secondary') : ''}
+    ${reflectionLink(reflectionBook(featuredBookId), variant, origin)}
+  </div>`;
 }
 function featuredTitleAnchor(origin) {
   return isClientVariant(variant) ? `id="title-${origin}-${featuredBookId}" data-reflection-title tabindex="-1"` : '';
 }
 function catalog() {
-  return `${pageHead(text('catalog.title'), text('catalog.body'))}<section class="shell section catalog-feature" data-reveal>${book()}<div class="catalog-copy"><span class="eyebrow">${text('catalog.featured')}</span><h2 ${featuredTitleAnchor('ebook')}>The Art of <br><i>Reflecting</i></h2>${featuredReflection('ebook')}<p>${text('story.summary')}</p><div class="pending-tag"><span aria-hidden="true">◌</span> ${text('story.availability')}</div>${link('/ebook/the-art-of-reflecting', c('story.cta'))}<small>${t("Judul kisah; identitas produk ebook masih menunggu konfirmasi.")}</small></div></section><section class="shell section catalog-collection" aria-labelledby="catalog-collection-title">${catalogCollection()}</section><section class="shell section">${helpBand()}</section>`;
+  return `${pageHead(text('catalog.title'), text('catalog.body'))}<section class="shell section catalog-feature" data-reveal>${book()}<div class="catalog-copy"><span class="eyebrow">${text('catalog.featured')}</span><h2 ${featuredTitleAnchor('ebook')}>The Art of <br><i>Reflecting</i></h2><p>${text('story.summary')}</p><div class="pending-tag"><span aria-hidden="true">◌</span> ${text('story.availability')}</div>${featuredEbookActions('ebook')}<small>${t("Judul kisah; identitas produk ebook masih menunggu konfirmasi.")}</small></div></section><section class="shell section catalog-collection" aria-labelledby="catalog-collection-title">${catalogCollection()}</section><section class="shell section">${helpBand()}</section>`;
 }
 function faq(key) {
   return `<details class="faq"><summary>${text(`faq.${key}.title`)}<span aria-hidden="true">+</span></summary><div class="faq-answer"><p>${text(`faq.${key}.body`)}</p></div></details>`;
 }
 function detail() {
-  return `<div class="shell breadcrumb">${link('/ebook', '← Kembali ke Ebook', 'back-link')}<span>The Art of Reflecting</span></div><section class="shell section catalog-feature detail-feature" data-reveal>${book()}<div class="catalog-copy"><span class="eyebrow">${text('story.label')}</span><h1 ${featuredTitleAnchor('ebook-detail')}>The Art of <br><i>Reflecting</i></h1>${featuredReflection('ebook-detail')}<p>${text('story.short')}</p><div class="pending-tag">${text('story.availability')}</div>${link('/ebook/the-art-of-reflecting?section=tentang-kisah', c('story.cta'))}<button class="text-button" data-state="purchase">${t("Lihat alur pembelian")} ${arrow}</button></div></section><section id="tentang-kisah" class="shell section editorial-grid" data-reveal><h2>${text('detail.about.title')}</h2><div class="prose"><p>${text('detail.about.body')}</p><small>${t("Pengantar editorial website, bukan kutipan naskah atau sinopsis resmi.")}</small></div></section><section class="shell section"><h2 data-reveal>${text('detail.highlights.title')}</h2><div class="three-grid perspective-grid">${characters.map((key, i) => {const [title, body] = c(`detail.highlight.${key}`).split('\n');return `<article data-reveal><span class="eyebrow">0${i + 1} / ${key.toUpperCase()}</span><h3>${esc(title)}</h3><p>${esc(body)}</p></article>`;}).join('')}</div></section><section class="shell section" data-reveal><div class="excerpt-panel"><span class="eyebrow">${text('excerpt.label')}</span><h3>${text('excerpt.empty.title')}</h3><p>${text('excerpt.empty.body')}</p><button class="text-link" data-state="excerpt">${t("Lihat status cuplikan")} ${arrow}</button></div></section>${isClientVariant(variant) ? bookReflectionSection(variant) : ''}<section class="shell section editorial-grid" data-reveal><h2>${text('purchase.info.title')}</h2><div>${faq('format')}${faq('access')}</div></section><section class="shell section"><div class="help-band" data-reveal><div><h3>${text('purchase.pending.title')}</h3><p>${text('purchase.pending.body')}</p></div>${link('/tentang-bantuan?section=bantuan', 'Lihat Bantuan Ebook', 'button secondary')}</div></section>`;
+  return `<div class="shell breadcrumb">${link('/ebook', '← Kembali ke Ebook', 'back-link')}<span>The Art of Reflecting</span></div><section class="shell section catalog-feature detail-feature" data-reveal>${book()}<div class="catalog-copy"><span class="eyebrow">${text('story.label')}</span><h1 ${featuredTitleAnchor('ebook-detail')}>The Art of <br><i>Reflecting</i></h1><p>${text('story.short')}</p><div class="pending-tag">${text('story.availability')}</div>${featuredEbookActions('ebook-detail')}</div></section><section id="tentang-kisah" class="shell section editorial-grid" data-reveal><h2>${text('detail.about.title')}</h2><div class="prose"><p>${text('detail.about.body')}</p><small>${t("Pengantar editorial website, bukan kutipan naskah atau sinopsis resmi.")}</small></div></section><section class="shell section"><h2 data-reveal>${text('detail.highlights.title')}</h2><div class="three-grid perspective-grid">${characters.map((key, i) => {const [title, body] = c(`detail.highlight.${key}`).split('\n');return `<article data-reveal><span class="eyebrow">0${i + 1} / ${key.toUpperCase()}</span><h3>${esc(title)}</h3><p>${esc(body)}</p></article>`;}).join('')}</div></section><section class="shell section" data-reveal><div class="excerpt-panel"><span class="eyebrow">${text('excerpt.label')}</span><h3>${text('excerpt.empty.title')}</h3><p>${text('excerpt.empty.body')}</p><button class="text-link" data-state="excerpt">${t("Lihat status cuplikan")} ${arrow}</button></div></section>${isClientVariant(variant) ? bookReflectionSection(variant) : ''}<section class="shell section editorial-grid" data-reveal><h2>${text('purchase.info.title')}</h2><div>${faq('format')}${faq('access')}</div></section><section class="shell section"><div class="help-band" data-reveal><div><h3>${text('purchase.pending.title')}</h3><p>${text('purchase.pending.body')}</p></div>${link('/tentang-bantuan?section=bantuan', 'Lihat Bantuan Ebook', 'button secondary')}</div></section>`;
 }
 function mediaPage(type) {
   const reflection = type === 'reflections';
@@ -224,7 +234,10 @@ function pendingDialog(type) {
     audio: [c('conversations.empty.title'), c('conversations.empty.body'), 'Tujuan: Spotify', 'Tautan diaktifkan setelah episode dan URL resmi tersedia.']
   };
   const [title, body, sub, note] = states[type];
-  dialog(`<div class="modal-head"><span class="eyebrow">${t("STATUS MATERI / PREVIEW")}</span><button class="icon-button" data-close aria-label="${t("Tutup informasi")}">✕</button></div><div class="pending-orbit" aria-hidden="true">◌</div><h2>${esc(title)}</h2><p>${esc(body)}</p><div class="pending-box"><strong>${esc(t(sub))}</strong><p>${esc(t(note))}</p></div><button class="button" data-close>${t("Kembali menjelajah")} ${arrow}</button>`, 'pending-modal', title);
+  const details = type === 'purchase' && isClientVariant(variant)
+    ? ''
+    : `<div class="pending-box"><strong>${esc(t(sub))}</strong><p>${esc(t(note))}</p></div>`;
+  dialog(`<div class="modal-head"><span class="eyebrow">${t("STATUS MATERI / PREVIEW")}</span><button class="icon-button" data-close aria-label="${t("Tutup informasi")}">✕</button></div><div class="pending-orbit" aria-hidden="true">◌</div><h2>${esc(title)}</h2><p>${esc(body)}</p>${details}<button class="button" data-close>${t("Kembali menjelajah")} ${arrow}</button>`, 'pending-modal', title);
 }
 function socialDialog(key) {
   const channel = { instagram: 'Instagram', youtube: 'YouTube', spotify: 'Spotify', tiktok: 'TikTok' }[key];

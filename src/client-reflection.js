@@ -15,11 +15,17 @@ const originFor = (id, from) => from === 'ebook' || (from === 'ebook-detail' && 
 const titleId = (id, from) => `title-${from}-${id}`;
 const backHref = (id, variant, from) => `#${localizedPath(`${routes[from]}?section=${titleId(id, from)}`, variant)}`;
 const arrow = '<span aria-hidden="true">↗</span>';
+const samplesById = new Map(sampleBooks.map(book => [book.id, book]));
+const reflectionTitleIds = [featuredBookId, ...samplesById.keys()];
+const titleBatchSize = 12;
+const viewStorageKey = 'arb-reflection-view';
+const views = [['list', 'Daftar'], ['grid', 'Grid']];
+let preferredView = 'grid';
 let pendingEntry;
 
 export function reflectionBook(id) {
   if (id === featuredBookId) return { id, title: copyText('story.title') };
-  const sample = sampleBooks.find(book => book.id === id);
+  const sample = samplesById.get(id);
   return sample && { id, title: t(sample.title) };
 }
 
@@ -28,18 +34,81 @@ export function reflectionLink(book, variant, from) {
   return `<a class="text-link reflection-entry" data-reflection-entry="${backHref(book.id, variant, from)}" href="#${url}" aria-label="${t('Tulis renungan untuk')} ${book.title}">${t('Tulis renungan')} ${arrow}</a>`;
 }
 
-export function reflectionIndex(variant) {
-  const ids = [featuredBookId, ...sampleBooks.map(book => book.id)];
-  return `<section class="shell section reflection-catalog" aria-labelledby="reflection-title-list">
-    <h2 id="reflection-title-list">${t('Pilih judul')}</h2>
-    <p>${t('Lima judul contoh tersedia untuk mencoba alur renungan.')}</p>
-    <ul class="reflection-titles">${ids.map(id => {
-      const book = reflectionBook(id);
-      return `<li>
-        <h3 id="${titleId(id, 'reflection')}" data-reflection-title tabindex="-1">${book.title}</h3>${reflectionLink(book, variant, 'reflection')}
-      </li>`;
-    }).join('')}</ul>
+function reflectionTitle(id, variant) {
+  const book = reflectionBook(id);
+  return `<li>
+    <h3 id="${titleId(id, 'reflection')}" data-reflection-title tabindex="-1">${book.title}</h3>
+    ${reflectionLink(book, variant, 'reflection')}
+  </li>`;
+}
+
+function reflectionView() {
+  try {
+    const stored = sessionStorage.getItem(viewStorageKey);
+    if (stored === 'list' || stored === 'grid') return stored;
+  } catch { /* Keep view changes available in memory if storage is unavailable. */ }
+  return preferredView;
+}
+
+export function reflectionIndex(variant, section, retainedTitles = 0) {
+  // Back and direct links must find the title even if it was in a later batch.
+  const target = reflectionTitleIds.findIndex(id => titleId(id, 'reflection') === section);
+  const count = Math.max(titleBatchSize, retainedTitles, Math.ceil((target + 1) / titleBatchSize) * titleBatchSize);
+  const view = reflectionView();
+  return `<section class="shell section reflection-catalog" data-reflection-catalog="${variant}" aria-labelledby="reflection-title-list">
+    <div class="reflection-toolbar">
+      <div>
+        <h2 id="reflection-title-list">${t('Pilih judul')}</h2>
+        <p>${t('Judul contoh tersedia untuk mencoba alur renungan.')}</p>
+      </div>
+      <div class="reflection-view-switch" role="group" aria-label="${t('Tampilan judul')}">
+        ${views.map(([mode, label]) => `<button type="button" data-reflection-view="${mode}" aria-pressed="${view === mode}" aria-controls="reflection-titles">${t(label)}</button>`).join('')}
+      </div>
+    </div>
+    <ul id="reflection-titles" class="reflection-titles" data-view="${view}">${reflectionTitleIds.slice(0, count).map(id => reflectionTitle(id, variant)).join('')}</ul>
+    <button type="button" class="reflection-load-more" data-reflection-load-more aria-controls="reflection-titles"${count >= reflectionTitleIds.length ? ' hidden' : ''}>${t('Muat judul lainnya')}</button>
+    <p class="sr-only" role="status"></p>
   </section>`;
+}
+
+function mountReflectionIndex(catalog, signal) {
+  const list = catalog.querySelector('#reflection-titles');
+  const controls = catalog.querySelectorAll('[data-reflection-view]');
+  controls.forEach(control => {
+    control.addEventListener('click', () => {
+      const view = control.dataset.reflectionView;
+      preferredView = list.dataset.view = view;
+      controls.forEach(button => button.setAttribute('aria-pressed', String(button === control)));
+      try { sessionStorage.setItem(viewStorageKey, view); } catch { /* Keep the chosen view in memory. */ }
+    }, { signal });
+  });
+
+  const more = catalog.querySelector('[data-reflection-load-more]');
+  if (more.hidden) return;
+  const status = catalog.querySelector('[role="status"]');
+  const variant = catalog.dataset.reflectionCatalog;
+  let observer;
+
+  function loadNextTitles(focusNewTitle = false) {
+    const shown = list.children.length;
+    const next = reflectionTitleIds.slice(shown, shown + titleBatchSize);
+    if (!next.length) return;
+    list.insertAdjacentHTML('beforeend', next.map(id => reflectionTitle(id, variant)).join(''));
+    more.hidden = list.children.length >= reflectionTitleIds.length;
+    status.textContent = t('Judul tambahan dimuat.');
+    observer?.unobserve(more);
+    if (!more.hidden) observer?.observe(more);
+    if (focusNewTitle) document.getElementById(titleId(next[0], 'reflection'))?.focus();
+  }
+
+  more.addEventListener('click', () => loadNextTitles(true), { signal });
+  if ('IntersectionObserver' in window) {
+    observer = new IntersectionObserver(([entry]) => {
+      if (!signal.aborted && entry?.isIntersecting && document.activeElement !== more) loadNextTitles();
+    }, { rootMargin: '240px 0px' });
+    observer.observe(more);
+    signal.addEventListener('abort', () => observer.disconnect(), { once: true });
+  }
 }
 
 export function bookReflectionSection(variant) {
@@ -69,6 +138,8 @@ export function reflectionForm(book, variant, from) {
 }
 
 export function mountReflection(signal) {
+  const catalog = document.querySelector('[data-reflection-catalog]');
+  if (catalog) mountReflectionIndex(catalog, signal);
   const form = document.querySelector('[data-reflection-form]');
   if (form) {
     const back = document.querySelector('.reflection-back');
@@ -108,15 +179,14 @@ export function mountReflection(signal) {
   }
   pendingEntry = undefined;
 
-  // Record the title anchor in the entry's history item as well as the explicit Back link.
-  document.querySelectorAll('[data-reflection-entry]').forEach(entry => {
-    entry.addEventListener('click', event => {
-      if (!followsLink(event)) return;
-      const origin = entry.dataset.reflectionEntry;
-      history.replaceState(history.state, '', origin);
-      pendingEntry = { origin, destination: entry.hash };
-    }, { signal });
-  });
+  // Delegate so the title links added in later batches keep the same Back behavior.
+  document.querySelector('main')?.addEventListener('click', event => {
+    const entry = event.target.closest('[data-reflection-entry]');
+    if (!entry || !followsLink(event)) return;
+    const origin = entry.dataset.reflectionEntry;
+    history.replaceState(history.state, '', origin);
+    pendingEntry = { origin, destination: entry.hash };
+  }, { signal });
 }
 
 function followsLink(event) {

@@ -378,6 +378,7 @@ async function render(initial = false, options = {}) {
   const path = rawPath || '/home/E';
   const params = new URLSearchParams(query);
   const previousLanguage = language;
+  const previousVariant = variant;
   setLanguage(resolveLanguage(params.get('lang')));
   const languageChanged = previousLanguage !== language;
   const match = path.match(/^\/home\/([A-L])$/);
@@ -385,7 +386,8 @@ async function render(initial = false, options = {}) {
   if (names[nextVariant]) variant = nextVariant;
   sessionStorage.setItem('arb-variant', variant);
   const section = params.get('section');
-  if (!initial && activeRoute === path && section && !languageChanged) {
+  const missingReflectionTitle = path === '/renungan' && isClientVariant(variant) && section?.startsWith('title-reflection-') && !document.getElementById(section);
+  if (!initial && activeRoute === path && section && !languageChanged && previousVariant === variant && !missingReflectionTitle) {
     gsap.killTweensOf('.route-veil');
     gsap.set('.route-veil', { scaleY: 0 });
     document.querySelectorAll('dialog').forEach(d=>d.close());
@@ -404,7 +406,8 @@ async function render(initial = false, options = {}) {
   else if (path === '/ebook') {content=catalog();title='Ebook';}
   else if (path === '/ebook/the-art-of-reflecting') {content=detail();title='The Art of Reflecting';}
   else if (path === '/renungan') {
-    content = client ? pageHead(text('reflections.title'), text('reflections.body'), 'RUANG UNTUK MEMPERHATIKAN') + reflectionIndex(variant) : mediaPage('reflections');
+    const retainedTitles = options.preserveScroll === undefined ? 0 : document.getElementById('reflection-titles')?.children.length;
+    content = client ? pageHead(text('reflections.title'), text('reflections.body'), 'RUANG UNTUK MEMPERHATIKAN') + reflectionIndex(variant, section, retainedTitles) : mediaPage('reflections');
     title = 'Renungan';
   }
   else if (reflection) {content=reflectionForm(reflection, variant, params.get('from'));title=reflection.title;}

@@ -2,26 +2,96 @@
   margin-top: clamp(48px, 6vw, 84px);
 }
 
+.reflection-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px 32px;
+}
+
 .reflection-catalog h2 { margin-bottom: 12px; }
-.reflection-catalog p { color: var(--muted); }
+.reflection-toolbar p { margin-bottom: 0; color: var(--muted); }
+
+.reflection-view-switch {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid #838676;
+  border-radius: 6px;
+}
+
+.reflection-view-switch button {
+  min-width: 72px;
+  min-height: 44px;
+  padding-inline: 16px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--forest);
+  font: 600 14px/1.3 var(--sans);
+}
+
+.reflection-view-switch button:hover { background: var(--sage); }
+.reflection-view-switch button[aria-pressed="true"] {
+  background: var(--forest);
+  color: var(--raised);
+}
 
 .reflection-titles {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(32px, 7vw, 100px);
   margin: 32px 0 0;
   padding: 0;
   list-style: none;
 }
 
-.reflection-titles li {
-  border-top: 1px solid var(--line);
-  padding-block: 20px 12px;
+.reflection-titles[data-view="list"] {
+  grid-template-columns: minmax(0, 1fr);
+  border-bottom: 1px solid var(--line);
 }
 
-.reflection-titles li h3 {
-  margin-bottom: 3px;
-  font-size: clamp(25px, 2.5vw, 38px);
+.reflection-titles[data-view="list"] > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-block: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.reflection-titles h3 {
+  min-width: 0;
+  margin: 0;
+  font-size: clamp(23px, 2.3vw, 36px);
+  overflow-wrap: anywhere;
+}
+
+.reflection-titles[data-view="list"] h3 { flex: 1 1 136px; }
+
+.reflection-titles[data-view="grid"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 2vw, 24px);
+}
+
+.reflection-titles[data-view="grid"] > li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
+  padding: clamp(12px, 2.6vw, 28px);
+  border: 1px solid var(--line);
+  background: var(--raised);
+}
+
+.reflection-titles[data-view="grid"] .reflection-entry { margin-top: auto; }
+
+.reflection-load-more {
+  margin-top: 24px;
+}
+
+.reflection-load-more[hidden] {
+  display: none;
 }
 
 .reflection-entry {
@@ -34,6 +104,42 @@
 .reflection-entry:hover { text-decoration: underline; }
 .catalog-copy .reflection-entry { margin-block: -16px 12px; }
 .client-book .reflection-entry { font-size: 13px; }
+.detail-feature .reflection-entry { margin-block: 0 20px; }
+
+:is(.detail-feature, .book-reflection, .reflection-catalog) .reflection-entry,
+.reflection-load-more:not([hidden]) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid var(--forest);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--forest);
+  font: 600 14px/1.3 var(--sans);
+  text-decoration: none;
+  transition: background-color .2s ease, color .2s ease;
+}
+
+:is(.detail-feature, .book-reflection, .reflection-catalog) .reflection-entry:hover,
+.reflection-load-more:hover {
+  background: var(--forest);
+  color: var(--raised);
+  text-decoration: none;
+}
+
+:is(.detail-feature, .book-reflection, .reflection-catalog) .reflection-entry > span {
+  flex: none;
+  font-size: 16px;
+  transform: none;
+}
+
+.reflection-entry:focus-visible,
+.reflection-view-switch button:focus-visible,
+.reflection-load-more:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 3px;
+}
 
 .book-reflection {
   border-top: 1px solid var(--line);
@@ -101,8 +207,30 @@
 .reflection-form .reflection-status { min-height: 1.6em; color: var(--forest); font-size: 14px; }
 
 @media (max-width: 650px) {
-  .reflection-editor,
-  .reflection-titles { grid-template-columns: minmax(0, 1fr); }
+  .reflection-editor { grid-template-columns: minmax(0, 1fr); }
   .reflection-editor { gap: 24px; }
   .reflection-editor-heading h1 { margin-bottom: 0; }
+}
+
+@media (max-width: 900px) {
+  .reflection-titles[data-view="grid"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 480px) {
+  .reflection-titles[data-view="grid"] h3 { font-size: clamp(20px, 5vw, 23px); }
+
+  .reflection-titles[data-view="grid"] .reflection-entry {
+    width: 100%;
+    gap: 8px;
+    padding-inline: 8px;
+  }
+}
+
+@media (max-width: 359px) {
+  .reflection-titles[data-view="grid"] { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reflection-entry,
+  .reflection-load-more { transition: none; }
 }
